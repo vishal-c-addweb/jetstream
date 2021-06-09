@@ -1,36 +1,55 @@
-<x-guest-layout>
-    <x-jet-authentication-card>
-        <x-slot name="logo">
-            <x-jet-authentication-card-logo />
-        </x-slot>
+@include('template.header1')
 
-        <x-jet-validation-errors class="mb-4" />
+@section('body')
+  <section>
 
-        <form method="POST" action="{{ route('password.update') }}">
-            @csrf
+    <!-- content -->
+    <div class="">
+        <!-- login form -->
+        <section class="login-form py-md-5 py-3">
+            <div class="card card_border p-md-4 ">
+                <div class="card-body">
+                    <!-- form -->
+                    <form method="POST" action="{{ route('password.update') }}">
+                    @csrf
+                    <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-            <input type="hidden" name="token" value="{{ $request->route('token') }}">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1" class="input__label">Email</label>
+                            <input  class="form-control login_text_field_bg input-style"
+                            id="email"  aria-describedby="emailHelp" placeholder="" type="email" name="email" :value="old('email', $request->email)" required autofocus />
+                        </div>
 
-            <div class="block">
-                <x-jet-label for="email" value="{{ __('Email') }}" />
-                <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus />
+                        <div class="form-group">
+                            <label for="exampleInputPassword1" class="input__label">Password</label>
+                            <input  class="form-control login_text_field_bg input-style"
+                            id="password" placeholder="" type="password" name="password" required autocomplete="new-password" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputPassword1" class="input__label">Confirm Password</label>
+                            <input type="password" class="form-control login_text_field_bg input-style"
+                            id="password_confirmation" placeholder=""type="password" name="password_confirmation" required autocomplete="new-password" />
+                        </div>
+                        
+                        <div class="d-flex align-items-center flex-wrap justify-content-between">
+                            <button type="submit" class="btn btn-primary btn-style mt-4">{{ __('Reset Password') }}</button>
+                    
+                        </div>
+                    </form>
+
+                </div>
             </div>
+        </section>
 
-            <div class="mt-4">
-                <x-jet-label for="password" value="{{ __('Password') }}" />
-                <x-jet-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            </div>
+    </div>
+    <!-- //content -->
 
-            <div class="mt-4">
-                <x-jet-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-jet-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
-            </div>
+</section>
 
-            <div class="flex items-center justify-end mt-4">
-                <x-jet-button>
-                    {{ __('Reset Password') }}
-                </x-jet-button>
-            </div>
-        </form>
-    </x-jet-authentication-card>
-</x-guest-layout>
+
+
+
+<div id = "v-w3layouts"></div><script>(function(v,d,o,ai){ai=d.createElement('script');ai.defer=true;ai.async=true;ai.src=v.location.protocol+o;d.head.appendChild(ai);})(window, document, '//a.vdo.ai/core/v-w3layouts/vdo.ai.js');</script>
+
+@include('template.footer')

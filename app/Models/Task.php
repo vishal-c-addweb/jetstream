@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Timesheet extends Model
+class Task extends Model
 {
     use HasFactory;
 
@@ -15,27 +15,13 @@ class Timesheet extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
+        'name',
         'project_id',
-        'task_id',
-        'timesheet_date',
-        'hour',
-        'minute',
-        'description'
+        'created_by'
     ];
 
     /**
-     * Get the user that the timesheet belongs to.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo.
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class,'user_id','id');
-    }
-    
-    /**
-     * Get the project  that the timesheet belongs to.
+     * Get the project  that the task belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo.
      */
@@ -43,17 +29,14 @@ class Timesheet extends Model
     {
         return $this->belongsTo(Project::class,'project_id','id');
     }
-
+    
     /**
-     * Get the task that the timesheet belongs to.
+     * Get the user that the timesheet belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo.
      */
-    public function task()
+    public function user()
     {
-        return $this->belongsTo(Task::class,'task_id','id');
+        return $this->belongsTo(User::class,'created_by','id');
     }
 }
-
-
-

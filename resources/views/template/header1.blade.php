@@ -33,14 +33,5 @@ Author URL: http://w3layouts.com
 <body class="sidebar-menu-collapsed">
   <div class="se-pre-con"></div>
   <section>
-    <!-- sidebar menu start -->
-    @include('template.sidebar')
-    <!-- //sidebar menu end -->
-    
-    <!-- header-starts -->
-    <div class="header sticky-header" >
 
-      @include('navigation-menu')
-
-    </div>
 

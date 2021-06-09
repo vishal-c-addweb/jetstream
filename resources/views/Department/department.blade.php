@@ -21,7 +21,7 @@
                 
                 <div style="text-align:center;">
                     <!-- Button trigger modal -->
-                    <button type="  button" onclick="create()" style="co" data-bs-toggle="modal" data-bs-target="#departmentModal" class="bg-blue-700 text-white font-bold py-2 px-4 rounded my-3">Add Department</button>
+                    <button type="  button" onclick="addDepartment()" style="co" data-bs-toggle="modal" data-bs-target="#departmentModal" class="bg-blue-700 text-white font-bold py-2 px-4 rounded my-3">Add Department</button>
                 </div>
 
                 @if (session()->has('message'))
@@ -44,7 +44,7 @@
                     <div class="table-responsive">
                         <!-- Fetch Employee Data -->  
                         <div class="card-body">
-                            <table class="table table-bordered data-table">
+                            <table class="table table-bordered " id="department-datatable">
                                 <thead>
                                     <tr>
                                         <th>No</th>

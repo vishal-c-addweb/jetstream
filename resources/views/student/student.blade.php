@@ -21,7 +21,7 @@
             
             <div style="text-align:center;">
                 <!-- Button trigger modal -->
-        <button type="button" onClick="openStudent()"  style="co" data-bs-toggle="modal" data-bs-target="#studentModal" class="bg-blue-700 text-white font-bold py-2 px-4 rounded my-3">Add Student</button>
+        <button type="button" onClick="addStudent()"  style="co" data-bs-toggle="modal" data-bs-target="#studentModal" class="bg-blue-700 text-white font-bold py-2 px-4 rounded my-3">Add Student</button>
             </div>
 
             @if (session()->has('message'))

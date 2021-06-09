@@ -13,7 +13,7 @@
                 
                 <div style="text-align:center;">
                     <!-- Button trigger modal -->
-                    <button type="button" onClick="add()"  style="co" data-bs-toggle="modal" data-bs-target="#exampleModal" class="bg-pink-700 text-white font-bold py-2 px-4 rounded my-3 ml-3 btn btn-primary" >Add Employee</button>
+                    <button type="button" onClick="addEmployee()"  style="co" data-bs-toggle="modal" data-bs-target="#exampleModal" class="bg-pink-700 text-white font-bold py-2 px-4 rounded my-3 ml-3 btn btn-primary" >Add Employee</button>
                     
                     <!-- Button trigger modal -->
                     <a href="attendance" class="bg-green-700 text-white font-bold py-2 px-4 rounded my-3 ml-3" style="background-color:gray;">View Attendance</a>
@@ -53,7 +53,7 @@
                     <div class="table-responsive">
                         <!-- Fetch Employee Data -->  
                         <div class="card-body">
-                            <table class="table table-bordered" id="ajax-crud-datatable">
+                            <table class="table table-bordered" id="employee-datatable">
                                 <thead>
                                 <tr>
                                 <th>Id</th>
@@ -89,12 +89,12 @@
  
   
     <!--Add employee Modal-->
-    <div class="modal fade bd-example-modal-lg" id="empdadd" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="exampleModal1">
+    <div class="modal fade bd-example-modal-lg" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="exampleModal1">
         <div class="modal-dialog modal-lg"> 
             <div class="modal-content">
                 <div class="modal-header">
                         
-                        <h4 class="modal-title" id="CompanyModal">Add Employee</h4>
+                        <h4 class="modal-title" id="employeeModalLabel">Add Employee</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -222,17 +222,17 @@
     <!-- end bootstrap model -->
 
     <!-- Edit employee Modal -->
-    <div class="modal fade" id="company-modal" aria-hidden="true">
+    <div class="modal fade" id="employeeEditModal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="CompanyModal">Edit Company</h4>
+                <h4 class="modal-title" id="employeeEditModalLabel">Edit Company</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0)" id="CompanyForm" name="CompanyForm" class="form-horizontal" method="POST" >
+                <form action="javascript:void(0)" id="employeeForm" name="employeeForm" class="form-horizontal" method="POST" >
                     <input type="hidden" name="id" id="id">
                     {{ csrf_field() }}
 

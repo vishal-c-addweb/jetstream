@@ -16,6 +16,10 @@ use App\Models\User;
 use App\Models\Student;
 use App\Models\Attendence;
 use App\Models\Team;
+use App\Models\Project;
+use App\Models\Task;
+use App\Models\Timesheet;
+use App\Models\ProjectToUser;
 
 use DataTables;
 use App\DataTables\StudentDataTable;
@@ -653,5 +657,218 @@ class EmployeeController extends Controller
         
         return view('user.user');
     }
+
+    /**
+     * project  page.
+     *
+     * 
+     * @return redirect to project page.
+     */
+    public function project()
+    {
+        $project = Project::with('user')->get();
+        return view('timesheet.project',compact('project'));
+    }
+    /**
+     * add project page.
+     *
+     * @param $request for requesting data from form.
+     * 
+     * @return redirect to project_task page.
+     */
+    public function addProject(Request $request)
+    {   
+        $user = auth()->user();
+        $project = new Project();
+        $project->name = $request->projectname;
+        $project->created_by = $user->id;
+        $project->save();
+        session()->flash('message', 'Project added successfull!.');
+        return redirect(route( 'project' ));   
+    }
+    /**
+     * assign project  page.
+     *
+     * 
+     * @return redirect to project page.
+     */
+    public function assignProject()
+    {
+        $user = User::all();
+        $project = Project::all();
+        $projectToUser = ProjectToUser::with('project','user')->get();
+        return view('timesheet.assignproject',compact('user','project','projectToUser'));
+    }
+    /**
+     * assign project  page.
+     *
+     * @param $request for requesting data from form.
+     * 
+     * @return redirect to project_task page.
+     */
+    public function addAssignProject(Request $request)
+    {
+        $projectToUser = new ProjectToUser();
+        $projectToUser->project_id = $request->projectid;
+        $projectToUser->user_id = $request->userid;
+        $projectToUser->save();
+        session()->flash('message', 'Project Assigned successfull!.');
+        return redirect(route( 'assignproject' ));  
+    }
+    /**
+     * task page.
+     *
+     * 
+     * @return redirect to task page.
+     */
+    public function task()
+    {
+        $project = Project::all();
+        $task = Task::with('project')->get();
+        return view('timesheet.task',compact('project','task'));
+    }
+    /**
+     * add task page.
+     *
+     * @param $request for requesting data from form.
+     * 
+     * @return redirect to task page.
+     */
+    public function addTask(Request $request)
+    {   
+        $user = auth()->user();
+        $task = new Task();
+        $task->name = $request->taskname;
+        $task->project_id = $request->projectid;
+        $task->created_by = $user->id;
+        $task->save();
+        session()->flash('message', 'Task added successfull!.');
+        return redirect(route( 'task' ));   
+    }
     
+
+    /**
+     * timesheet page.
+     *
+     * 
+     * @return redirect to addtimesheet page.
+     */
+    public function timesheet()
+    {
+        $user = auth()->user();
+        $user_id = $user->id;
+        $project = ProjectToUser::with('project')->where('user_id',$user_id)->get();
+        $timesheet = Timesheet::with('user','project','task')->get();
+        return view('timesheet.timesheet',compact('project','timesheet'));
+    }
+    
+    /**
+     * add timesheet page.
+     *
+     * @param $request for requesting data from form.
+     * 
+     * @return redirect to addtimesheet page.
+     */
+    public function addTimesheet(Request $request)
+    {   
+        $user = auth()->user();
+        $timesheetDate = $request->timesheetDate;
+        $projectId = $request->projectid;
+        
+        $timesheet = new Timesheet();
+        $timesheet->user_id = $user->id;
+        $timesheet->project_id = $request->projectid;
+        $timesheet->task_id = $request->taskname;
+        $timesheet->timesheet_date = $request->timesheetDate;
+        $h = $request->hour;
+        $hour = Carbon::createFromFormat('H', $h)->format('H:i:s');
+        $timesheet->hour = $hour;
+        $m = $request->minute;
+        $minute = Carbon::createFromFormat('i', $m)->format('H:i:s');
+        $timesheet->minute = $minute;
+        $timesheet->description = $request->description;
+        $timesheet->save();
+        session()->flash('message', 'Timesheet added successfull!.');
+        return redirect(route( 'timesheet' ));
+        
+    }
+
+    /**
+     * Get Task Name by projectid using ajax.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return response.
+     */
+    public function getTaskname(Request $request)
+    {
+        $projectId = $request->projectId;
+        $task = Task::where('project_id',$projectId)->get();
+        return Response()->json($task);
+    }
+    
+    /**
+     * Get Description by id using ajax.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return response.
+     */
+    public function getDescription(Request $request)
+    {
+        $id = $request->id;
+        $timesheet = Timesheet::where('id',$id)->get();
+        return Response()->json($timesheet);
+    }
+
+    /**
+     * Edit timesheet data.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return response.
+     */
+    public function editTimesheet()
+    {
+        $user = auth()->user();
+        $user_id = $user->id;
+        $project = ProjectToUser::with('project')->where('user_id',$user_id)->get();
+        return view('timesheet.edittimesheet',compact('project'));
+    }
+
+    /**
+     * Edit timesheet by date using ajax.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return response.
+     */
+    public function editTimesheetData(Request $request)
+    {
+        $user = auth()->user();
+        $id = $user->id;
+        $timesheetDate = Carbon::Today();
+        $timesheet = Timesheet::with('project','user','task')->where('timesheet_date',$timesheetDate)->where('user_id',$id)->orderBy('id','DESC')->get();
+        $project = ProjectToUser::with('project')->where('user_id',$id)->get();
+        return Response()->json(['timesheet'=>$timesheet,'projects'=>$project]);
+    }
+    
+    /**
+     * Get timesheet by date using ajax.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return response.
+     */
+    public function getTimesheet(Request $request)
+    {
+        $user = auth()->user();
+        $id = $user->id;
+        $timesheetDate = $request->edittimesheetDate;
+        $project = ProjectToUser::with('project')->where('user_id',$id)->get();
+        $timesheet = Timesheet::with('project','user','task')->where('timesheet_date',$timesheetDate)->where('user_id',$id)->orderBy('id','DESC')->get();
+        return Response()->json(['timesheet'=>$timesheet,'projects'=>$project]);
+    }
+
+
 }

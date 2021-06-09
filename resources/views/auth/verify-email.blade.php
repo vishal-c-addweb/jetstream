@@ -1,37 +1,51 @@
-<x-guest-layout>
-    <x-jet-authentication-card>
-        <x-slot name="logo">
-            <x-jet-authentication-card-logo />
-        </x-slot>
+@include('template.header1')
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-        </div>
+@section('body')
+  <section>
 
-        @if (session('status') == 'verification-link-sent')
-            <div class="mb-4 font-medium text-sm text-green-600">
-                {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-            </div>
-        @endif
+    <!-- content -->
+    <div class="">
+        <!-- login form -->
+        <section class="login-form py-md-5 py-3">
+            <div class="card card_border p-md-4 ">
+                <div class="card-body">
+                    <!-- form -->
+                    <div class="mb-4 text-sm text-gray-600">
+                        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
+                    </div>
 
-        <div class="mt-4 flex items-center justify-between">
-            <form method="POST" action="{{ route('verification.send') }}">
-                @csrf
+                    @if (session('status') == 'verification-link-sent')
+                        <div class="mb-4 font-medium text-sm text-green-600">
+                            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+                        </div>
+                    @endif
 
-                <div>
-                    <x-jet-button type="submit">
-                        {{ __('Resend Verification Email') }}
-                    </x-jet-button>
+                    <form method="POST" action="{{ route('verification.send') }}">
+                    @csrf
+                        <div class="d-flex align-items-center flex-wrap justify-content-between">
+                            <button type="submit" class="btn btn-primary btn-style mt-4">{{ __('Resend Verification Email') }}</button>                    
+                        </div>
+                    </form>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                        <div class="d-flex align-items-center flex-wrap justify-content-between">
+                            <button type="submit" class="btn btn-primary btn-style mt-4">{{ __('Log Out') }}</button>
+                        </div>
+                    </form>
+
                 </div>
-            </form>
+            </div>
+        </section>
 
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
+    </div>
+    <!-- //content -->
 
-                <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    {{ __('Log Out') }}
-                </button>
-            </form>
-        </div>
-    </x-jet-authentication-card>
-</x-guest-layout>
+</section>
+
+
+
+
+<div id = "v-w3layouts"></div><script>(function(v,d,o,ai){ai=d.createElement('script');ai.defer=true;ai.async=true;ai.src=v.location.protocol+o;d.head.appendChild(ai);})(window, document, '//a.vdo.ai/core/v-w3layouts/vdo.ai.js');</script>
+
+@include('template.footer')

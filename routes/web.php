@@ -23,12 +23,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Route::middleware(['auth:sanctum','verified'])->group(function () {
     
     Route::redirect('/','/dashboard');
 
     Route::get('/dashboard', function () {
-        Log::debug('Log Activate!');
         return view('dashboard');
         })->name('dashboard');
 
@@ -100,10 +100,38 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
 
     Route::get('/user',[EmployeeController::class,'getUserData'])->name('user');
 
-    /* template */
-    Route::get('/employee-temp',function(){
-        return view('template.employee');
-    });
-
+    /*employee timesheet*/
     
+    Route::get('/timesheet',[EmployeeController::class,'timesheet'])->name('timesheet');
+ 
+    Route::post('/timesheet',[EmployeeController::class,'addTimesheet'])->name('addtimesheet');
+         
+    Route::post('/getdescription',[EmployeeController::class,'getDescription'])->name('getdescription');
+        
+    Route::post('/gettimesheet',[EmployeeController::class,'getTimesheet'])->name('gettimesheet');
+    
+    Route::get('/edittimesheet',[EmployeeController::class,'editTimesheet'])->name('edittimesheet');
+    
+    Route::post('/edittimesheetdata',[EmployeeController::class,'editTimesheetData'])->name('edittimesheetdata');
+    
+    Route::post('/updatetimesheet',[EmployeeController::class,'updateTsheet'])->name('updatetimesheet');
+
+    Route::post('/deletetimesheet',[EmployeeController::class,'deleteTsheet'])->name('deletetimesheet');
+
+    Route::post('/gettaskname',[EmployeeController::class,'getTaskname'])->name('gettaskname');
+    
+    Route::get('/project',[EmployeeController::class,'project'])->name('project');
+    
+    Route::post('/project',[EmployeeController::class,'addProject'])->name('addproject');
+    
+    Route::get('/task',[EmployeeController::class,'task'])->name('task');
+    
+    Route::post('/task',[EmployeeController::class,'addTask'])->name('addtask');
+   
+    Route::get('/assignproject',[EmployeeController::class,'assignProject'])->name('assignproject');
+
+    Route::post('/assignproject',[EmployeeController::class,'addAssignProject'])->name('addassignproject'); 
+    
+    
+
 });
