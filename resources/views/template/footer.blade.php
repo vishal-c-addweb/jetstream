@@ -732,21 +732,34 @@
             dataType: 'json',
             success:function(response){
                 console.log(response);
+                var tdata = '<form method="POST" id="tsheetForm">' +
+                            
+                            '{{ csrf_field() }}' +
+
+                            '<div class="mb-3">' +
+                                '<h5 style="text-align:center;">Timesheet</h5>' +
+                                
+                            '</div>' +
+                            '<div class="mb-3">' +
+                                '<h6 style="text-align:center;">you are not added any timesheet yet</h6>' +
+                                
+                            '</div>' +
+                            
+                            '<div class="" style="margin-left:400px;">' +
+                                '<a class="btn btn-success" href="timesheet"><i class="fa fa-plus">&nbsp;</i>Add Timesheet</a>' +
+                            '</div>' +
+                        '</form>' +
+                    '</div>';
+
                 if(jQuery.isEmptyObject(response.timesheet))
                 {
-                    $('#tsheetForm').show();
+                    $('#editTimesheet').append(tdata);
                 }
                 else
                 {
-                    $('#tsheetForm').hide();
                     var result = response.timesheet;
                     var result1 = response.projects;
                     var len = result1.length;
-                    
-                    for($i=0;$i<len;$i++)
-                    {
-                        var tr_data = '<option value="' + result1[i].id + '">' + result1[i].project.name + '</option>';
-                    }
                     $.each(result,function(i, result)
                     {
                        
@@ -755,18 +768,26 @@
                         var minute = result.minute;
                         var a = minute.split(':');
                         var minute = (+a[0]) * 1 + (+a[1]) * 1 + (+a[2]);
-                        $timesheet_data = '<form method="POST" action="javascript:void(0)" id="timesheetForm(' + result.id+ ')" name="timesheetForm">' + 
+                        $timesheet_data = '<form method="POST" action="updatetimesheet/' + result.id + '" id="timesheetForm(' + result.id+ ')" name="timesheetForm">' + 
                                             '{{ csrf_field() }}' +
                                           
                                             '<div class="mb-3">' +
                                                 '<h5 style="text-align:center;">Timesheet</h5>' +
                                             '</div>'+
-                                          
+
+                                            
+                                            '<div class="mb-3" hidden>' +
+                                                '<label for="exampleInputE" class="form-label">Date</label>' +
+                                                '<input type="date" class="form-control" id="edittimesheetdate" name="edittimesheetdate" >' +
+                                            '</div> ' +
+
                                             '<div class="mb-3">' +
                                                 '<label for="exampleInputproject" class="form-label">Project</label>' +
-                                                '<SELECT class="form-control" name="projectid" id="projectId" class="prj">' + 
+                                                '<SELECT class="form-control" name="projectid" id="projectId">' + 
                                                     '<option value="' + result.project_id + '">' + result.project.name + '</option>' + 
-                                                
+                                                    'for(i=0;i<"' + len + '";i++){'+
+                                                            '<option value="'+ result1[i].id+'">'+ result1[i].project.name+'</option>' +
+                                                    '}' +
                                                 '</SELECT>'+
                                             '</div>'+
                                           
@@ -805,8 +826,8 @@
                                             '</div>' +
 
                                             '<div class="modal-footer">' +
-                                            '<button type="submit" class="btn btn-success" onClick="updateTsheet(' + result.id + ')">Update</button>' + 
-                                                    '<button type="submit" class="btn btn-danger" onClick="deleteTsheet(' + result.id + ')">Delete</button>' +
+                                            '<button type="submit" class="btn btn-success">Update</button>' + 
+                                                    '<a href="/deletetimesheet/' + result.id + '" class="btn btn-danger">Delete</a>' +
                                             '</div>' +
                                         
                                         '</form>';
@@ -822,8 +843,9 @@
     
     $('#edittimesheetDate').on('change',function(){
             var edittimesheetDate = $('#edittimesheetDate').val();
-            //console.log(projectId);
+            
             $('#editTimesheet').empty();
+            
             $.ajax({
                 url:"{{ url('gettimesheet') }}",
                 type:'post',
@@ -831,21 +853,33 @@
                 dataType: 'json',
                 success:function(response){
                     console.log(response);
-                    if(jQuery.isEmptyObject(response.timesheet))
-                    {
-                        $('#tsheetForm').show();
-                    }
-                    else
-                    {
-                        $('#tsheetForm').hide();
+                    var tdata = '<form method="POST" id="tsheetForm">' +
+                            
+                                        '{{ csrf_field() }}' +
+
+                                        '<div class="mb-3">' +
+                                            '<h5 style="text-align:center;">Timesheet</h5>' +
+                                            
+                                        '</div>' +
+                                        '<div class="mb-3">' +
+                                            '<h6 style="text-align:center;">you are not added any timesheet yet</h6>' +
+                                            
+                                        '</div>' +
+                                        
+                                        '<div class="" style="margin-left:400px;">' +
+                                            '<a class="btn btn-success" href="timesheet"><i class="fa fa-plus">&nbsp;</i>Add Timesheet</a>' +
+                                        '</div>' +
+                                    '</form>';
+
+                        if(jQuery.isEmptyObject(response.timesheet))
+                        {
+                            $('#editTimesheet').append(tdata);
+                        }
+                        else
+                        {
                         var result = response.timesheet;
                         var result1 = response.projects;
                         var len = result1.length;
-                        
-                        for($i=0;$i<len;$i++)
-                        {
-                            var tr_data = '<option value="' + result1[i].id + '">' + result1[i].project.name + '</option>';
-                        }
                         $.each(result,function(i, result)
                         {
                         
@@ -854,18 +888,25 @@
                             var minute = result.minute;
                             var a = minute.split(':');
                             var minute = (+a[0]) * 1 + (+a[1]) * 1 + (+a[2]);
-                            $timesheet_data = '<form method="POST" action="javascript:void(0)" id="timesheetForm(' + result.id+ ')" name="timesheetForm">' + 
+                            $timesheet_data = '<form method="POST" action="updatetimesheet/' + result.id + '" id="timesheetForm(' + result.id+ ')" name="timesheetForm">' + 
                                                 '{{ csrf_field() }}' +
                                             
                                                 '<div class="mb-3">' +
                                                     '<h5 style="text-align:center;">Timesheet</h5>' +
                                                 '</div>'+
-                                            
+
+                                                '<div class="mb-3" hidden>' +
+                                                    '<label for="exampleInputE" class="form-label">Date</label>' +
+                                                    '<input type="date" class="form-control" id="edittimesheetdate" value="' + edittimesheetDate + '" name="edittimesheetdate" >' +
+                                                '</div> ' +
+
                                                 '<div class="mb-3">' +
                                                     '<label for="exampleInputproject" class="form-label">Project</label>' +
-                                                    '<SELECT class="form-control" name="projectid" id="projectId" class="prj">' + 
+                                                    '<SELECT class="form-control" name="projectid" id="projectId">' + 
                                                         '<option value="' + result.project_id + '">' + result.project.name + '</option>' + 
-                                                    
+                                                        'for(i=0;i<' + len + ';i++){'+
+                                                            '<option value="'+ result1[i].id+'">'+ result1[i].project.name+'</option>' +
+                                                        '}' +
                                                     '</SELECT>'+
                                                 '</div>'+
                                             
@@ -904,8 +945,8 @@
                                                 '</div>' +
 
                                                 '<div class="modal-footer">' +
-                                                    '<button type="submit" class="btn btn-success" onClick="updateTsheet(' + result.id + ')">Update</button>' + 
-                                                    '<button type="submit" class="btn btn-danger" onClick="deleteTsheet(' + result.id + ')">Delete</button>' +
+                                                    '<button type="submit" class="btn btn-success">Update</button>' + 
+                                                    '<a href="/deletetimesheet/' + result.id + '" class="btn btn-danger">Delete</a>' +
                                                 '</div>' +
                                             
                                             '</form>';
@@ -917,31 +958,6 @@
                 }
             });
     });
-
-
-    function updateTsheet(id){
-        $.ajax({
-            url:"{{ url('updatetimesheet') }}",
-            type:'post',
-            dataType: 'json',
-            data : {id:id},
-            success:function(response){
-                console.log(response);
-            }
-        });
-    };
-    
-    function deleteTsheet(id){
-        $.ajax({
-            url:"{{ url('deletetimesheet') }}",
-            type:'post',
-            dataType: 'json',
-            data : {id:id},
-            success:function(response){
-                console.log(response);
-            }
-        });
-    };
     
 </script>
 

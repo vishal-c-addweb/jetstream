@@ -114,9 +114,9 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
     
     Route::post('/edittimesheetdata',[EmployeeController::class,'editTimesheetData'])->name('edittimesheetdata');
     
-    Route::post('/updatetimesheet',[EmployeeController::class,'updateTsheet'])->name('updatetimesheet');
+    Route::post('/updatetimesheet/{id}',[EmployeeController::class,'updateTsheet'])->name('updatetimesheet');
 
-    Route::post('/deletetimesheet',[EmployeeController::class,'deleteTsheet'])->name('deletetimesheet');
+    Route::get('/deletetimesheet/{id}',[EmployeeController::class,'deleteTsheet'])->name('deletetimesheet');
 
     Route::post('/gettaskname',[EmployeeController::class,'getTaskname'])->name('gettaskname');
     

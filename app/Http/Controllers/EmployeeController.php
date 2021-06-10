@@ -772,9 +772,6 @@ class EmployeeController extends Controller
     public function addTimesheet(Request $request)
     {   
         $user = auth()->user();
-        $timesheetDate = $request->timesheetDate;
-        $projectId = $request->projectid;
-        
         $timesheet = new Timesheet();
         $timesheet->user_id = $user->id;
         $timesheet->project_id = $request->projectid;
@@ -869,6 +866,48 @@ class EmployeeController extends Controller
         $timesheet = Timesheet::with('project','user','task')->where('timesheet_date',$timesheetDate)->where('user_id',$id)->orderBy('id','DESC')->get();
         return Response()->json(['timesheet'=>$timesheet,'projects'=>$project]);
     }
+
+    /**
+     * Update Timesheet By id.
+     *
+     * @param $id & $request for requesting data from form.
+     * 
+     * @return redirect to edittimesheet page.
+     */
+    public function updateTsheet(Request $request,$id)
+    {
+        $user = auth()->user();
+        $timesheet = Timesheet::find($id);
+    	$timesheet->user_id = $user->id;
+        $timesheet->project_id = $request->projectid;
+        $timesheet->task_id = $request->taskid;
+        $timesheet->timesheet_date = $request->edittimesheetdate;
+        $h = $request->hour;
+        $hour = Carbon::createFromFormat('H', $h)->format('H:i:s');
+        $timesheet->hour = $hour;
+        $m = $request->minute;
+        $minute = Carbon::createFromFormat('i', $m)->format('H:i:s');
+        $timesheet->minute = $minute;
+        $timesheet->description = $request->description;
+        $timesheet->save();
+        session()->flash('message', 'Timesheet updated SuccessFully!.');
+        return redirect(route('edittimesheet'));
+    }
+
+    /**
+     * Delete Timesheet By id.
+     *
+     * @param $id.
+     * 
+     * @return redirect to edittimesheet page.
+     */
+    public function deleteTsheet($id)
+    {
+    	Timesheet::find($id)->delete();
+        session()->flash('message', 'Timesheet Deleted SuccessFully!.');
+        return redirect(route('edittimesheet'));
+    }
+    
 
 
 }
