@@ -845,9 +845,10 @@ class EmployeeController extends Controller
         $user = auth()->user();
         $id = $user->id;
         $timesheetDate = Carbon::Today();
+        $task = [];
         $timesheet = Timesheet::with('project','user','task')->where('timesheet_date',$timesheetDate)->where('user_id',$id)->orderBy('id','DESC')->get();
         $project = ProjectToUser::with('project')->where('user_id',$id)->get();
-        return Response()->json(['timesheet'=>$timesheet,'projects'=>$project]);
+        return Response()->json(['timesheet'=>$timesheet,'projects'=>$project,'tasks'=>$task]);
     }
     
     /**
@@ -862,9 +863,11 @@ class EmployeeController extends Controller
         $user = auth()->user();
         $id = $user->id;
         $timesheetDate = $request->edittimesheetDate;
+        $projectId = $request->projectId;
+        $task = Task::where('project_id',$projectId)->get();
         $project = ProjectToUser::with('project')->where('user_id',$id)->get();
         $timesheet = Timesheet::with('project','user','task')->where('timesheet_date',$timesheetDate)->where('user_id',$id)->orderBy('id','DESC')->get();
-        return Response()->json(['timesheet'=>$timesheet,'projects'=>$project]);
+        return Response()->json(['timesheet'=>$timesheet,'projects'=>$project,'tasks'=>$task]);
     }
 
     /**

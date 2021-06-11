@@ -759,16 +759,27 @@
                 {
                     var result = response.timesheet;
                     var result1 = response.projects;
-                    var len = result1.length;
+                    var result2 = response.tasks;
+                    //console.log(result2);
+                    var project_name="";
+
+                    for(var j=0; j<result1.length;j++){
+                        project_name += '<option value="' + result1[j].project_id + '">' + result1[j].project.name + '</option>';
+                    };
+
                     $.each(result,function(i, result)
                     {
-                       
                         var hour = parseInt(result.hour);   
                         //alert(hour);
                         var minute = result.minute;
                         var a = minute.split(':');
                         var minute = (+a[0]) * 1 + (+a[1]) * 1 + (+a[2]);
-                        $timesheet_data = '<form method="POST" action="updatetimesheet/' + result.id + '" id="timesheetForm(' + result.id+ ')" name="timesheetForm">' + 
+
+
+                        var l = result.project_id; 
+                        
+
+                        $timesheet_data = '<form method="POST" action="updatetimesheet/' + result.id + '" id="timesheetForm' + result.id+ '" name="timesheetForm">' + 
                                             '{{ csrf_field() }}' +
                                           
                                             '<div class="mb-3">' +
@@ -783,18 +794,17 @@
 
                                             '<div class="mb-3">' +
                                                 '<label for="exampleInputproject" class="form-label">Project</label>' +
-                                                '<SELECT class="form-control" name="projectid" id="projectId">' + 
+                                                '<SELECT class="form-control projectId'+ l +'" name="projectid" id="projectId'+ l +'" onchange="task('+l+')">' + 
                                                     '<option value="' + result.project_id + '">' + result.project.name + '</option>' + 
-                                                    'for(i=0;i<"' + len + '";i++){'+
-                                                            '<option value="'+ result1[i].id+'">'+ result1[i].project.name+'</option>' +
-                                                    '}' +
+                                                    project_name+
                                                 '</SELECT>'+
                                             '</div>'+
                                           
                                             '<div class="mb-3">' + 
                                                 '<label for="exampleInputtask" class="form-label">Task</label>' + 
-                                                '<SELECT class="form-control" name="taskid" id="taskId">' +
+                                                '<SELECT class="form-control taskId'+ l +'" name="taskid" id="taskId'+ l +'">' +
                                                     '<option value="' + result.task_id + '">' + result.task.name + '</option>' + 
+                                                    
                                                 '</SELECT>' +
                                             '</div>' +
 
@@ -840,9 +850,11 @@
         });
 
     });
-    
+            
+
     $('#edittimesheetDate').on('change',function(){
             var edittimesheetDate = $('#edittimesheetDate').val();
+
             
             $('#editTimesheet').empty();
             
@@ -877,18 +889,37 @@
                         }
                         else
                         {
+
                         var result = response.timesheet;
-                        var result1 = response.projects;
-                        var len = result1.length;
+                        var result1 = response.projects
+                        var result2 = response.tasks;
+                            
+                        var project_name = "";
+                        for(var j=0; j<result1.length;j++){
+                            project_name += '<option value="' + result1[j].project_id + '">' + result1[j].project.name + '</option>';
+                        }; 
+
+                        // var task_name = "";
+                        // for(var m=0; m<result2.length;m++){
+                        //     task_name += '<option value="' + result2[m].id + '">' + result2[m].name + '</option>';
+                        //     alert(task_name);
+                        //     $("taskId"+id).append(task_name);
+                        // };  
+                        
                         $.each(result,function(i, result)
                         {
-                        
+                            
                             var hour = parseInt(result.hour);   
                             //alert(hour);
+                            //console.log(result.project_id);
                             var minute = result.minute;
                             var a = minute.split(':');
                             var minute = (+a[0]) * 1 + (+a[1]) * 1 + (+a[2]);
-                            $timesheet_data = '<form method="POST" action="updatetimesheet/' + result.id + '" id="timesheetForm(' + result.id+ ')" name="timesheetForm">' + 
+                            
+                            var l = result.project_id; 
+                            
+
+                            $timesheet_data = '<form method="POST" action="updatetimesheet/' + result.id + '" id="timesheetForm' + result.id+ '" name="timesheetForm">' + 
                                                 '{{ csrf_field() }}' +
                                             
                                                 '<div class="mb-3">' +
@@ -902,18 +933,17 @@
 
                                                 '<div class="mb-3">' +
                                                     '<label for="exampleInputproject" class="form-label">Project</label>' +
-                                                    '<SELECT class="form-control" name="projectid" id="projectId">' + 
+                                                    '<SELECT class="form-control projectId'+ l +'" name="projectid" id="projectId'+ l +'" onchange="task('+l+')">' + 
                                                         '<option value="' + result.project_id + '">' + result.project.name + '</option>' + 
-                                                        'for(i=0;i<' + len + ';i++){'+
-                                                            '<option value="'+ result1[i].id+'">'+ result1[i].project.name+'</option>' +
-                                                        '}' +
+                                                        project_name+   
                                                     '</SELECT>'+
                                                 '</div>'+
                                             
                                                 '<div class="mb-3">' + 
                                                     '<label for="exampleInputtask" class="form-label">Task</label>' + 
-                                                    '<SELECT class="form-control" name="taskid" id="taskId">' +
+                                                    '<SELECT class="form-control taskId'+ l +'" name="taskid" id="taskId'+l+'">' +
                                                         '<option value="' + result.task_id + '">' + result.task.name + '</option>' + 
+                                                        
                                                     '</SELECT>' +
                                                 '</div>' +
 
@@ -950,15 +980,167 @@
                                                 '</div>' +
                                             
                                             '</form>';
-
+                                       
                                 $("#editTimesheet").append($timesheet_data);   
-                    
+                            
                         });
                     }
                 }
             });
     });
     
+
+    function task(id)
+    {
+            
+        var edittimesheetDate = $('#edittimesheetDate').val();
+        //alert(id);
+        var project_id = "projectId"+id;
+        $(document).off('change').on('change', '.projectId'+id, function(e) {
+            
+            
+            var projectId = $(this).val();
+            //console.log(projectId);
+
+            $.ajax({
+                url:"{{ url('gettimesheet') }}",
+                type:'post',
+                data:{projectId:projectId,edittimesheetDate:edittimesheetDate},
+                dataType: 'json',
+                success:function(response){
+                    console.log(response);
+                    var tdata = '<form method="POST" id="tsheetForm">' +
+                            
+                                        '{{ csrf_field() }}' +
+
+                                        '<div class="mb-3">' +
+                                            '<h5 style="text-align:center;">Timesheet</h5>' +
+                                            
+                                        '</div>' +
+                                        '<div class="mb-3">' +
+                                            '<h6 style="text-align:center;">you are not added any timesheet yet</h6>' +
+                                            
+                                        '</div>' +
+                                        
+                                        '<div class="" style="margin-left:400px;">' +
+                                            '<a class="btn btn-success" href="timesheet"><i class="fa fa-plus">&nbsp;</i>Add Timesheet</a>' +
+                                        '</div>' +
+                                    '</form>';
+
+                        if(jQuery.isEmptyObject(response.timesheet))
+                        {
+                            $('#editTimesheet').append(tdata);
+                        }
+                        else
+                        {
+
+                        var result = response.timesheet;
+                        var result1 = response.projects
+                        var result2 = response.tasks;
+                            
+                        var project_name = "";
+                        for(var j=0; j<result1.length;j++){
+                           
+                            project_name += '<option value="' + result1[j].project_id + '" >' + result1[j].project.name + '</option>';
+                           
+                        }; 
+                    
+                        var task_name = "";
+                        for(var m=0; m<result2.length;m++){
+                            task_name += '<option value="' + result2[m].id + '">' + result2[m].name + '</option>';
+                            //alert(task_name);
+                        };  
+
+                        
+                        
+                        $('#editTimesheet').empty();
+                        $.each(result,function(i, result)
+                        {
+                            
+                            var hour = parseInt(result.hour);   
+                            //alert(hour);
+                            //console.log(result.project_id);
+                            var minute = result.minute;
+                            var a = minute.split(':');
+                            var minute = (+a[0]) * 1 + (+a[1]) * 1 + (+a[2]);
+                            
+                            var l = result.project_id; 
+                            
+
+                            $timesheet_data = '<form method="POST" action="updatetimesheet/' + result.id + '" id="timesheetForm' + result.id+ '" name="timesheetForm">' + 
+                                                '{{ csrf_field() }}' +
+                                            
+                                                '<div class="mb-3">' +
+                                                    '<h5 style="text-align:center;">Timesheet</h5>' +
+                                                '</div>'+
+
+                                                '<div class="mb-3" hidden>' +
+                                                    '<label for="exampleInputE" class="form-label">Date</label>' +
+                                                    '<input type="date" class="form-control" id="edittimesheetdate" value="' + edittimesheetDate + '" name="edittimesheetdate" >' +
+                                                '</div> ' +
+
+                                                '<div class="mb-3">' +
+                                                    '<label for="exampleInputproject" class="form-label">Project</label>' +
+                                                    '<SELECT class="form-control projectId'+ l +'" name="projectid" id="projectId'+ l +'" onchange="task('+l+')">' + 
+                                                        '<option value="' + result.project_id + '">' + result.project.name + '</option>' + 
+                                                        project_name+   
+                                                        
+                                                    '</SELECT>'+
+                                                '</div>'+
+                                            
+                                                '<div class="mb-3">' + 
+                                                    '<label for="exampleInputtask" class="form-label">Task</label>' + 
+                                                    '<SELECT class="form-control taskId'+ l +'" name="taskid" id="taskId'+l+'">' +
+                                                        //'<option value="' + result.task_id + '">' + result.task.name + '</option>' + 
+                                                        task_name +
+                                                    '</SELECT>' +
+                                                '</div>' +
+
+                                                '<div class="mb-3">' + 
+                                                    '<label for="exampleInputhour" class="form-label">Hour</label>' + 
+                                                    '<SELECT name="hour" class="form-control" id="hour" >' +
+                                                    '<option value=" '+ hour +' ">' + hour + ' </option>' +
+                                                        '@for($i=0;$i<=8;$i++)'+
+                                                            '<option value="{{$i}}">{{$i}}</option>' +
+                                                            
+                                                        '@endfor' +
+                                                    '</SELECT>' +
+                                                '</div>' +
+
+                                                '<div class="mb-3">' + 
+                                                    '<label for="exampleInputminute" class="form-label">Minute</label>' +
+                                                    '<SELECT name="minute" class="form-control" id="minute">' +
+                                                    '<option value=" '+ minute +' ">' + minute + ' </option>' +
+                                                        '<option value="0">0</option>' +
+                                                        '<option value="15">15</option>' +
+                                                        '<option value="30">30</option>' +
+                                                        '<option value="45">45</option>' +
+                                                    '</SELECT>' +
+                                                '</div>' +
+
+                                                '<div class="mb-3">' +
+                                                    '<label for="exampleInputdescription" class="form-label">Description</label><br/>' +
+                                                    '<textarea id="description" name="description" class="form-control">' + result.description + '</textarea>' +
+                                                '</div>' +
+
+                                                '<div class="modal-footer">' +
+                                                    '<button type="submit" class="btn btn-success">Update</button>' + 
+                                                    '<a href="/deletetimesheet/' + result.id + '" class="btn btn-danger">Delete</a>' +
+                                                '</div>' +
+                                            
+                                            '</form>';
+                                       
+                               
+                        });
+                        $("#editTimesheet").append($timesheet_data); 
+                        $('.projectId'+id+' option[value='+projectId+']').prop('selected', true);  
+                    }
+                }
+
+            });
+        });
+
+    }
 </script>
 
 @livewireScripts
