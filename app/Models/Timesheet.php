@@ -53,6 +53,15 @@ class Timesheet extends Model
     {
         return $this->belongsTo(Task::class,'task_id','id');
     }
+    /**
+     * Get the task name that the timesheet belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo.
+     */
+    public function taskname()
+    {
+        return $this->belongsTo(Task::class,'project_id','project_id');
+    }
 }
 
 

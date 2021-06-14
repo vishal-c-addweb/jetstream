@@ -19,7 +19,6 @@
         
         @livewireStyles
 
-
         <!--ajax-->
         
         <!---moment js-->

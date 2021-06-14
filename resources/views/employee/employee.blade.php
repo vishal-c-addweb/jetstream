@@ -1,25 +1,25 @@
 @extends('template.main')
 
 @section('body')
-    <!-- //header-ends -->
+
     <!-- main content start -->
     <div class="main-content" style="margin-top:50px;">
        
-        <!-- modals -->
         <section class="template-cards" >
           <div class="card card_border">
             <div class="cards__heading">
-              <h3>Employee </h3>
+                
+                <h3>Employee </h3>
                 
                 <div style="text-align:center;">
                     <!-- Button trigger modal -->
                     <button type="button" onClick="addEmployee()"  style="co" data-bs-toggle="modal" data-bs-target="#exampleModal" class="bg-pink-700 text-white font-bold py-2 px-4 rounded my-3 ml-3 btn btn-primary" >Add Employee</button>
                     
                     <!-- Button trigger modal -->
-                    <a href="attendance" class="bg-green-700 text-white font-bold py-2 px-4 rounded my-3 ml-3" style="background-color:gray;">View Attendance</a>
+                    <a href="{{ route('attendance') }}" class="bg-green-700 text-white font-bold py-2 px-4 rounded my-3 ml-3" style="background-color:gray;">View Attendance</a>
                     
                     <!-- Button trigger modal -->
-                    <a href="report" class="bg-pink-700 text-white font-bold py-2 px-4 rounded my-3 ml-3" style="background-color:green;">Report Employee</a>
+                    <a href="{{route ('report') }}" class="bg-pink-700 text-white font-bold py-2 px-4 rounded my-3 ml-3" style="background-color:green;">Report Employee</a>
                 </div>
 
 
@@ -56,7 +56,7 @@
                             <table class="table table-bordered" id="employee-datatable">
                                 <thead>
                                 <tr>
-                                <th>Id</th>
+                                <th>No</th>
                                 <th>Employee ID</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
@@ -70,6 +70,8 @@
                                 <th style="width:280px;">Action</th>
                                 </tr>
                                 </thead>
+                                <tbody>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -80,18 +82,15 @@
 
           </div>
         </section>
-        <!-- //modals -->
-
-      </div>
-      <!-- //content -->
     </div>
-  <!-- main content end-->
+    <!-- main content end-->
  
   
     <!--Add employee Modal-->
     <div class="modal fade bd-example-modal-lg" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="exampleModal1">
         <div class="modal-dialog modal-lg"> 
             <div class="modal-content">
+
                 <div class="modal-header">
                         
                         <h4 class="modal-title" id="employeeModalLabel">Add Employee</h4>
@@ -101,7 +100,7 @@
                 </div>
                 
                 <div class="modal-body">
-                    <form method="POST" action="{{ route('store') }}" class="form-horizontal">                       
+                    <form method="POST" action="{{ route('employee.store') }}" class="form-horizontal">                       
                         {{ csrf_field() }}
                         
                         <div class="mb-3">
@@ -224,129 +223,133 @@
     <!-- Edit employee Modal -->
     <div class="modal fade" id="employeeEditModal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="employeeEditModalLabel">Edit Company</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="javascript:void(0)" id="employeeForm" name="employeeForm" class="form-horizontal" method="POST" >
-                    <input type="hidden" name="id" id="id">
-                    {{ csrf_field() }}
 
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Employee Id</label>
-                        <input type="number" class="form-control" id="empid" name="empid" readonly>
-                        
-                        @error('empid')
-                        <span style="color: red;">{{$message}}</span>
-                        @enderror
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="fname" name="fname" >
-                        
-                        @error('fname')
-                        <span style="color: red;">{{$message}}</span>
-                        @enderror
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lname" name="lname" >
-                        
-                        @error('lname')
-                        <span style="color: red;">{{$message}}</span>
-                        @enderror
-                    </div>  
-                    
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Phone</label>
-                        <input type="phone" class="form-control" id="phone" name="phone"  >
-                        
-                        @error('phone')
-                        <span style="color: red;">{{$message}}</span>
-                        @enderror
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Email address</label>
-                        <input type="text" class="form-control" id="email"  name="email" >
-                        
-                        @error('email')
-                        <span style="color: red;">{{$message}}</span>
-                        @enderror
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Gender</label><br/>
+            <div class="modal-content">
+                
+                <div class="modal-header">
+                    <h4 class="modal-title" id="employeeEditModalLabel">Edit Company</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="javascript:void(0)" id="employeeForm" name="employeeForm" class="form-horizontal" method="POST" >
+                        <input type="hidden" name="id" id="id">
+                        {{ csrf_field() }}
+
                         <div class="mb-3">
-                        <input type="radio"   name="gender" value="male" id="malec">
-                        <label class="form-check-label" for="exampleCheck1">Male</label>
-                        <input type="radio"  name="gender" value="female" id="femalec">
-                        <label class="form-check-label" for="exampleCheck1">Female</label>
+                            <label for="exampleInputEmail1" class="form-label">Employee Id</label>
+                            <input type="number" class="form-control" id="empid" name="empid" readonly>
+                            
+                            @error('empid')
+                            <span style="color: red;">{{$message}}</span>
+                            @enderror
                         </div>
                         
-                        @error('gender')
-                        <span style="color: red;">{{$message}}</span>
-                        @enderror
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Address</label></br>
-                        <textarea name="address" class="form-control" id="address" cols="auto" rows="auto" ></textarea>
-                        <br/>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="fname" name="fname" >
+                            
+                            @error('fname')
+                            <span style="color: red;">{{$message}}</span>
+                            @enderror
+                        </div>
                         
-                        @error('address')
-                        <span style="color: red;">{{$message}}</span>
-                        @enderror
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Salary</label>
-                        <input type="number" class="form-control" id="salary" name="salary" >
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lname" name="lname" >
+                            
+                            @error('lname')
+                            <span style="color: red;">{{$message}}</span>
+                            @enderror
+                        </div>  
                         
-                        @error('salary')
-                        <span style="color: red;">{{$message}}</span>
-                        @enderror
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Department </label>
-                        <SELECT name="depid" class="form-control" id="depid">
-                            @foreach($department as $d)
-                            <option value="{{$d->dep_id}}">{{$d->dep_name}}</option>
-                            @endforeach
-                        </SELECT>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Phone</label>
+                            <input type="phone" class="form-control" id="phone" name="phone"  >
+                            
+                            @error('phone')
+                            <span style="color: red;">{{$message}}</span>
+                            @enderror
+                        </div>
                         
-                        @error('depname')
-                        <span style="color: red;">{{$message}}</span>
-                        @enderror
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Team</label>
-                        <SELECT name="teamid" class="form-control" id="teammid" >
-                            @foreach($team as $t)
-                            <option value="{{$t->id}}">{{$t->name}}</option>
-                            @endforeach
-                        </SELECT>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Email address</label>
+                            <input type="text" class="form-control" id="email"  name="email" >
+                            
+                            @error('email')
+                            <span style="color: red;">{{$message}}</span>
+                            @enderror
+                        </div>
                         
-                        @error('name')
-                        <span style="color: red;">{{$message}}</span>
-                        @enderror
-                    </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Gender</label><br/>
+                            <div class="mb-3">
+                            <input type="radio"   name="gender" value="male" id="maleId">
+                            <label class="form-check-label" for="exampleCheck1">Male</label>
+                            <input type="radio"  name="gender" value="female" id="femaleId">
+                            <label class="form-check-label" for="exampleCheck1">Female</label>
+                            </div>
+                            
+                            @error('gender')
+                            <span style="color: red;">{{$message}}</span>
+                            @enderror
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Address</label></br>
+                            <textarea name="address" class="form-control" id="address" cols="auto" rows="auto" ></textarea>
+                            <br/>
+                            
+                            @error('address')
+                            <span style="color: red;">{{$message}}</span>
+                            @enderror
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Salary</label>
+                            <input type="number" class="form-control" id="salary" name="salary" >
+                            
+                            @error('salary')
+                            <span style="color: red;">{{$message}}</span>
+                            @enderror
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Department </label>
+                            <SELECT name="depid" class="form-control" id="depid">
+                                @foreach($department as $d)
+                                <option value="{{$d->dep_id}}">{{$d->dep_name}}</option>
+                                @endforeach
+                            </SELECT>
+                            
+                            @error('depname')
+                            <span style="color: red;">{{$message}}</span>
+                            @enderror
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Team</label>
+                            <SELECT name="teamid" class="form-control" id="teammid" >
+                                @foreach($team as $t)
+                                <option value="{{$t->id}}">{{$t->name}}</option>
+                                @endforeach
+                            </SELECT>
+                            
+                            @error('name')
+                            <span style="color: red;">{{$message}}</span>
+                            @enderror
+                        </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="btn-save">Save 
-                        </button>
-                    </div>
-                </form>
-            </div>        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="btn-save">Save 
+                            </button>
+                        </div>
+                    </form>
+                </div>        
+            </div>
         </div>
     </div>
     <!-- end bootstrap model -->
