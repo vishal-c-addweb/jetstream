@@ -7,7 +7,7 @@
   </div>
   
   <div class="logo-icon text-center">
-    <a href="/dashboard" title="logo" ><img src="{{ asset ('images/logo.png') }}" alt="logo-icon" style="margin-left:10px;"></a>
+    <a href="/dashboard" title="logo" style="text-align:center"><img src="{{ asset ('images/logo.png') }}" alt="logo-icon" style="margin-left:10px;"></a>
   </div>
   <!-- //logo end-->
 
@@ -38,8 +38,14 @@
           <li><a href="{{ route('timesheet') }}">Timesheet</a> </li>
         </ul>
       </li>
+
+      <li><a href="{{ route('location') }}"><i class="fa fa-map-marker" aria-hidden="true"></i> <span>User Location</span></a></li>
       
+      @if(auth()->user()->role == 1)
+        <li><a href="{{ route('ipaddress') }}"><i class="fa fa-mobile" aria-hidden="true"></i> <span>Ip Address</span></a></li>      
+      @endif
     </ul>
+
     <!-- //sidebar nav end -->
     
     <!-- toggle button start -->

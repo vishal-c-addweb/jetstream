@@ -15,6 +15,7 @@
                 <div style="text-align:center;">
                     <button type="button" onClick="addProject()"  style="margin-left:45px;" data-bs-toggle="modal" data-bs-target="#projectModal" class="bg-blue-700 text-white font-bold py-2 px-4 rounded my-3 ml-3">Add Project</button>
                     <a href="{{ route('assignproject') }}" style="margin-left:45px;" class="btn btn-primary">Assign Project</a>
+                    
                 </div>
 
                 @if (session()->has('message'))

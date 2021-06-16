@@ -1,6 +1,7 @@
 @extends('template.main')
 
 @section('body')
+
     <!-- main content start -->
     <div class="main-content" style="margin-top:50px;">
     

@@ -10,71 +10,71 @@
 
             <div class="card card_border">
 
-            <div class="cards__heading">
+                <div class="cards__heading">
 
-                <h3><i class="fa fa-clock-o"></i>&nbsp;Timesheet </h3>
-                
-                <div style="text-align:center;">
-                    <button type="button" onClick="addTimesheet()"  style="margin-left:45px;" data-bs-toggle="modal" data-bs-target="#timesheetModal" class="bg-blue-700 text-white font-bold py-2 px-4 rounded my-3 ml-3">Add Timesheet</button>
-                    <a href="{{ route('timesheet.edit') }}" class="btn btn-success"><i class="fa fa-plus">&nbsp;</i>Edit</a>
+                    <h3><i class="fa fa-clock-o"></i>&nbsp;Timesheet </h3>
+                    
+                    <div style="text-align:center;">
+                        <button type="button" onClick="addTimesheet()"  style="margin-left:45px;" data-bs-toggle="modal" data-bs-target="#timesheetModal" class="bg-blue-700 text-white font-bold py-2 px-4 rounded my-3 ml-3">Add Timesheet</button>
+                        <a href="{{ route('timesheet.edit') }}" class="btn btn-success"><i class="fa fa-plus">&nbsp;</i>Edit</a>
+                        <button onclick="window.print()" class="btn btn-primary" >Print</button>
+                    </div>
 
-                </div>
-
-                @if (session()->has('message'))
-                <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md my-3"
-                role="alert">
-                    <div class="flex">
-                        <div>
-                            <p class="text-sm">{{ session('message') }}</p>
+                    @if (session()->has('message'))
+                    <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md my-3"
+                    role="alert">
+                        <div class="flex">
+                            <div>
+                                <p class="text-sm">{{ session('message') }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                @endif
+                    @endif
 
-            </div>
-            
-            <div class="data-tables">
-                <div class="row">
-                    <div class="col-lg-12 mb-4">
-                        <div class="card card_border p-4">
-                            <div class="table-responsive">
-                                <!-- Fetch Employee Data -->  
-                                <div class="card-body">
-                                    <table class="table table-bordered " id="timesheet-table">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>User</th>
-                                                <th>Project</th>
-                                                <th>Task</th>
-                                                <th>Date</th>
-                                                <th>Hour</th>
-                                                <th>Minute</th>
-                                                <th>Discription</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($timesheet as $t)
-                                            <tr >
-                                                <td>{{$t->id}}</td>
-                                                <td>{{$t->user->name}}</td>
-                                                <td>{{$t->project->name}}</td>
-                                                <td>{{$t->task->name}}</td>
-                                                <td>{{$t->timesheet_date}}</td>
-                                                <td>{{$t->hour}}</td>
-                                                <td>{{$t->minute}}</td>
-                                                <td><button type="button" onClick="showDescription({{ $t->id }})"  class="btn btn-primary">View</button></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                    {{ $timesheet->links() }}
+                </div>
+                
+                <div class="data-tables">
+                    <div class="row">
+                        <div class="col-lg-12 mb-4">
+                            <div class="card card_border p-4">
+                                <div class="table-responsive">
+                                    <!-- Fetch Employee Data -->  
+                                    <div class="card-body">
+                                        <table class="table table-bordered " id="timesheet-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>User</th>
+                                                    <th>Project</th>
+                                                    <th>Task</th>
+                                                    <th>Date</th>
+                                                    <th>Hour</th>
+                                                    <th>Minute</th>
+                                                    <th>Discription</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($timesheet as $t)
+                                                <tr >
+                                                    <td>{{$t->id}}</td>
+                                                    <td>{{$t->user->name}}</td>
+                                                    <td>{{$t->project->name}}</td>
+                                                    <td>{{$t->task->name}}</td>
+                                                    <td>{{$t->timesheet_date}}</td>
+                                                    <td>{{$t->hour}}</td>
+                                                    <td>{{$t->minute}}</td>
+                                                    <td><button type="button" onClick="showDescription({{ $t->id }})"  class="btn btn-primary">View</button></td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                        {{ $timesheet->links() }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         </section>
     </div>
@@ -135,7 +135,7 @@
                         <div class="mb-3">
                             <label for="exampleInputminute" class="form-label">Minute</label>
                             <SELECT name="minute" class="form-control" id="minute" >
-                                <option value="0">0</option>
+                                <option value="00">0</option>
                                 <option value="15">15</option>
                                 <option value="30">30</option>
                                 <option value="45">45</option>

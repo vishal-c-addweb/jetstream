@@ -25,13 +25,13 @@ Author URL: http://w3layouts.com
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
  
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
 <!-- Scripts -->
 <script src="{{ mix('js/app.js') }}" defer></script>
 @livewireStyles
 </head>
 
 <body class="sidebar-menu-collapsed">
-  <div class="se-pre-con"></div>
   <section>
     <!-- sidebar menu start -->
     @include('template.sidebar')

@@ -22,9 +22,8 @@
                 
                 <div style="text-align:center;">
                     <button type="button" onClick="addAttendance()"  style="margin-left:45px;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="bg-blue-700 text-white font-bold py-2 px-4 rounded my-3 ml-3">Add Attendance</button>
-
                     <a href="{{ route('report') }}" class="bg-blue-700 text-white font-bold py-2 px-4 rounded my-3 ml-3">Report</a>
-
+                    <button onclick="window.print()"class="bg-blue-700 text-white font-bold py-2 px-4 rounded my-3 ml-3" >Print</button>
                 </div>
 
                 @if (session()->has('message'))

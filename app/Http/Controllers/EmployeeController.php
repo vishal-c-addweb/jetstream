@@ -12,8 +12,10 @@ use Carbon\Carbon;
 
 use App\Models\employee;
 use App\Models\User;
+use App\Models\UserIp;
 use App\Models\Department;
 use App\Models\Team;
+use App\Models\Location;
 
 use DataTables;
 use App\DataTables\UserDataTable;
@@ -210,8 +212,7 @@ class EmployeeController extends Controller
         // $agent = new Agent();
         // echo $agent->platform();
         // echo $agent->browser();
-        // echo $ip=\Request::ip();
-  
+        // echo $ip = file_get_contents('https://api.ipify.org');
         // exit();
 
         // echo $users = employee::all()->sortBy('fname');
@@ -223,10 +224,10 @@ class EmployeeController extends Controller
         // echo Carbon::tomorrow()."<br/>";
         // echo Carbon::createFromFormat('Y-m-d H', '1975-05-21 22')->toDateTimeString()."<br/>";        
 
-        $myDate = '12/08/2020';
-        $date = Carbon::createFromFormat('m/d/Y', $myDate)
-                        ->firstOfMonth()
-                        ->format('Y-m-d');
+        // $myDate = '12/08/2020';
+        // $date = Carbon::createFromFormat('m/d/Y', $myDate)
+        //                 ->firstOfMonth()
+        //                 ->format('Y-m-d');
 
         //dd($date);
         // $from = "2021-05-01";
@@ -237,5 +238,137 @@ class EmployeeController extends Controller
         
         return view('user.user');
     }
+    /**
+     * Diplay current user Location.
+     *
+     * @return redirect to Location page.
+     */
+    public function location(){
+
+        $user = auth()->user();
+        $today = Carbon::today();
+        $user_id = $user->id;
+        $location = Location::where('location_date',$today)->where('user_id',$user_id)->first();
+        return view('user.location',compact('location'));
+    }
     
+    /**
+     * Insert Latitude & longitude in database.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return redirect to Location page.
+     */
+    public function storeLocation(Request $request){
+        
+        $user = auth()->user();
+        $longitude = $request->longitude;
+        $latitude = $request->latitude;
+        $user_id = $user->id;
+        $date = Carbon::today();
+        
+        $location = Location::Create(
+            [
+            'latitude'=> $latitude,
+            'longitude' => $longitude, 
+            'user_id' => $user_id,
+            'location_date' => $date,
+            ]);    
+            
+        session()->flash('message', 'Location Stored SuccessFully!.');                 
+        return Response()->json($location);
+    }
+
+    /**
+     * Diplay ip Addres of user.
+     *
+     * @return redirect to Location page.
+     */
+    public function IpAddress(){
+        $ip = UserIp::with('user')->get();
+        $user = User::where('role',0)->get();
+        if(auth()->user()->role == 1){
+            return view('user.ipaddress',compact('ip','user'));
+        }
+        else{
+            Session::flash('message', "you are not admin");
+            return Redirect::back();
+        }
+    }
+    /**
+     * Insert ipaddress in database.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return redirect to Location page.
+     */
+    public function storeIpAddress(Request $request){
+        
+        
+        $ipAddress = $request->ipaddress; 
+        $userId = $request->userid;   
+        if(UserIp::where('ipaddress',$ipAddress)->where('user_id',$userId)->first())
+        {       
+            session()->flash('message', 'Ip Address Already exists with this user!.');         
+        }
+        else
+        {
+            $ip = new UserIp();
+            $ip->ipaddress = $request->ipaddress; 
+            $ip->user_id = $request->userid; 
+            $ip->save(); 
+            session()->flash('message', 'Ip Address Stored SuccessFully!.');                  
+        }
+        return redirect(route('ipaddress'));
+
+    }  
+    /**
+     * edit ip address data in modal and return response in json.
+     *
+     * @param $request for requesting data from form.
+     * 
+     * @return respons.
+     */
+    public function editIpAddress(Request $request)
+    {   
+        $ipId = $request->id;
+        $ip  = UserIp::where('id',$ipId)->with('user')->first();
+        return Response()->json($ip);
+    }
+    /**
+     * Update employee data using modal.
+     *
+     * @param $request for requesting data from form.
+     * 
+     * @return respons.
+     */
+    public function updateIpAddress(Request $request)
+    {
+        $id = $request->id;
+
+        $ip = UserIp::updateOrCreate(
+            [
+                'id' => $id
+            ],
+            [
+                'ipaddress'=>$request->ipAddress,
+                'user_id' => $request->userId, 
+            ]);    
+
+        session()->flash('message', 'Ip Updated Deleted SuccessFully!.');             
+        return Response()->json($ip);
+    } 
+    /**
+    * Delete ip address by id From database.
+    *
+    * @param int $id.
+    * 
+    * @return redirect to ipaddress page.
+    */
+    public function deleteIp($id)
+    {
+        UserIp::find($id)->delete();
+        session()->flash('message', 'Ip Address Deleted SuccessFully!.');
+        return redirect(route('ipaddress'));
+    }
 }

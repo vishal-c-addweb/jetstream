@@ -43,6 +43,21 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
     /* User */
 
     Route::get('/user',[EmployeeController::class,'user'])->name('user');
+    
+    Route::get('/location',[EmployeeController::class,'location'])->name('location');
+
+    Route::post('/location/store',[EmployeeController::class,'storeLocation'])->name('location.store');
+
+    Route::get('/ipaddress',[EmployeeController::class,'IpAddress'])->name('ipaddress');
+
+    Route::post('/ipaddress/store',[EmployeeController::class,'storeIpAddress'])->name('ipaddress.store');
+
+    Route::post('/ipaddress/edit',[EmployeeController::class,'editIpAddress'])->name('ipaddress.edit');
+    
+    Route::post('/ipaddress/update',[EmployeeController::class,'updateIpAddress'])->name('ipaddress.update');
+
+    Route::get('/ipaddress/delete/{id}',[EmployeeController::class,'deleteIp'])->name('ipaddress.delete');
+
 });
 
     /* Employee */

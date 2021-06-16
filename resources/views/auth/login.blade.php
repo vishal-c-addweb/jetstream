@@ -8,8 +8,13 @@
         <!-- login form -->
         <section class="login-form py-md-5 py-3">
             <div class="card card_border p-md-4 ">
+
+                    @if (Session::has('message'))
+                        <div class="" style="color:red;text-align:center">{{ Session::get('message') }}</div>
+                    @endif
                 <div class="card-body">
                     <!-- form -->
+
 
                     @if (session('status'))
                         <div class="mb-4 font-medium text-sm text-green-600">

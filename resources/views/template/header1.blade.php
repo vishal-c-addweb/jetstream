@@ -31,7 +31,6 @@ Author URL: http://w3layouts.com
 </head>
 
 <body class="sidebar-menu-collapsed">
-  <div class="se-pre-con"></div>
   <section>
 
 

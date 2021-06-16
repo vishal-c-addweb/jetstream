@@ -123,6 +123,49 @@
 <!-- Timesheet JS -->
 <script src="{{ asset('js/timesheet.js') }}"></script>
 
+<!-- Location JS -->
+<script src="{{ asset('js/location.js') }}"></script>
+
+<script>
+  function edit(id)
+  {
+    $.ajax({
+          type:"POST",
+          url: "/ipaddress/edit",
+          data: { id: id },
+          dataType: 'json',
+          success: function(response){
+              console.log(response);
+              $('#editIpModal').modal('show');
+              $('#ipId').val(response.id);
+              $('#ipAddress').val(response.ipaddress);
+              $('#userId').val(response.user_id);
+              $('#emailId').val(response.user_id);
+          }
+      });
+  }
+
+  $('#ipAddressForm').submit(function(){
+      var id = $('#ipId').val();
+      var userId = $('#userId').val();
+      var ipAddress = $('#ipAddress').val();
+      $.ajax({
+          type:'POST',
+          url: "/ipaddress/update",
+          dataType: 'json',
+          data: {id:id,userId:userId,ipAddress:ipAddress},
+          success: function(response){
+              console.log(response);
+              $('#editIpModal').modal('hide');
+              window.location.reload();
+          }
+      });
+  });
+</script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJV6IpWI1A6iB04oNQ3F7pdhhuS_k8vNE&libraries=places&callback=initialize" async defer></script> -->
+
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
+
 @livewireScripts
 
 </body>
