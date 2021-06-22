@@ -18,6 +18,7 @@ Author URL: http://w3layouts.com
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{ asset ('css/style-starter.css') }}">
 
+  <link rel="stylesheet" href="{{ asset('css/chat.css') }}">
   <!-- google fonts -->
   <link href="//fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900&display=swap" rel="stylesheet">
 

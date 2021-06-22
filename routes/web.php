@@ -58,6 +58,22 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
 
     Route::get('/ipaddress/delete/{id}',[EmployeeController::class,'deleteIp'])->name('ipaddress.delete');
 
+    Route::get('/chat',[EmployeeController::class,'chat'])->name('chat');
+
+    Route::post('/chat/store',[EmployeeController::class,'storeChatUser'])->name('chat.store');
+    
+    Route::post('/chat/chatuser',[EmployeeController::class,'chatUser'])->name('chat.chatuser');
+    
+    Route::post('/chat/sendmessage',[EmployeeController::class,'sendMessage'])->name('chat.sendmessage');
+    
+    Route::post('/chat/updatestatus',[EmployeeController::class,'updateStatus'])->name('chat.updatestatus');
+
+    Route::get('/chats',[EmployeeController::class,'chats'])->name('chats');
+
+    Route::get('/chats/{id}',[EmployeeController::class,'userChat'])->name('chats.userchat');
+
+    Route::post('/chat/search',[EmployeeController::class,'search'])->name('chat.search');
+
 });
 
     /* Employee */

@@ -12,10 +12,12 @@ use Carbon\Carbon;
 
 use App\Models\employee;
 use App\Models\User;
-use App\Models\UserIp;
 use App\Models\Department;
 use App\Models\Team;
 use App\Models\Location;
+use App\Models\UserIp;
+use App\Models\ChatUser;
+use App\Models\Chat;
 
 use DataTables;
 use App\DataTables\UserDataTable;
@@ -216,6 +218,10 @@ class EmployeeController extends Controller
         // exit();
 
         // echo $users = employee::all()->sortBy('fname');
+        //echo $date = Carbon::now()->toDateTimeString();
+        //echo $timezone = date_default_timezone_get();
+        // $dt = Carbon::now();
+        // echo $dt->toTimeString();   
         // exit();
         Log::info($user);
         // echo Carbon::now()."<br/>";
@@ -234,7 +240,10 @@ class EmployeeController extends Controller
         // $to = "2021-05-31";
         // $attendance = Attendence::where('employee_id',2)->whereBetween('att_date', [$from, $to])->where('att_status',1)->count();
         // echo $attendance;
-        // exit();
+        
+        $url = "C:\fakepath\avatar6.jpg";
+        echo $name = basename($url);
+        exit();
         
         return view('user.user');
     }
@@ -325,7 +334,7 @@ class EmployeeController extends Controller
     /**
      * edit ip address data in modal and return response in json.
      *
-     * @param $request for requesting data from form.
+     * @param $request for requesting data from ajax.
      * 
      * @return respons.
      */
@@ -338,7 +347,7 @@ class EmployeeController extends Controller
     /**
      * Update employee data using modal.
      *
-     * @param $request for requesting data from form.
+     * @param $request for requesting data from ajax.
      * 
      * @return respons.
      */
@@ -371,4 +380,141 @@ class EmployeeController extends Controller
         session()->flash('message', 'Ip Address Deleted SuccessFully!.');
         return redirect(route('ipaddress'));
     }
+    /**
+     * Diplay chat of user.
+     *
+     * @return redirect to Location page.
+     */
+    public function chat(){
+        $authUser = auth()->user();
+        $id = $authUser->id;
+        $user = User::where('role',0)->get();
+        $chatUser = ChatUser::with('user')->where('user_id','!=',$id)->get();
+        return view('user.chat',compact('user','chatUser'));
+    }
+    /**
+     * Insert chatuser in database.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return redirect to Location page.
+     */
+    public function storeChatUser(Request $request){
+        
+        $userId = $request->userid;  
+        $date = Carbon::now();
+        $time = Carbon::parse($date)->format('H:i a'); 
+        if(ChatUser::where('user_id',$userId)->first())
+        {       
+            session()->flash('message', 'User Already exists!.');         
+        }
+        else
+        {
+            $chatUser = new ChatUser();
+            $chatUser->user_id = $request->userid; 
+            $chatUser->time = $time;
+            $chatUser->save(); 
+            session()->flash('message', 'User Stored SuccessFully!.');                  
+        }
+        return redirect(route('chats'));
+    }
+    /**
+     * fetch chatuser by id.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return respons.
+     */
+    public function chatUser(Request $request)
+    {   
+        $user_id = auth()->user()->id;
+        $id = $request->id;
+        $user = ChatUser::where('user_id',$user_id)->with('user')->first();
+        $chatUser  = ChatUser::where('user_id',$id)->with('user')->first();
+        Chat::where('sender_id',$id)->where('receiver_id',$user_id)->update(['status' => 1]);
+        $chat = Chat::where('sender_id',$id)->orwhere('sender_id',$user_id)->where('receiver_id',$user_id)->orwhere('receiver_id',$id)->orderBy('time','Asc')->get();
+        return Response()->json(['user'=>$user,'chatuser'=>$chatUser,'chat'=>$chat]);
+    }
+    /**
+     * Insert message in database.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return respons.
+     */
+    public function sendMessage(Request $request)
+    {   
+        $senderId = auth()->user()->id;
+        $time = Carbon::now(); 
+        $receiverId = $request->receiverId;
+        if($request->file == ''){
+            $content = $request->content;
+            $imageName = '';
+        }
+        elseif($request->content == ''){
+            $imageName = basename($request->file);
+            $content = '';
+        }
+        $chat = Chat::updateOrCreate(
+            [
+            'sender_id'=> $senderId,
+            'receiver_id' => $receiverId, 
+            'message' => $content,
+            'file' => $imageName,
+            'time' => $time,
+            ]);        
+          
+        $user = ChatUser::where('user_id',$senderId)->with('user')->first();
+        $chatUser  = ChatUser::where('user_id',$receiverId)->with('user')->first();
+        return Response()->json(['user'=>$user,'chat'=>$chat,'chatuser'=>$chatUser]);
+    }
+    /**
+     * Display message.
+     *
+     * @return redirect chats page.
+     */
+    public function chats()
+    {
+        $id = auth()->user()->id;
+        $time = Carbon::now();
+        if(auth()->user()){
+            $chatUser = ChatUser::where('user_id',$id)->update(['time'=>$time]);
+        }
+        $user = User::where('role',0)->get();
+        $chatUser = ChatUser::with('user')->where('user_id','!=',$id)->get();
+        return view('user.chatuser',compact('chatUser','user'));
+    }
+    /**
+     * Display users for chat using id.
+     *
+     * @param $id.
+     * 
+     * @return respons.
+     */
+    public function userChat($id)
+    {
+        $time = Carbon::now();
+        if(auth()->user()){
+            $chatUser = ChatUser::where('user_id',auth()->user()->id)->update(['time'=>$time]);
+        }
+        $user_id = auth()->user()->id;
+        $user = chatUser::with('user')->where('user_id',$id)->first();
+        $chat = Chat::where('sender_id',$id)->orwhere('sender_id',$user_id)->where('receiver_id',$user_id)->orwhere('receiver_id',$id)->orderBy('time','Asc')->get();
+        Chat::where('sender_id',$id)->where('receiver_id',$user_id)->update(['status' => 1]);
+        return view('user.chats',compact('chat','id','user'));
+    }
+    /**
+     * Search user using ajax.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return respons.
+     */
+    public function search(Request $request)
+    {
+        $name = $request->search;
+        $search = User::where('name', 'LIKE', '%' . $name . '%')->where('id','!=',auth()->user()->id)->get();
+        return Response()->json(['search'=>$search]);
+    }
+    
 }

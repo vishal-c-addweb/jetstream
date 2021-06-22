@@ -126,6 +126,11 @@
 <!-- Location JS -->
 <script src="{{ asset('js/location.js') }}"></script>
 
+<!-- chat JS -->
+<script src="{{ asset('js/chat.js') }}"></script>
+
+<script src="{{ asset('js/userchat.js') }}"></script>
+
 <script>
   function edit(id)
   {

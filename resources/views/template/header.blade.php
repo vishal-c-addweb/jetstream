@@ -28,6 +28,11 @@ Author URL: http://w3layouts.com
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
 <!-- Scripts -->
 <script src="{{ mix('js/app.js') }}" defer></script>
+
+<link rel="stylesheet" href="{{ asset('css/chat.css') }}">
+
+<link rel="stylesheet" href="{{ asset('css/chats.css') }}">
+
 @livewireStyles
 </head>
 

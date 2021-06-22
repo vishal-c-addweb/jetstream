@@ -49,7 +49,7 @@ class FortifyServiceProvider extends ServiceProvider
             //dd($request->user());
             //echo $request->user()->twoFactorQrCodeSvg();
             //exit();
-            //49.34.10.250
+            //49.34.203.238
             $ip = file_get_contents('https://api.ipify.org');
             $user = User::where('email', $request->email)->first();
             $user_id = $user->id;

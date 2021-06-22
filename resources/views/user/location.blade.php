@@ -38,7 +38,7 @@
                     <div class="col-lg-12 mb-4">
                         <div class="card card_border p-4" >
                             <div class="table-responsive">
-                                <!-- Fetch Project Data -->  
+                                <!-- Fetch Location Data -->  
                                 @if(!empty($location))
                                     <input type="hidden" value="{{$location->latitude}}" id="latitude">
                                     <input type="hidden" value="{{$location->longitude}}" id="longitude">
