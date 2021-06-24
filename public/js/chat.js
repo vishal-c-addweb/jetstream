@@ -4,6 +4,7 @@ $.ajaxSetup({
     }
 });
 
+
 function userbox(id)
 {
     document.getElementById('userId').innerHTML="";

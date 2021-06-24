@@ -15,6 +15,8 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AssignProjectController;
 
+use App\Events\NewMessage;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,13 +32,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/welcome', function () {
+    
+    broadcast(new NewMessage('some data'));
+
+    return view('welcome');
+});
 
 Route::middleware(['auth:sanctum','verified'])->group(function () {
 
     Route::redirect('/','/dashboard');
 
-
     Route::get('/dashboard', function () {
+
         return view('dashboard');
         })->name('dashboard');
 
@@ -74,6 +82,9 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
 
     Route::post('/chat/search',[EmployeeController::class,'search'])->name('chat.search');
 
+    Route::get('/clientmessage',[EmployeeController::class,'clientMessage']);
+
+    Route::post('/clientmessage/store',[EmployeeController::class,'storeClientMessage']);
 });
 
     /* Employee */

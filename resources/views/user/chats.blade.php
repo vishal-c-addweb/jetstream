@@ -13,13 +13,19 @@
           @if(Carbon\Carbon::parse($user->time_8601)->format('H:i a') == Carbon\Carbon::parse(Carbon\Carbon::now())->format('H:i a'))
             <p style="color:white;">Active</p>
           @else
-            <p style="color:white;">Last seen:{{Carbon\Carbon::parse($user->time)->format('H:i a')}}</p>
+            @if(Carbon\Carbon::parse($user->time_8601)->format('Y-m-d') == Carbon\Carbon::parse(Carbon\Carbon::now())->format('Y-m-d'))
+              <p style="color:white;">Last seen:{{Carbon\Carbon::parse($user->time)->format('H:i a')}}</p>
+            @else
+              <p style="color:white;">Last seen: Carbon\Carbon::parse($user->time_8601)->format('Y-m-d') {{Carbon\Carbon::parse($user->time)->format('H:i a')}}</p>
+            @endif
           @endif
         </div>
       </header>
-      <div class="chat-box" style="height:350px;">
+      <div class="chat-box deactive" style="height:350px;">
       </div>
+      
       <form action="#" class="typing-area" enctype="multipart/form-data">
+      
           <input type="text" class="outgoing_id" name="outgoing_id" value="{{auth()->user()->id}}" hidden id="outgoing_id">
           <input type="text" class="incoming_id" name="incoming_id" value="{{$id}}" hidden id="incoming_id">
           <label for="fileToUpload" type="submit" style="margin-right:8px;margin-top:8px; ">

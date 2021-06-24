@@ -21,6 +21,8 @@
         "tailwindcss": "^2.0.1"
     },
     "dependencies": {
-        "font-awesome": "^4.7.0"
+        "font-awesome": "^4.7.0",
+        "laravel-echo": "^1.11.0",
+        "pusher-js": "^7.0.3"
     }
 }

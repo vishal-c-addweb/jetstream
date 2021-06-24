@@ -3,7 +3,7 @@
 @section('body')
     <!-- //header-ends -->
     <!-- main content start -->
-    <div class="main-content" style="margin-top:50px;">
+    <div id="app" class="main-content" style="margin-top:50px;">
        
       <!-- modals -->
       <section class="template-cards" >

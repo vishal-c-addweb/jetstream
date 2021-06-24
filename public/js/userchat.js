@@ -11,6 +11,7 @@ function sendMessage(id)
         success:function(response){
             console.log(response);
             document.getElementById('chatMsg').value = "";
+            $(".deactive").animate({ scrollTop: $(".deactive")[0].scrollHeight });
         }
     });
 }
@@ -67,6 +68,7 @@ $("#chatMsg").keypress(function(){
     }
 });
 
+
 $(document).ready(function () {
 setInterval(function() {
 const id = document.getElementById('incoming_id').value;
@@ -96,6 +98,7 @@ const userId = document.getElementById('outgoing_id').value;
                     file += '<p>'+result[i].message+'</p>';
                 }
                 let time = moment(result[i].time).format('h:mm a');
+
                 if(result[i].receiver_id == id && result[i].sender_id == userId){
                     message += '<div class="chat outgoing">'+
                                     '<div class="details">'+
@@ -115,6 +118,14 @@ const userId = document.getElementById('outgoing_id').value;
             }
             message += '<small id="typing_on"></small>'
             $('.chat-box').html(message);
+            $('.chat-box').mouseenter(function(){
+                $('.chat-box').attr('class','chat-box active');
+            });
+            $('.chat-box').mouseleave(function(){
+                $('.chat-box').attr('class','chat-box deactive');
+            });
+            
+            $(".deactive").animate({ scrollTop: $(".deactive")[0].scrollHeight });
         }   
     });
 },500);

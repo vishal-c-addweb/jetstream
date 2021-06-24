@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Exceptions\EmployeeNotFoundException;
 
 use Carbon\Carbon;
+use App\Events\NewMessage;
 
 use App\Models\employee;
 use App\Models\User;
@@ -18,6 +19,7 @@ use App\Models\Location;
 use App\Models\UserIp;
 use App\Models\ChatUser;
 use App\Models\Chat;
+use App\Models\EventMessage;
 
 use DataTables;
 use App\DataTables\UserDataTable;
@@ -242,8 +244,13 @@ class EmployeeController extends Controller
         // echo $attendance;
         
         $url = "C:\fakepath\avatar6.jpg";
-        echo $name = basename($url);
-        exit();
+        //echo $name = basename($url);
+        //exit();
+        //dd("hy");
+        //broadcast(['home'],'Test',json_decode('{"message":"hello"}', true));
+        event(new NewMessage("some Data"));
+        //event(new NewMessage("new ", "message"));
+        //echo DashboardLogger::clientMessage();
         
         return view('user.user');
     }
@@ -402,7 +409,7 @@ class EmployeeController extends Controller
     public function storeChatUser(Request $request){
         
         $userId = $request->userid;  
-        $date = Carbon::now();
+        $date = Carbon::now()->toIso8601String();;
         $time = Carbon::parse($date)->format('H:i a'); 
         if(ChatUser::where('user_id',$userId)->first())
         {       
@@ -463,7 +470,7 @@ class EmployeeController extends Controller
             'file' => $imageName,
             'time' => $time,
             ]);        
-          
+
         $user = ChatUser::where('user_id',$senderId)->with('user')->first();
         $chatUser  = ChatUser::where('user_id',$receiverId)->with('user')->first();
         return Response()->json(['user'=>$user,'chat'=>$chat,'chatuser'=>$chatUser]);
@@ -515,6 +522,38 @@ class EmployeeController extends Controller
         $name = $request->search;
         $search = User::where('name', 'LIKE', '%' . $name . '%')->where('id','!=',auth()->user()->id)->get();
         return Response()->json(['search'=>$search]);
+    }
+    /**
+     * Display event, channel and client message.
+     *
+     * @param $request for requesting data from ajax.
+     * 
+     * @return redirect to clientmessage.
+     */
+    public static function clientMessage()
+    {   
+        $eventMessage = EventMessage::all(); 
+        return view('user.clientmessage',compact('eventMessage'));
+    }
+    /**
+     * Store client data in database.
+     *
+     * @param $request for requesting data from form.
+     * 
+     * @return response.
+     */
+    public static function storeClientMessage(Request $request)
+    {   
+        $user_id = auth()->user()->id;
+        $eventMessage = EventMessage::Create(
+            [
+            'user_id'=> $user_id,
+            'channel'=> $request->get('channel'), 
+            'event'=> $request->get('event'), 
+            'data'=>$request->get('data'),
+            ]);    
+            
+        return Response()->json(['eventmessage'=>$eventMessage]);
     }
     
 }

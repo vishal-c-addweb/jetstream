@@ -45,7 +45,7 @@
        
         <x-jet-banner />
 
-        <div class="min-h-screen bg-gray-100">
+        <div id="app" class="min-h-screen bg-gray-100">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
@@ -68,6 +68,6 @@
         @livewireScripts
 
         <!---project js-->
-        <!-- <script src="{{ asset('js/main.js') }}" defer></script> -->
+        <script src="{{ asset('js/main.js') }}" ></script>
     </body>
 </html>

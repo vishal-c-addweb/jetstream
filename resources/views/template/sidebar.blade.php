@@ -45,7 +45,7 @@
         <li><a href="{{ route('ipaddress') }}"><i class="fa fa-mobile" aria-hidden="true"></i> <span>Ip Address</span></a></li>      
       @endif
 
-      <li><a href="{{ route('chat') }}"><i class="fa fa-comments" aria-hidden="true"></i> <span>Chat</span></a></li>      
+      <li><a href="{{ route('chats') }}"><i class="fa fa-comments" aria-hidden="true"></i> <span>Chat</span></a></li>      
       
       
     </ul>
