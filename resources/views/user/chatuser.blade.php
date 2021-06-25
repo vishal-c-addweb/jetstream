@@ -29,7 +29,7 @@
             <img src="{{ $c->user->profile_photo_url}}" alt="">
             <div class="details">
                 <span>{{ $c->user->name }}</span>
-                <p id="msg/{{ $c->user_id }}"></p>
+                <p id="msg{{ $c->user_id }}"></p>
             </div>
             </div>
             <!-- {{$c->time_8601}} -->

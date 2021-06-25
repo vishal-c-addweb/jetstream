@@ -15,6 +15,8 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AssignProjectController;
 
+use BeyondCode\LaravelWebSockets\Dashboard\Http\Controllers\SendMessage;
+
 use App\Events\NewMessage;
 
 /*
@@ -85,6 +87,11 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
     Route::get('/clientmessage',[EmployeeController::class,'clientMessage']);
 
     Route::post('/clientmessage/store',[EmployeeController::class,'storeClientMessage']);
+
+    Route::get('/event',[EmployeeController::class,'event'])->name('event');
+
+    Route::post('sendevent', SendMessage::class);
+
 });
 
     /* Employee */

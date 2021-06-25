@@ -47,6 +47,8 @@
 
       <li><a href="{{ route('chats') }}"><i class="fa fa-comments" aria-hidden="true"></i> <span>Chat</span></a></li>      
       
+      <li><a href="{{ route('event') }}"><i class="fa fa-etsy" aria-hidden="true"></i> <span>Event</span></a></li>      
+      
       
     </ul>
 

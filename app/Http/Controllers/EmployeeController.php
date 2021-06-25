@@ -22,11 +22,14 @@ use App\Models\Chat;
 use App\Models\EventMessage;
 
 use DataTables;
+use DB;
 use App\DataTables\UserDataTable;
 use App\DataTables\EmployeeDataTable;
 
 use App\Http\Requests\StorePostRequest;
 use Jenssegers\Agent\Agent;
+
+use BeyondCode\LaravelWebSockets\Apps\AppProvider;
 
 class EmployeeController extends Controller
 {
@@ -506,7 +509,9 @@ class EmployeeController extends Controller
         }
         $user_id = auth()->user()->id;
         $user = chatUser::with('user')->where('user_id',$id)->first();
-        $chat = Chat::where('sender_id',$id)->orwhere('sender_id',$user_id)->where('receiver_id',$user_id)->orwhere('receiver_id',$id)->orderBy('time','Asc')->get();
+        $chat = Chat::where('sender_id',$id)->orwhere('sender_id',$user_id)->where('receiver_id',$user_id)->orwhere('receiver_id',$id)->orderBy('created_at','Asc')->get()->groupBy(function($date) {
+            return Carbon::parse($date->time)->format('d-M-y');
+        });
         Chat::where('sender_id',$id)->where('receiver_id',$user_id)->update(['status' => 1]);
         return view('user.chats',compact('chat','id','user'));
     }
@@ -530,7 +535,7 @@ class EmployeeController extends Controller
      * 
      * @return redirect to clientmessage.
      */
-    public static function clientMessage()
+    public function clientMessage()
     {   
         $eventMessage = EventMessage::all(); 
         return view('user.clientmessage',compact('eventMessage'));
@@ -542,7 +547,7 @@ class EmployeeController extends Controller
      * 
      * @return response.
      */
-    public static function storeClientMessage(Request $request)
+    public function storeClientMessage(Request $request)
     {   
         $user_id = auth()->user()->id;
         $eventMessage = EventMessage::Create(
@@ -555,5 +560,17 @@ class EmployeeController extends Controller
             
         return Response()->json(['eventmessage'=>$eventMessage]);
     }
-    
+    /**
+     * websocket events.
+     *
+     * 
+     * @return redirect to event.
+     */
+    public function event(Request $request, AppProvider $apps)
+    {   
+        return view('user.event', [
+            'apps' => $apps->all(),
+            'port' => config('websockets.dashboard.port', 6001),
+        ]);
+    }
 }

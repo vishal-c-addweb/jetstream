@@ -36,7 +36,7 @@ Author URL: http://w3layouts.com
 @livewireStyles
 </head>
 
-<body class="sidebar-menu-collapsed">
+<body  class="sidebar-menu-collapsed">
   <section>
     <!-- sidebar menu start -->
     @include('template.sidebar')

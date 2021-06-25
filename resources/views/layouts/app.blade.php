@@ -58,7 +58,7 @@
             @endif
 
             <!-- Page Content -->
-            <main>
+            <main id=”app”>
                 {{ $slot }}
             </main>
         </div>
@@ -66,7 +66,7 @@
         @stack('modals')
 
         @livewireScripts
-
+        
         <!---project js-->
         <script src="{{ asset('js/main.js') }}" ></script>
     </body>
