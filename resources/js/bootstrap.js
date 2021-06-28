@@ -29,7 +29,14 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
      forceTLS : false,
  });
  
- window.Echo.channel('home')
- .listen('NewMessage', (e) => {
-     console.log(e);
- });
+// window.Echo.channel('home')
+//  .listen('NewMessage', (e) => {
+//      console.log('Received test event');
+//      console.log(e);
+//  });
+
+window.Echo.channel('chat')
+.listen('ChatMessage', (e) => {
+    console.log('Received messages');
+    console.log(e);
+});

@@ -19,6 +19,8 @@
           </div>
         </div>
       </header>
+      <div id="app">
+      </div>
       <div class="mb-3 mt-3">
         <input type="text" id="searchBar" placeholder="Enter name to search..." style="width:1130px;border-radius: 10px;">
       </div>
@@ -88,4 +90,4 @@
             </div>
         </div>
     </div>
-@include('template.footer')
+@include('template.footer') 

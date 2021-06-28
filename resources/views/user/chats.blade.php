@@ -16,11 +16,13 @@
             @if(Carbon\Carbon::parse($user->time_8601)->format('Y-m-d') == Carbon\Carbon::parse(Carbon\Carbon::now())->format('Y-m-d'))
               <p style="color:white;">Last seen:{{Carbon\Carbon::parse($user->time)->format('H:i a')}}</p>
             @else
-              <p style="color:white;">Last seen: {{Carbon\Carbon::parse($user->time_8601)->format('Y-m-d')}} {{Carbon\Carbon::parse($user->time)->format('H:i a')}}</p>
+              <p style="color:white;">Last seen: {{Carbon\Carbon::parse($user->time_8601)->format('Y M D')}} {{Carbon\Carbon::parse($user->time)->format('H:i a')}}</p>
             @endif
           @endif
         </div>
       </header>
+      <div id="app">
+      </div>
       <div class="chat-box deactive" style="height:350px;">
       </div>
       

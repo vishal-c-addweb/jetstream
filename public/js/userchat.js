@@ -1,7 +1,9 @@
 function sendMessage(id)
 {
     let receiverId = id;
-    let file = document.getElementById('fileToUpload').value;
+    let url =document.getElementById('fileToUpload').value;
+    let file = url.substring(url.lastIndexOf('/')+1);
+    
     let content = document.getElementById('chatMsg').value;
     
     $.ajax({
@@ -10,7 +12,7 @@ function sendMessage(id)
         data:{receiverId:receiverId,content:content,file:file},
         dataType: 'json',                            
         success:function(response){
-            console.log(response);
+            //console.log(response);
             document.getElementById('chatMsg').value = "";
             $(".deactive").animate({ scrollTop: $(".deactive")[0].scrollHeight });
         }
@@ -78,9 +80,9 @@ $("#chatMsg").keypress(function(){
 
 
 $(document).ready(function () {
-setInterval(function() {
 const id = document.getElementById('incoming_id').value;
 const userId = document.getElementById('outgoing_id').value;
+
     $.ajax({
         url:"/chat/chatuser",
         type:'post',
@@ -89,10 +91,11 @@ const userId = document.getElementById('outgoing_id').value;
         success:function(response){
             
             console.log(response.chat);
-            
+
             let result = response.chat;
             let message = "";
             let data_today="";
+
             for(let i=0;i<result.length;i++){
 
                 let status = "";
@@ -110,7 +113,7 @@ const userId = document.getElementById('outgoing_id').value;
                     file += '<p>'+result[i].file+'</p>';
                 }
                 else{
-                    file += '<p>'+result[i].message+'</p>';
+                    file += '<p>'+decrypt(result[i].message)+'</p>';
                 }
                 
                 let today = new Date();
@@ -163,6 +166,8 @@ const userId = document.getElementById('outgoing_id').value;
                 }
 
                 data_today = moment(result[i].time).format('YYYY/MM/D');
+                $('#msg'+result[i].sender_id).empty();
+                $('#msg'+result[i].sender_id).html("hy");
             }   
             message += '<small id="typing_on"></small>';
 
@@ -174,9 +179,7 @@ const userId = document.getElementById('outgoing_id').value;
             $('.chat-box').mouseleave(function(){
                 $('.chat-box').attr('class','chat-box deactive');
             });
-            
             $(".deactive").animate({ scrollTop: $(".deactive")[0].scrollHeight });
         }   
     });
-},500);
 }); 

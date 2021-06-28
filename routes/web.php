@@ -36,7 +36,7 @@ Route::get('/', function () {
 
 Route::get('/welcome', function () {
     
-    broadcast(new NewMessage('some data'));
+    event(new App\Events\NewMessage());
 
     return view('welcome');
 });

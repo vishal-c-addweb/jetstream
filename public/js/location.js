@@ -72,4 +72,3 @@ function showError(error) {
       break;
   }
 }
-

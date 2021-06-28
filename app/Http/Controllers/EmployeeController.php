@@ -10,6 +10,7 @@ use App\Exceptions\EmployeeNotFoundException;
 
 use Carbon\Carbon;
 use App\Events\NewMessage;
+use App\Events\ChatMessage;
 
 use App\Models\employee;
 use App\Models\User;
@@ -30,6 +31,8 @@ use App\Http\Requests\StorePostRequest;
 use Jenssegers\Agent\Agent;
 
 use BeyondCode\LaravelWebSockets\Apps\AppProvider;
+
+use Illuminate\Support\Facades\Crypt;
 
 class EmployeeController extends Controller
 {
@@ -250,11 +253,6 @@ class EmployeeController extends Controller
         //echo $name = basename($url);
         //exit();
         //dd("hy");
-        //broadcast(['home'],'Test',json_decode('{"message":"hello"}', true));
-        event(new NewMessage("some Data"));
-        //event(new NewMessage("new ", "message"));
-        //echo DashboardLogger::clientMessage();
-        
         return view('user.user');
     }
     /**
@@ -462,18 +460,20 @@ class EmployeeController extends Controller
             $imageName = '';
         }
         elseif($request->content == ''){
-            $imageName = basename($request->file);
+            $imageName = $request->file;
             $content = '';
         }
         $chat = Chat::updateOrCreate(
             [
             'sender_id'=> $senderId,
             'receiver_id' => $receiverId, 
-            'message' => $content,
+            'message' => Crypt::encryptString($content),
             'file' => $imageName,
             'time' => $time,
             ]);        
-
+            
+        event(new ChatMessage($chat));
+        
         $user = ChatUser::where('user_id',$senderId)->with('user')->first();
         $chatUser  = ChatUser::where('user_id',$receiverId)->with('user')->first();
         return Response()->json(['user'=>$user,'chat'=>$chat,'chatuser'=>$chatUser]);
@@ -485,6 +485,7 @@ class EmployeeController extends Controller
      */
     public function chats()
     {
+
         $id = auth()->user()->id;
         $time = Carbon::now();
         if(auth()->user()){
@@ -513,6 +514,7 @@ class EmployeeController extends Controller
             return Carbon::parse($date->time)->format('d-M-y');
         });
         Chat::where('sender_id',$id)->where('receiver_id',$user_id)->update(['status' => 1]);
+        
         return view('user.chats',compact('chat','id','user'));
     }
     /**

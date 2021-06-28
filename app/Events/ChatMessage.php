@@ -9,21 +9,22 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Chat;
 
-class NewMessage implements ShouldBroadcast
+class ChatMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    
+    public $chat;
 
-    public $message;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Chat $chat)
     {
-        
-        $this->message = "Hello World";
+        $this->chat = $chat;
     }
 
     /**
@@ -33,7 +34,6 @@ class NewMessage implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        \Log::info('event broadcasted');
-        return new Channel('home');
+        return new PresenceChannel('chat');
     }
 }

@@ -167,14 +167,21 @@
       });
   });
 </script>
-<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJV6IpWI1A6iB04oNQ3F7pdhhuS_k8vNE&libraries=places&callback=initialize" async defer></script> -->
 
 <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
 
 <script src="{{ asset('js/main.js') }}" ></script>
 
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+
+<script src="{{ asset('js/app.js') }}" defer></script>
 @livewireScripts
+
 <script src="https://cdn.jsdelivr.net/gh/livewire/vue@v0.3.x/dist/livewire-vue.js"></script>
+
 </body>
 
 </html>

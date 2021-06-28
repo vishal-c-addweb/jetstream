@@ -21,3 +21,8 @@ Broadcast::channel('home', function ($user) {
     // verify that user is recipient of message
     return \Auth::check();
   });
+
+Broadcast::channel('chat', function ($user) {
+// verify that user is recipient of message
+    return $user;
+});

@@ -42,7 +42,7 @@
     <div class="container mt-20" id="app">
         <div class="card col-xs-12 mt-4">
             <div class="card-header">
-                <form id="connect" class="form-inline" role="form">
+                <!-- <form id="connect" class="form-inline" role="form">
                     <label class="my-1 mr-2" for="app">App:</label>
                     <select class="form-control form-control-sm mr-2" name="app" id="app" v-model="app">
                         <option v-for="app in apps" :value="app">@{{ app.name }}</option>
@@ -56,7 +56,7 @@
                         Disconnect
                     </button>
                 </form>
-                <div id="status"></div>
+                <div id="status"></div> -->
             </div>
             <div class="card-body">
                 <div v-if="connected && app.statisticsEnabled">
@@ -135,11 +135,7 @@
 
             mounted() {
                 this.app = this.apps[0] || null;
-            },
-
-            methods: {
-                connect() {
-                    this.pusher = new Pusher(this.app.key, {
+                this.pusher = new Pusher(this.app.key, {
                         wsHost: this.app.host === null ? window.location.hostname : this.app.host,
                         wsPort: this.port === null ? 6001 : this.port,
                         wssPort: this.port === null ? 6001 : this.port,
@@ -182,6 +178,11 @@
                     this.subscribeToAllChannels();
 
                     this.subscribeToStatistics();
+            },
+
+            methods: {
+                connect() {
+                    
                 },
 
                 disconnect() {
@@ -304,6 +305,5 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </section>
 
-<script src="https://cdn.jsdelivr.net/gh/livewire/vue@v0.3.x/dist/livewire-vue.js"></script>
 </body>
 </html>
