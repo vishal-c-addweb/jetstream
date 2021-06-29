@@ -7,6 +7,13 @@ import 'livewire-vue'
  
 window.Vue = Vue
 
+
+Vue.component('chats', require('./components/ChatsComponent.vue').default);
+
+const app = new Vue({
+    el: '#app'
+});
+
 const CryptoJS = require("crypto-js");
 
 window.decrypt = (encrypted) => {

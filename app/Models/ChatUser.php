@@ -29,4 +29,5 @@ class ChatUser extends Model
     {
         return $this->time->format('c');
     }
+    
 }

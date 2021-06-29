@@ -49,6 +49,9 @@
       
       <li><a href="{{ route('event') }}"><i class="fa fa-etsy" aria-hidden="true"></i> <span>Event</span></a></li>      
       
+      @if(auth()->user()->role == 1)
+        <li><a href="{{ route('chatwords') }}"><i class="fa fa-wordpress" aria-hidden="true"></i><span>Chat Words</span></a></li>      
+      @endif
       
     </ul>
 

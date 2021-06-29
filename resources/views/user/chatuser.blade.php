@@ -31,7 +31,15 @@
             <img src="{{ $c->user->profile_photo_url}}" alt="">
             <div class="details">
                 <span>{{ $c->user->name }}</span>
-                <p id="msg{{ $c->user_id }}"></p>
+                <p id="msg{{ $c->user_id }}">
+                <!-- @foreach($chat as $m)
+                  @if($chat->last()) 
+                    @if($m->receiver_id == $c->user_id)
+                      {{ $m->message }}
+                    @endif
+                  @endif
+                @endforeach -->
+                </p>
             </div>
             </div>
             <!-- {{$c->time_8601}} -->
@@ -91,3 +99,12 @@
         </div>
     </div>
 @include('template.footer') 
+<script>
+  new Vue({
+            el: '#app',
+            
+            data: {
+                chats: [],
+            }
+        });
+</script>

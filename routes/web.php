@@ -91,7 +91,12 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
     Route::get('/event',[EmployeeController::class,'event'])->name('event');
 
     Route::post('sendevent', SendMessage::class);
+    
+    Route::get('/chatwords',[EmployeeController::class,'chatWords'])->name('chatwords');
 
+    Route::get('/chatwords',[EmployeeController::class,'chatWords'])->name('chatwords');
+
+    Route::post('/chatwords/store',[EmployeeController::class,'storeChatWords'])->name('chatwords.store');
 });
 
     /* Employee */

@@ -11,6 +11,7 @@ use App\Exceptions\EmployeeNotFoundException;
 use Carbon\Carbon;
 use App\Events\NewMessage;
 use App\Events\ChatMessage;
+use App\Events\MessageEvent;
 
 use App\Models\employee;
 use App\Models\User;
@@ -21,6 +22,7 @@ use App\Models\UserIp;
 use App\Models\ChatUser;
 use App\Models\Chat;
 use App\Models\EventMessage;
+use App\Models\ChatWords;
 
 use DataTables;
 use DB;
@@ -394,11 +396,7 @@ class EmployeeController extends Controller
      * @return redirect to Location page.
      */
     public function chat(){
-        $authUser = auth()->user();
-        $id = $authUser->id;
-        $user = User::where('role',0)->get();
-        $chatUser = ChatUser::with('user')->where('user_id','!=',$id)->get();
-        return view('user.chat',compact('user','chatUser'));
+        return view('user.chat');
     }
     /**
      * Insert chatuser in database.
@@ -455,24 +453,46 @@ class EmployeeController extends Controller
         $senderId = auth()->user()->id;
         $time = Carbon::now(); 
         $receiverId = $request->receiverId;
+        $chatWord = ChatWords::where('word',$request->content)->where('sender_id',$senderId)->where('receiver_id',$receiverId)->first();
+        // if(ChatWords::where('word',$request->content)->whereNull('sender_id')->whereNull('receiver_id')->first())
+        // {
+        //     ChatWords::where('word',$request->content)->update(['sender_id' => $senderId,'receiver_id'=>$receiverId,'count'=>1]);
+        // }
+        if($chatWord){
+            $chatWord->count+=1;
+            $chatWord->save();
+        }
+        elseif(ChatWords::where('word',$request->content)->first())
+        {
+            $chatWord = new ChatWords();
+            $chatWord->sender_id = $senderId;
+            $chatWord->receiver_id = $receiverId;
+            $chatWord->word = $request->content;
+            $chatWord->count = 1;
+            $chatWord->save();
+        }
+
         if($request->file == ''){
-            $content = $request->content;
+            $content = Crypt::encryptString($request->content);
             $imageName = '';
         }
         elseif($request->content == ''){
             $imageName = $request->file;
             $content = '';
+           
         }
         $chat = Chat::updateOrCreate(
             [
             'sender_id'=> $senderId,
             'receiver_id' => $receiverId, 
-            'message' => Crypt::encryptString($content),
+            'message' => $content,
             'file' => $imageName,
             'time' => $time,
             ]);        
             
-        event(new ChatMessage($chat));
+        broadcast(new ChatMessage($chat));
+        
+        // event(new MessageEvent($chat));
         
         $user = ChatUser::where('user_id',$senderId)->with('user')->first();
         $chatUser  = ChatUser::where('user_id',$receiverId)->with('user')->first();
@@ -483,7 +503,7 @@ class EmployeeController extends Controller
      *
      * @return redirect chats page.
      */
-    public function chats()
+    public function chats(AppProvider $apps)
     {
 
         $id = auth()->user()->id;
@@ -493,7 +513,11 @@ class EmployeeController extends Controller
         }
         $user = User::where('role',0)->get();
         $chatUser = ChatUser::with('user')->where('user_id','!=',$id)->get();
-        return view('user.chatuser',compact('chatUser','user'));
+        $chat = Chat::where('sender_id',$id)->orwhere('receiver_id',$id)->orderBy('id','DESC')->get();
+        return view('user.chatuser', [
+            'apps' => $apps->all(),
+            'port' => config('websockets.dashboard.port', 6001),
+        ],compact('chatUser','user','chat'));
     }
     /**
      * Display users for chat using id.
@@ -515,7 +539,9 @@ class EmployeeController extends Controller
         });
         Chat::where('sender_id',$id)->where('receiver_id',$user_id)->update(['status' => 1]);
         
-        return view('user.chats',compact('chat','id','user'));
+        return view('user.chats',compact('chat','id','user'), [
+            'chat' => $chat,
+        ]);
     }
     /**
      * Search user using ajax.
@@ -574,5 +600,42 @@ class EmployeeController extends Controller
             'apps' => $apps->all(),
             'port' => config('websockets.dashboard.port', 6001),
         ]);
+    }
+    /**
+     * chatwords by Admin.
+     *
+     * 
+     * @return redirect to chatwords.
+     */
+    public function chatWords()
+    {   
+        $chatword1 = ChatWords::with('sender','receiver')->whereNotNull('sender_id')->get();
+        $chatword2 = ChatWords::with('sender','receiver')->whereNull('sender_id')->get();
+        return view('admin.chatwords',compact('chatword1','chatword2'));
+    }
+    /**
+     * Store chatwords data in database.
+     *
+     * @param $request for requesting data from form.
+     * 
+     * @return response.
+     */
+    public function storeChatWords(Request $request)
+    {   
+        $sender_id = '';
+        $receiver_id = '';
+        $word = $request->chatword;  
+        if(ChatWords::where('word',$word)->first())
+        {       
+            session()->flash('message', 'word Already exists!.');         
+        }
+        else
+        {
+            $chatWord = new ChatWords();
+            $chatWord->word = $word;
+            $chatWord->save(); 
+            session()->flash('message', 'word Stored SuccessFully!.');                  
+        }
+        return redirect(route('chatwords'));
     }
 }

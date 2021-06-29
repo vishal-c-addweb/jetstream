@@ -40,3 +40,9 @@ window.Echo.channel('chat')
     console.log('Received messages');
     console.log(e);
 });
+
+window.Echo.channel('conversation')
+.listen('MessageEvent', (e) => {
+    console.log('Received messages');
+    console.log(e);
+});

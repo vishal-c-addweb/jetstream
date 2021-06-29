@@ -1,7 +1,5 @@
 @include('template.header')
 
-@section('body')
-
 <div class="wrapper">
     <section class="chat-area mt-20">
       <header style="border: 2px solid black;padding: 10px;border-radius: 5px;">

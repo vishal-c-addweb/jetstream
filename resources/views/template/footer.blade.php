@@ -172,15 +172,14 @@
 
 <script src="{{ asset('js/main.js') }}" ></script>
 
-
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
 
-<script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 @livewireScripts
 
-<script src="https://cdn.jsdelivr.net/gh/livewire/vue@v0.3.x/dist/livewire-vue.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/livewire/vue@v0.1.0/dist/livewire-vue.js"></script>
 
 </body>
 

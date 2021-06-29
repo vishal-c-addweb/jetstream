@@ -26,3 +26,9 @@ Broadcast::channel('chat', function ($user) {
 // verify that user is recipient of message
     return $user;
 });
+
+Broadcast::channel('conversation', function ($user) {
+    // verify that user is recipient of message
+        return $user;
+});
+
