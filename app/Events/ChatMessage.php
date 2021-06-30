@@ -12,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Chat;
 
-class ChatMessage implements ShouldBroadcastNow
+class ChatMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     
@@ -53,6 +53,6 @@ class ChatMessage implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('chat');
+        return new PresenceChannel('chat');
     }
 }

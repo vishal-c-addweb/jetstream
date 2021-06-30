@@ -5,7 +5,7 @@
            <div class="card card-default">
                <div class="card-header">Messages</div>
                <div class="card-body p-0">
-                   <ul class="list-unstyled" style="height:300px; overflow-y:scroll" >
+                   <ul class="list-unstyled" style="height:300px; overflow-y:scroll">
                        <li class="p-2" v-for="(message, index) in messages" :key="index" >
                            <strong>{{ message.user.name }}</strong>
                            {{ message.message }}
@@ -43,9 +43,10 @@
 
 <script>
     export default {
-        props:['user'],
+        props:['user','id'],
         data() {
             return {
+                content : [],
                 messages: [],
                 newMessage: '',
                 users:[],
@@ -55,7 +56,8 @@
         },
         created() {
             this.fetchMessages();
-            Echo.join('chat')
+
+            Echo.join('chats')
                 .here(user => {
                     this.users = user;
                 })
@@ -75,12 +77,12 @@
                     }
                    this.typingTimer = setTimeout(() => {
                        this.activeUser = false;
-                   }, 3000);
+                   }, 500);
                 })
         },
         methods: {
             fetchMessages() {
-                axios.get('chat').then(response => {
+                axios.get('messages').then(response => {
                     this.messages = response.data;
                 })
             },
@@ -93,7 +95,7 @@
                 this.newMessage = '';
             },
             sendTypingEvent() {
-                Echo.join('chat')
+                Echo.join('chats')
                     .whisper('typing', this.user);
             }
         }

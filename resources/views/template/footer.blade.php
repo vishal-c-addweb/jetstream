@@ -177,6 +177,8 @@
     <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 @livewireScripts
 
 <script src="https://cdn.jsdelivr.net/gh/livewire/vue@v0.1.0/dist/livewire-vue.js"></script>

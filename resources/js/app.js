@@ -4,10 +4,17 @@ require('alpinejs');
 
 import Vue from 'vue'
 import 'livewire-vue'
- 
+import moment from 'moment'
+
 window.Vue = Vue
 
+Vue.filter('formatDate', function(value) {
+    if (value) {
+      return moment(String(value)).format('hh:mm a')
+    }
+  });
 
+Vue.component('chat', require('./components/ChatComponent.vue').default);
 Vue.component('chats', require('./components/ChatsComponent.vue').default);
 
 const app = new Vue({

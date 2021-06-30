@@ -101,4 +101,13 @@ class User extends Authenticatable implements MustVerifyEmail,JWTSubject
     {
         return [];
     }
+    /**
+     * Get the Message that the user belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo.
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::Class);
+    }
 }

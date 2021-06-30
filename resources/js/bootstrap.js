@@ -35,14 +35,14 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //      console.log(e);
 //  });
 
-window.Echo.channel('chat')
-.listen('ChatMessage', (e) => {
-    console.log('Received messages');
-    console.log(e);
-});
+// window.Echo.channel('chat')
+// .listen('ChatMessage', (data) => {
+//     console.log('Received messages');
+//     console.log(data);
+// });
 
-window.Echo.channel('conversation')
-.listen('MessageEvent', (e) => {
-    console.log('Received messages');
-    console.log(e);
-});
+// window.Echo.channel('conversation')
+// .listen('MessageEvent', (e) => {
+//     console.log('Received messages');
+//     console.log(e);
+// });

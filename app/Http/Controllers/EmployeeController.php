@@ -390,14 +390,7 @@ class EmployeeController extends Controller
         session()->flash('message', 'Ip Address Deleted SuccessFully!.');
         return redirect(route('ipaddress'));
     }
-    /**
-     * Diplay chat of user.
-     *
-     * @return redirect to Location page.
-     */
-    public function chat(){
-        return view('user.chat');
-    }
+
     /**
      * Insert chatuser in database.
      *

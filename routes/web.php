@@ -14,6 +14,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AssignProjectController;
+use App\Http\Controllers\ChatsController;
 
 use BeyondCode\LaravelWebSockets\Dashboard\Http\Controllers\SendMessage;
 
@@ -68,8 +69,6 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
 
     Route::get('/ipaddress/delete/{id}',[EmployeeController::class,'deleteIp'])->name('ipaddress.delete');
 
-    Route::get('/chat',[EmployeeController::class,'chat'])->name('chat');
-
     Route::post('/chat/store',[EmployeeController::class,'storeChatUser'])->name('chat.store');
     
     Route::post('/chat/chatuser',[EmployeeController::class,'chatUser'])->name('chat.chatuser');
@@ -97,8 +96,21 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
     Route::get('/chatwords',[EmployeeController::class,'chatWords'])->name('chatwords');
 
     Route::post('/chatwords/store',[EmployeeController::class,'storeChatWords'])->name('chatwords.store');
-});
 
+});
+Route::middleware(['auth:sanctum','verified'])->group(function () {
+
+    Route::get('/chat',[ChatsController::class,'index']);
+
+    Route::get('/messages',[ChatsController::class,'fetchMessages']);
+
+    Route::get('/messages/{id}',[ChatsController::class,'fetchMessage']);
+
+    Route::post('/messages/{id}',[ChatsController::class,'store']);
+
+    Route::post('/messages',[ChatsController::class,'sendMessage']);
+
+});
     /* Employee */
 
 Route::group(['middleware'=>'auth:sanctum','verified','prefix'=>'employee'],function () {

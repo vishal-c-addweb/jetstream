@@ -19,22 +19,10 @@
           @endif
         </div>
       </header>
-      <div id="app">
+      <div class="container mt-20" id="app">
+        
+        <chat :user="{{auth()->user()}}" :id="{{$id}}"></chat> 
       </div>
-      <div class="chat-box deactive" style="height:350px;">
-      </div>
-      
-      <form action="#" class="typing-area" enctype="multipart/form-data">
-      
-          <input type="text" class="outgoing_id" name="outgoing_id" value="{{auth()->user()->id}}" hidden id="outgoing_id">
-          <input type="text" class="incoming_id" name="incoming_id" value="{{$id}}" hidden id="incoming_id">
-          <label for="fileToUpload" type="submit" style="margin-right:8px;margin-top:8px; ">
-            <i class="fa fa-upload" aria-hidden="true" style="width:20px;"></i>
-          </label>
-          <input type="File" name="fileToUpload" id="fileToUpload" style="display:none;">
-          <input type="text" name="message" class="input-field" placeholder="Type a message here..." id="chatMsg">
-        <a onClick="sendMessage({{$id}})" type="submit" class="btn"><i class="fa fa-send"></i></a>
-      </form>
     </section>
   </div>
 
