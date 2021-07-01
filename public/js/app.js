@@ -3841,22 +3841,49 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['user', 'id'],
   data: function data() {
     return {
       messages: [],
-      newMessage: ''
+      newMessage: '',
+      users: [],
+      activeUser: false,
+      otherUser: false,
+      typingTimer: false,
+      image: null
     };
   },
   created: function created() {
     var _this = this;
 
+    var r_id = this.user.id;
     this.fetchMessage();
     Echo.join('chat').listen('ChatMessage', function (event) {
       console.log(event.chat);
 
-      _this.messages.push(event.chat);
+      if (event.chat.receiver_id == r_id && event.chat.sender_id == _this.id) {
+        _this.messages.push(event.chat);
+      }
+    }).listenForWhisper('typing', function (response) {
+      _this.activeUser = response.user;
+      _this.otherUser = response.otherUser;
+
+      if (_this.typingTimer) {
+        clearTimeout(_this.typingTimer);
+      }
+
+      _this.typingTimer = setTimeout(function () {
+        _this.activeUser = false;
+        _this.otherUser = false;
+      }, 500);
     });
   },
   methods: {
@@ -3871,15 +3898,54 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     sendMessage: function sendMessage() {
-      this.messages.push({
-        message: this.newMessage
-      });
       axios.post('/messages/' + this.id, {
         message: this.newMessage
+      }).then(function (response) {
+        console.log(response.data.chatdata);
+        var message = response.data.chatdata.message;
+        var created_at = response.data.chatdata.created_at;
+        var status = "";
+        var msg = '<li class = "p-2" ><div style="text-align:right;"><b>' + message + '</b></br><small>Delivered</small>&nbsp;<small>' + moment(created_at).format('hh: mm: a') + '</small></div></li>';
+        $('.msg-body').append(msg);
       })["catch"](function (error) {
         console.log(error.response);
       });
-      ;
+      this.newMessage = '';
+    },
+    sendTypingEvent: function sendTypingEvent() {
+      Echo.join('chat').whisper('typing', {
+        'user': this.user,
+        'otherUser': this.id
+      });
+    },
+    previewFiles: function previewFiles(event) {
+      console.log(event.target.files);
+    },
+    onPickFile: function onPickFile() {
+      this.$refs.fileInput.click();
+    },
+    onFilePicked: function onFilePicked(event) {
+      var _this3 = this;
+
+      var files = event.target.files;
+      var filename = files[0].name;
+      var fileReader = new FileReader();
+      fileReader.addEventListener('load', function () {
+        _this3.imageUrl = fileReader.result;
+      });
+      fileReader.readAsDataURL(files[0]);
+      this.image = files[0];
+      axios.post('/messages/' + this.id, {
+        file: filename
+      }).then(function (response) {
+        var file = response.data.chatdata.file;
+        var created_at = response.data.chatdata.created_at;
+        var status = "";
+        var msg = '<li class = "p-2" ><div style="text-align:right;"><b>' + file + '</b></br><small>Delivered</small>&nbsp;<small>' + moment(created_at).format('hh: mm: a') + '</small></div></li>';
+        $('.msg-body').append(msg);
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
       this.newMessage = '';
     }
   }
@@ -4013,11 +4079,13 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var livewire_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! livewire-vue */ "./node_modules/livewire-vue/dist/livewire-vue.js");
 /* harmony import */ var livewire_vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(livewire_vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var vue_chat_scroll__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-chat-scroll */ "./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js");
+/* harmony import */ var vue_chat_scroll__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_chat_scroll__WEBPACK_IMPORTED_MODULE_2__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
@@ -4025,15 +4093,17 @@ __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
 
 
 
-window.Vue = vue__WEBPACK_IMPORTED_MODULE_2__.default;
-vue__WEBPACK_IMPORTED_MODULE_2__.default.filter('formatDate', function (value) {
+
+vue__WEBPACK_IMPORTED_MODULE_3__.default.use((vue_chat_scroll__WEBPACK_IMPORTED_MODULE_2___default()));
+window.Vue = vue__WEBPACK_IMPORTED_MODULE_3__.default;
+vue__WEBPACK_IMPORTED_MODULE_3__.default.filter('formatDate', function (value) {
   if (value) {
     return moment__WEBPACK_IMPORTED_MODULE_1___default()(String(value)).format('hh:mm a');
   }
 });
-vue__WEBPACK_IMPORTED_MODULE_2__.default.component('chat', __webpack_require__(/*! ./components/ChatComponent.vue */ "./resources/js/components/ChatComponent.vue").default);
-vue__WEBPACK_IMPORTED_MODULE_2__.default.component('chats', __webpack_require__(/*! ./components/ChatsComponent.vue */ "./resources/js/components/ChatsComponent.vue").default);
-var app = new vue__WEBPACK_IMPORTED_MODULE_2__.default({
+vue__WEBPACK_IMPORTED_MODULE_3__.default.component('chat', __webpack_require__(/*! ./components/ChatComponent.vue */ "./resources/js/components/ChatComponent.vue").default);
+vue__WEBPACK_IMPORTED_MODULE_3__.default.component('chats', __webpack_require__(/*! ./components/ChatsComponent.vue */ "./resources/js/components/ChatsComponent.vue").default);
+var app = new vue__WEBPACK_IMPORTED_MODULE_3__.default({
   el: '#app'
 });
 
@@ -55769,6 +55839,99 @@ runtime.setup(pusher_Pusher);
 
 /***/ }),
 
+/***/ "./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js ***!
+  \**************************************************************/
+/***/ (function(module) {
+
+(function (global, factory) {
+   true ? module.exports = factory() :
+  0;
+}(this, (function () { 'use strict';
+
+  /**
+  * @name VueJS vChatScroll (vue-chat-scroll)
+  * @description Monitors an element and scrolls to the bottom if a new child is added
+  * @author Theodore Messinezis <theo@theomessin.com>
+  * @file v-chat-scroll  directive definition
+  */
+  var scrollToBottom = function scrollToBottom(el, smooth) {
+    if (typeof el.scroll === "function") {
+      el.scroll({
+        top: el.scrollHeight,
+        behavior: smooth ? 'smooth' : 'instant'
+      });
+    } else {
+      el.scrollTop = el.scrollHeight;
+    }
+  };
+
+  var vChatScroll = {
+    bind: function bind(el, binding) {
+      var scrolled = false;
+      el.addEventListener('scroll', function (e) {
+        scrolled = el.scrollTop + el.clientHeight + 1 < el.scrollHeight;
+
+        if (scrolled && el.scrollTop === 0) {
+          el.dispatchEvent(new Event("v-chat-scroll-top-reached"));
+        }
+      });
+      new MutationObserver(function (e) {
+        var config = binding.value || {};
+        if (config.enabled === false) return;
+        var pause = config.always === false && scrolled;
+        var addedNodes = e[e.length - 1].addedNodes.length;
+        var removedNodes = e[e.length - 1].removedNodes.length;
+
+        if (config.scrollonremoved) {
+          if (pause || addedNodes != 1 && removedNodes != 1) return;
+        } else {
+          if (pause || addedNodes != 1) return;
+        }
+
+        var smooth = config.smooth;
+        var loadingRemoved = !addedNodes && removedNodes === 1;
+
+        if (loadingRemoved && config.scrollonremoved && 'smoothonremoved' in config) {
+          smooth = config.smoothonremoved;
+        }
+
+        scrollToBottom(el, smooth);
+      }).observe(el, {
+        childList: true,
+        subtree: true
+      });
+    },
+    inserted: function inserted(el, binding) {
+      var config = binding.value || {};
+      scrollToBottom(el, config.notSmoothOnInit ? false : config.smooth);
+    }
+  };
+
+  /**
+  * @name VueJS vChatScroll (vue-chat-scroll)
+  * @description Monitors an element and scrolls to the bottom if a new child is added
+  * @author Theodore Messinezis <theo@theomessin.com>
+  * @file vue-chat-scroll plugin definition
+  */
+  var VueChatScroll = {
+    install: function install(Vue, options) {
+      Vue.directive('chat-scroll', vChatScroll);
+    }
+  };
+
+  if (typeof window !== 'undefined' && window.Vue) {
+    window.Vue.use(VueChatScroll);
+  }
+
+  return VueChatScroll;
+
+})));
+
+
+/***/ }),
+
 /***/ "./resources/js/components/ChatComponent.vue":
 /*!***************************************************!*\
   !*** ./resources/js/components/ChatComponent.vue ***!
@@ -55930,90 +56093,140 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "row" }, [
-    _c("div", { staticClass: "col-12" }, [
-      _c("div", { staticClass: "card card-default" }, [
-        _c("div", { staticClass: "card-body p-0" }, [
+    _c("div", [
+      _c(
+        "div",
+        { staticClass: "card-body p-0", staticStyle: { width: "1160px" } },
+        [
           _c(
             "ul",
             {
-              staticClass: "list-unstyled",
-              staticStyle: { height: "300px", "overflow-y": "scroll" }
+              directives: [{ name: "chat-scroll", rawName: "v-chat-scroll" }],
+              staticClass: "list-unstyled msg-body",
+              staticStyle: { height: "420px", "overflow-y": "scroll" }
             },
             _vm._l(_vm.messages, function(message, index) {
               return _c("li", { key: index, staticClass: "p-2" }, [
-                message.user.id == _vm.user.id
-                  ? _c("div", { staticStyle: { "margin-left": "1000px" } }, [
-                      message.user.name
-                        ? _c("strong", [_vm._v(_vm._s(message.user.name))])
+                message.sender_id == _vm.user.id
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "details mt-2",
+                        staticStyle: { "text-align": "right" }
+                      },
+                      [
+                        message.message != ""
+                          ? _c("b", [_vm._v(_vm._s(message.message))])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("b", { attrs: { else: "" } }, [
+                          _vm._v(_vm._s(message.file))
+                        ]),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        message.status == 0
+                          ? _c("small", [_vm._v("Delivered")])
+                          : _c("small", [_vm._v("Read")]),
+                        _vm._v(" "),
+                        _c("small", [
+                          _vm._v(
+                            _vm._s(_vm._f("formatDate")(message.created_at))
+                          )
+                        ])
+                      ]
+                    )
+                  : _c("div", { staticClass: "details mt-2" }, [
+                      message.message != ""
+                        ? _c("b", [_vm._v(_vm._s(message.message))])
                         : _vm._e(),
                       _vm._v(" "),
-                      _c("br"),
-                      _vm._v(
-                        "\n                             " +
-                          _vm._s(message.message) +
-                          "   \n                             "
-                      ),
+                      _c("b", { attrs: { else: "" } }, [
+                        _vm._v(_vm._s(message.file))
+                      ]),
+                      _vm._v(" "),
                       _c("br"),
                       _vm._v(" "),
                       _c("small", [
                         _vm._v(_vm._s(_vm._f("formatDate")(message.created_at)))
                       ])
+                    ]),
+                _vm._v(" "),
+                _vm.activeUser && _vm.otherUser
+                  ? _c("span", { staticClass: "text-muted ml-2" }, [
+                      _vm._v(_vm._s(_vm.activeUser.name) + " is typing...")
                     ])
-                  : _c("div", [
-                      message.user.name
-                        ? _c("strong", [_vm._v(_vm._s(message.user.name))])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _c("br"),
-                      _vm._v(
-                        "\n                             " +
-                          _vm._s(message.message) +
-                          "\n                         "
-                      )
-                    ])
+                  : _vm._e()
               ])
             }),
             0
           )
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.newMessage,
-              expression: "newMessage"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: {
-            type: "text",
-            name: "message",
-            placeholder: "Enter your message..."
-          },
-          domProps: { value: _vm.newMessage },
-          on: {
-            keyup: function($event) {
-              if (
-                !$event.type.indexOf("key") &&
-                _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-              ) {
-                return null
-              }
-              return _vm.sendMessage.apply(null, arguments)
-            },
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.newMessage = $event.target.value
-            }
-          }
-        })
-      ]),
+        ]
+      ),
       _vm._v(" "),
-      _c("span", { staticClass: "text-muted" }, [_vm._v("user is typing...")])
+      _c(
+        "div",
+        {
+          staticStyle: {
+            display: "flex",
+            border: "1px solid gray",
+            width: "1150px"
+          }
+        },
+        [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newMessage,
+                expression: "newMessage"
+              }
+            ],
+            staticClass: "form-control",
+            staticStyle: { width: "1110px", height: "38px", border: "none" },
+            attrs: {
+              type: "text",
+              name: "message",
+              placeholder: "Enter your message..."
+            },
+            domProps: { value: _vm.newMessage },
+            on: {
+              keydown: _vm.sendTypingEvent,
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.newMessage = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("button", { on: { click: _vm.onPickFile } }, [
+            _c("i", { staticClass: "fa fa-file ml-1" })
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            ref: "fileInput",
+            staticStyle: { display: "none" },
+            attrs: { type: "file" },
+            on: { change: _vm.onFilePicked }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticStyle: {
+                width: "35px",
+                height: "40px",
+                "text-align": "center"
+              },
+              on: { click: _vm.sendMessage }
+            },
+            [_c("i", { staticClass: "fa fa-telegram" })]
+          )
+        ]
+      )
     ])
   ])
 }

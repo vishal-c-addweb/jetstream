@@ -447,10 +447,6 @@ class EmployeeController extends Controller
         $time = Carbon::now(); 
         $receiverId = $request->receiverId;
         $chatWord = ChatWords::where('word',$request->content)->where('sender_id',$senderId)->where('receiver_id',$receiverId)->first();
-        // if(ChatWords::where('word',$request->content)->whereNull('sender_id')->whereNull('receiver_id')->first())
-        // {
-        //     ChatWords::where('word',$request->content)->update(['sender_id' => $senderId,'receiver_id'=>$receiverId,'count'=>1]);
-        // }
         if($chatWord){
             $chatWord->count+=1;
             $chatWord->save();

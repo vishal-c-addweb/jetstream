@@ -5,6 +5,8 @@ require('alpinejs');
 import Vue from 'vue'
 import 'livewire-vue'
 import moment from 'moment'
+import VueChatScroll from 'vue-chat-scroll'
+Vue.use(VueChatScroll)
 
 window.Vue = Vue
 

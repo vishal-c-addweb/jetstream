@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Message;
-use App\Events\MessageSent;
 use App\Models\Chat;
+use App\Models\ChatWords;
+
+use App\Events\MessageSent;
 use App\Events\ChatMessage;
 
 class ChatsController extends Controller
@@ -53,7 +55,9 @@ class ChatsController extends Controller
     */
     public function fetchMessage($id){
         $user_id = auth()->user()->id; //3 //1
-        return Chat::where('receiver_id',$id)->orwhere('receiver_id',$user_id)->where('sender_id',$user_id)->orwhere('sender_id',$id)->orderBy('created_at','Asc')->with('user')->get();
+        return Chat::where(function ($q) use ($id) {
+            $q->whereIn('sender_id', [ $id, auth()->id() ])->whereIn('receiver_id', [ $id, auth()->id() ]);
+        })->get();
     }
     /**
     * Insert messages in database.
@@ -62,17 +66,41 @@ class ChatsController extends Controller
     */
     public function store(Request $request,$id){
 
+        $senderId = auth()->user()->id;
+        $receiverId = $id;
+        $chatWord = ChatWords::where('word',$request->message)->where('sender_id',$senderId)->where('receiver_id',$receiverId)->first();
+        if($chatWord){
+            $chatWord->count+=1;
+            $chatWord->save();
+        }
+        elseif(ChatWords::where('word',$request->message)->first())
+        {
+            $chatWord = new ChatWords();
+            $chatWord->sender_id = $senderId;
+            $chatWord->receiver_id = $receiverId;
+            $chatWord->word = $request->message;
+            $chatWord->count = 1;
+            $chatWord->save();
+        }
+        if($request->file == ''){
+            $content = $request->message;
+            $file = '';
+        }
+        elseif($request->message == ''){
+            $content = '';
+            $file = $request->file;
+        }
         $message = Chat::create([
             'sender_id' => auth()->user()->id,
             'receiver_id' => $id,
-            'message' => $request->message,
-            'file' => '',
+            'message' => $content,
+            'file' => $file,
             'time' => Carbon::today(),
             'status' => 0 ,
         ]);
         
-        broadcast(new ChatMessage($message->load('user')))->toOthers();
+        broadcast(new ChatMessage($message))->toOthers();
         
-        return ['status'=>'success'];
+        return ['status'=>'success','chatdata'=>$message];
     }
 }
