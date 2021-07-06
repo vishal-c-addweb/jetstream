@@ -1,0 +1,241 @@
+Laravel
+
+--Go throgh with Laravel Documentation.
+--Reading about Laravel.
+--install laravel using composer
+--Reading laravel Features
+--Creating Project
+--Doing Routing
+--Creating simple model and simple Controller
+--Database Configuration in .env file
+--Default Auth
+
+--Refering laravel documentation for app Structure.
+--Refering laravel life cycle.
+--creating virtual host for my project.
+--Gone through with all configuration file.
+--Gone through with middleware, model, migration.
+
+--Creating Crud Database.
+--setting database in .env configuration file
+--Creating model and controller for employee and make migration.
+--Doing Crud operation on employee table.
+
+--Adding Default auth in my crud operation.
+--Fetching Registered user from table.
+--Creating project with jetstream.
+--Refering jetstream documentation.
+--Adding mail configuration for password reset.
+
+--creating model and make migration for department table.
+--creating function for adding department and delete department.
+--creating email verification after registration.
+--adding dep_id and emp_id field to employee table.
+--creating group for middleware.
+--adding validation to the form.
+--adding fillable field in models.
+
+--Reading about Laravel Eloquent Relaionship.
+--Implementing Eloquent Relationship in my task.
+--creating form for add department and add employees.
+
+--Customization in Registration mail send to user.
+--password validation on Register page.
+--Adding bootstrap model in my crud operation.
+--Set Foreign key for Department table.
+--Adding Error and success msg.
+--Using Yajra Datatables.
+--Creting Factory and add fake data to database and fetch that using datatables.
+
+--Edit and update Data on bootstrap modal using ajax.
+--Creating new controller function and route for edit update.
+--Creating file for form validation.
+--Implementing form Validation rules for forms.
+--Reading about form validation rules.
+--Reading about yajra datatables.
+
+--Adding yajra Datatables in all tables.
+--Fetching all Data in datatables with eloquent relationship.
+--Adding show password and error message on Default login and Registration.
+--Go through with laravel documentation for Blade Templates.
+--Customizing Email and Publish mail for that.
+--Add update Delete in yajra Datatables.
+
+--Go throug with laravel jetstream documentation.
+--Go throug with all the features of jetstream.
+--Implementing teams in laravel jetstream with livewire.
+--Adding Email verification in laravel jetstream.
+
+--Implementing Datatables with Livewire.
+--Sending email for Password update.
+--Sending email for 2 factor authentication code.
+
+--Reading about Muttator and Accessor.
+--Go throgh with laravel Sanctum.
+
+--Adding Exception in Controller.
+--Getting Data using sanctom token through postman.
+--Reading about Laravel logs.
+--Logging the error and info of employee.
+
+--Go through with restfull api using Jetstream sanctum.
+--implementing api with postman and add,update, and delete data.
+--implementing crud with livewire.
+
+--Go through with JWT in laravel.
+--Creating model and migration for todo table.
+--Creating Controller for todo table.
+--creating api with JWT.
+--Add, Update, and Delete using JWT token.
+
+--Creating search and upload file api.
+--creating api controller for employee and department.
+--creating add, update, and delete api for employee and department.
+--Go through with livewire component.
+
+--Sending proper message in api.
+--Go through with response code.
+--creating Apis.
+--add uid as foreign key on todo table.
+--Go through with livewire documentation.
+
+--Reading about Catbon.
+--Creating model and migration for attendence table.
+--Adding foreign key employee id on attedence and migrate.
+--creating controller function for add attendence.
+--creating blade file for employee attendence.
+
+--Creating bootstrap modal for add attendence and fetching data in select option.
+--Fetch the Report of employee attendence using from to date and employee id.
+--Fetch the Data of today and tomorrow attendence using carbon.
+--Fetch tha attendence using employee id.
+--Calculating employee salary using from to date and employee id.
+
+--Using Moment js for setting date in human readable format.
+--Fetching employee status in radio button using ajax.
+--Reading about Queue and Job.
+--Reading about Cron job Task Scheduling.
+--Creating command for automated task.
+
+--Fetching employee data,salary,presentdays,and absentdays using ajax.
+--Calculating total salary as per input of salaryperday using ajax.
+--Displaying all on bootstrape Modal using ajax.
+--Giving proper naming convension to variables,controller function.
+--Solving npm errors.
+
+--Download admin boostrape Template.
+--Integrating template in jetstream.
+--Creating Modal and migration for timesheet table.
+--Migrate timesheet table.
+
+--Integrating template Login and Registration.
+--Creating model and migration for project and task table.
+--Migrating project and task table.
+--Creating route and Controller function for timesheet and addtimesheet.
+--Creating timesheet page.
+--Creating Bootstrap Modal for Add Timesheet.
+--Fetching Task in select option as per project id Using Ajax.
+--Fetching timesheet data on timesheet page.
+
+--Adding created_by foreign key of userid in project table.
+--Creating project and Task page.
+--Creating Bootstrap modal for addtask and addproject.
+--Creating Routes and controller function for project and task.
+--Fetching project data on project page.
+--Fetching Task data on Task page.
+--Creating assign project page.
+--Fetching details of assigned projects to user.
+--Adding javascript code to prevent user from selecting future dates and date before yesterday.
+--Fetching Timesheet Data on Bootstrap Modal.
+--Fetching timesheet data on timesheet page in Proper Format.
+--Also create Modal for Description View.
+
+--Creating Edit timesheet page.
+--Creating route and controller function for edit timesheet page.
+--Fetching timesheet using ajax.
+--Append timesheet in the div usign ajax date wise.
+--adding button for update and delete.
+--Creating routes and controller function for update and delete.
+
+--Fetching Project name on select dropdown menu on edittimesheet page.
+--Fetching task name as per the the project name selected using ajax on select dropdown.
+--Creating ajax function for that.
+--Fetching timesheet data on ajax.
+
+--Creating Controller for Attendance, timesheet, project, task, student, and department.
+--Adding all function from employee Controller to their proper controller.
+--Setting proper variable name in js for timesheet.
+--Giving proper route name for all the routes.
+--Making function that on change event of project name get task name by project id.
+
+
+- Laravel
+- Documentation
+- App Structure
+- Life-cycle
+- Features
+- Virtual Host
+- Creating Database
+- DB Configuration
+- MVC
+- Controller
+- Middleware
+- Model & Migration
+- Seeder
+- Factory
+- Default Authentication
+- Crud operation for Employee,Department, and Student
+- Fetch Data
+- Mail Configuration for password reset
+- Email Verification after Registration.
+- Customization of Mail
+- Fillable
+- Validation Rules
+- Validation Rules Creating File
+- Group for Middleware
+- Add Foreign key
+- Eloquent Relationship
+- Bootstrap Modal
+- Flash error & success message
+- Session error & success message
+- Yajra Datatables
+- Yajra Datatables Documentation
+- Ajax
+- Crud with Ajax.
+- Blade Template
+- Publish Mail 
+- Show Password & error message on Login & Registration
+- Jetstream
+- Jetstream Documentation
+- Features
+- Implementing Jetstream with teams Feature
+- Email verification
+- Profile
+- Creating Storage link for Profile photo
+- Sending Email For Password Update
+- Sending Mail For 2 factor code
+- Muttator & Accessor 
+- Laravel Sanctum
+- Exception
+- Api
+- Apis Using Sanctum token
+- Postman
+- Livewire
+- Livewire Documentation
+- Crud With Livewire
+- JWT
+- Apis using JWT token
+- Response Code & Proper error message
+- Crud Apis for todo
+- Carbon
+- Carbon Documentation
+- Attendance & Report of Employee
+- Fetch Attendance & Report With Ajax and also Filter
+- Moment js
+- Queue and Job
+- Cron Job Task Scheduling
+- Admin Bootstrap Template Download
+- Integrating Template 
+- Timesheet of Employee
+- Fetch Timesheet using Ajax
+- Javascript

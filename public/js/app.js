@@ -3852,11 +3852,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['user', 'id'],
   data: function data() {
     return {
       messages: [],
+      data: [],
       newMessage: '',
       users: [],
       activeUser: false,
@@ -3920,12 +3953,8 @@ __webpack_require__.r(__webpack_exports__);
         message: this.newMessage
       }).then(function (response) {
         console.log(response.data.chatdata);
-        var message = decrypt(response.data.chatdata.message);
-        var created_at = response.data.chatdata.created_at;
-        var status = "";
-        var msg = '<li class = "p-2" ><div style="text-align:right;"><b>' + message + '</b></br><small>Delivered</small>&nbsp;<small>' + moment(created_at).format('hh: mm: a') + '</small></div></li>';
-        $('.msg-body').append(msg);
-      })["catch"](function (error) {
+        this.messages.push(response.data.chatdata);
+      }.bind(this))["catch"](function (error) {
         console.log(error.response);
       });
       this.newMessage = '';
@@ -3954,12 +3983,8 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         console.log(response.data.chatdata);
-        var file = response.data.chatdata.file;
-        var created_at = response.data.chatdata.created_at;
-        var status = "";
-        var msg = '<li class = "p-2" ><div style="text-align:right;"><b v-bind:id="' + file + '" v-on:click="preview($event)">' + file + '</b></br><small>Delivered</small>&nbsp;<small>' + moment(created_at).format('hh: mm: a') + '</small></div></li>';
-        $('.msg-body').append(msg);
-      })["catch"](function (error) {
+        this.messages.push(response.data.chatdata);
+      }.bind(this))["catch"](function (error) {
         console.log(error.response);
       });
       this.newMessage = '';
@@ -3983,9 +4008,11 @@ __webpack_require__.r(__webpack_exports__);
       } else if (fileExt == 'mp4' || fileExt == 'mp3') {
         document.getElementById('cartoonVideo').src = path;
         $('#myModal').modal('show');
-      } else if (fileExt == 'pdf') {
-        document.getElementById('openWith').style.display = "block";
-        document.getElementById('openWith').src = "http://docs.google.com/viewer?url=<?=urlencode('+imag+')?>&embedded=true";
+      } else if (fileExt == 'pdf' || fileExt == 'txt' || fileExt == 'sql' || fileExt == 'zip') {
+        document.getElementById('openWith').src = path;
+        var newurl = document.getElementById('openWith').src;
+        var tabOrWindow = window.open(newurl, '_blank');
+        tabOrWindow.focus();
       }
     }
   }
@@ -4070,12 +4097,24 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response.data);
         _this2.messages = response.data;
         var result = response.data;
+        var count = 0;
 
         for (var i = 0; i < result.length; i++) {
+          if (result[i].status == 0) {
+            $('#msgcount' + result[i].sender_id + result[i].receiver_id).prop({
+              style: "background-color:gray;padding:10px;border: none;color: white;margin-bottom:5px;text-align: center;border-radius: 50%;"
+            });
+            count += 1;
+          } else {
+            count = null;
+          }
+
           if (result[i].file == '') {
+            $('#msgcount' + result[i].sender_id + result[i].receiver_id).html(count);
             $('#msg' + result[i].sender_id + result[i].receiver_id).html(decrypt(result[i].message));
             $('#msg' + result[i].receiver_id + result[i].sender_id).html(decrypt(result[i].message));
           } else if (result[i].message == '') {
+            $('#msgcount' + result[i].sender_id + result[i].receiver_id).html(count);
             $('#msg' + result[i].sender_id + result[i].receiver_id).html(result[i].file);
             $('#msg' + result[i].receiver_id + result[i].sender_id).html(result[i].file);
           }
@@ -56333,18 +56372,143 @@ var render = function() {
                             ])
                           : _vm._e(),
                         _vm._v(" "),
-                        _c(
-                          "b",
-                          {
-                            attrs: { id: message.file, else: "" },
-                            on: {
-                              click: function($event) {
-                                return _vm.preview($event)
-                              }
-                            }
-                          },
-                          [_vm._v(_vm._s(message.file))]
-                        ),
+                        message.message == ""
+                          ? _c("div", [
+                              _c(
+                                "button",
+                                {
+                                  staticStyle: {
+                                    "background-color": "gray",
+                                    border: "1px solid black",
+                                    padding: "10px",
+                                    "border-radius": "4%"
+                                  }
+                                },
+                                [
+                                  _c("table", [
+                                    _c("tr", [
+                                      _c("td", [
+                                        message.file.includes(".png") ||
+                                        message.file.includes(".jpg") ||
+                                        message.file.includes(".jpeg")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/imageicon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".mp4") ||
+                                        message.file.includes(".mp3")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/videoicon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".pdf")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/pdficon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".sql") ||
+                                        message.file.includes(".txt")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/texticon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".zip")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/zipicon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e()
+                                      ]),
+                                      _vm._v(
+                                        "\n                                              \n                                            "
+                                      ),
+                                      _c(
+                                        "b",
+                                        {
+                                          staticStyle: { color: "white" },
+                                          attrs: { else: "" }
+                                        },
+                                        [_vm._v(_vm._s(message.file))]
+                                      )
+                                    ])
+                                  ])
+                                ]
+                              )
+                            ])
+                          : _vm._e(),
                         _vm._v(" "),
                         _c("br"),
                         _vm._v(" "),
@@ -56366,22 +56530,143 @@ var render = function() {
                           ])
                         : _vm._e(),
                       _vm._v(" "),
-                      _c(
-                        "b",
-                        {
-                          attrs: {
-                            id: "imageresource",
-                            id: message.file,
-                            else: ""
-                          },
-                          on: {
-                            click: function($event) {
-                              return _vm.preview($event)
-                            }
-                          }
-                        },
-                        [_vm._v(_vm._s(message.file))]
-                      ),
+                      message.message == ""
+                        ? _c("div", [
+                            _c(
+                              "button",
+                              {
+                                staticStyle: {
+                                  "background-color": "gray",
+                                  border: "1px solid black",
+                                  padding: "10px",
+                                  "border-radius": "4%"
+                                }
+                              },
+                              [
+                                _c("table", [
+                                  _c("tr", [
+                                    _c("td", [
+                                      message.file.includes(".png") ||
+                                      message.file.includes(".jpg") ||
+                                      message.file.includes(".jpeg")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/imageicon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".mp4") ||
+                                      message.file.includes(".mp3")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/videoicon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".pdf")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/pdficon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".sql") ||
+                                      message.file.includes(".txt")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/texticon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".zip")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/zipicon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e()
+                                    ]),
+                                    _vm._v(
+                                      "\n                                              \n                                            "
+                                    ),
+                                    _c(
+                                      "b",
+                                      {
+                                        staticStyle: { color: "white" },
+                                        attrs: { else: "" }
+                                      },
+                                      [_vm._v(_vm._s(message.file))]
+                                    )
+                                  ])
+                                ])
+                              ]
+                            )
+                          ])
+                        : _vm._e(),
                       _vm._v(" "),
                       _c("br"),
                       _vm._v(" "),

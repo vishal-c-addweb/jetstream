@@ -6,7 +6,23 @@
                        <li class="p-2" v-for="(message, index) in messages" :key="index" >
                             <div v-if="message.sender_id == user.id" class="details mt-2" style="text-align:right;">
                                 <b v-if="message.message!=''">{{ decrypt(message.message) }}</b>
-                                    <b v-on:click="preview($event)"  v-bind:id="message.file" else>{{ message.file }}</b>
+                                    <div v-if="message.message==''">        
+                                        <button style="background-color:gray;border:1px solid black;padding:10px;border-radius:4%;">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <img v-on:click="preview($event)" v-if="message.file.includes('.png') || message.file.includes('.jpg') || message.file.includes('.jpeg')" v-bind:id="message.file" style="border:1px solid black;width:34px;height:38px;" src="http://127.0.0.1:8000/assets/uploads/imageicon.png">
+                                                        <img v-on:click="preview($event)" v-if="message.file.includes('.mp4') || message.file.includes('.mp3')" v-bind:id="message.file" style="border:1px solid black;width:34px;height:38px;" src="http://127.0.0.1:8000/assets/uploads/videoicon.png">
+                                                        <img v-on:click="preview($event)" v-if="message.file.includes('.pdf')" v-bind:id="message.file" style="border:1px solid black;width:34px;height:38px;" src="http://127.0.0.1:8000/assets/uploads/pdficon.png">
+                                                        <img v-on:click="preview($event)" v-if="message.file.includes('.sql') || message.file.includes('.txt')" v-bind:id="message.file" style="border:1px solid black;width:34px;height:38px;" src="http://127.0.0.1:8000/assets/uploads/texticon.png">    
+                                                        <img v-on:click="preview($event)" v-if="message.file.includes('.zip')" v-bind:id="message.file" style="border:1px solid black;width:34px;height:38px;" src="http://127.0.0.1:8000/assets/uploads/zipicon.png">    
+                                                    </td>
+                                                &nbsp;&nbsp;
+                                                <b style="color:white;" else>{{ message.file }}</b>
+                                                </tr>
+                                            </table>
+                                        </button>
+                                    </div>
                                 </br>
                                 <small v-if="message.status == 0">Delivered</small>
                                 <small v-else>Read</small>
@@ -14,7 +30,23 @@
                             </div>
                             <div class="details mt-2" v-else>
                                 <b v-if="message.message!=''">{{ decrypt(message.message) }}</b>    
-                                    <b id="imageresource" v-bind:id="message.file" v-on:click="preview($event)" else>{{ message.file }}</b>
+                                    <div v-if="message.message==''">        
+                                        <button style="background-color:gray;border:1px solid black;padding:10px;border-radius:4%;">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <img v-on:click="preview($event)" v-if="message.file.includes('.png') || message.file.includes('.jpg') || message.file.includes('.jpeg')" v-bind:id="message.file" style="border:1px solid black;width:34px;height:38px;" src="http://127.0.0.1:8000/assets/uploads/imageicon.png">
+                                                        <img v-on:click="preview($event)" v-if="message.file.includes('.mp4') || message.file.includes('.mp3')" v-bind:id="message.file" style="border:1px solid black;width:34px;height:38px;" src="http://127.0.0.1:8000/assets/uploads/videoicon.png">
+                                                        <img v-on:click="preview($event)" v-if="message.file.includes('.pdf')" v-bind:id="message.file" style="border:1px solid black;width:34px;height:38px;" src="http://127.0.0.1:8000/assets/uploads/pdficon.png">
+                                                        <img v-on:click="preview($event)" v-if="message.file.includes('.sql') || message.file.includes('.txt')" v-bind:id="message.file" style="border:1px solid black;width:34px;height:38px;" src="http://127.0.0.1:8000/assets/uploads/texticon.png">
+                                                        <img v-on:click="preview($event)" v-if="message.file.includes('.zip')" v-bind:id="message.file" style="border:1px solid black;width:34px;height:38px;" src="http://127.0.0.1:8000/assets/uploads/zipicon.png">    
+                                                    </td>
+                                                &nbsp;&nbsp;
+                                                <b style="color:white;" else>{{ message.file }}</b>
+                                                </tr>
+                                            </table>
+                                        </button>
+                                    </div>
                                 </br>
                                 <small>{{ message.created_at | formatDate}}</small>
                             </div>
@@ -55,6 +87,7 @@
         data() {
             return {
                 messages: [],
+                data  : [],
                 newMessage: '',
                 users:[],
                 activeUser: false,
@@ -116,14 +149,11 @@
                 });
             },
             sendMessage() {  
+                
                 axios.post('/messages/'+this.id, {message: this.newMessage}).then(function (response) {
                     console.log(response.data.chatdata);
-                    let message = decrypt(response.data.chatdata.message);
-                    let created_at = response.data.chatdata.created_at;
-                    let status = "";
-                    let msg = '<li class = "p-2" ><div style="text-align:right;"><b>'+message+'</b></br><small>Delivered</small>&nbsp;<small>'+moment(created_at).format('hh: mm: a')+'</small></div></li>';
-                    $('.msg-body').append(msg);
-                })
+                    this.messages.push(response.data.chatdata);
+                }.bind(this))
                 .catch(error => {
                     console.log(error.response)
                 });
@@ -156,12 +186,8 @@
                 }
                 ).then(function (response) {
                     console.log(response.data.chatdata);
-                    let file = response.data.chatdata.file;
-                    let created_at = response.data.chatdata.created_at;
-                    let status = "";
-                    let msg = '<li class = "p-2" ><div style="text-align:right;"><b v-bind:id="'+file+'" v-on:click="preview($event)">'+file+'</b></br><small>Delivered</small>&nbsp;<small>'+moment(created_at).format('hh: mm: a')+'</small></div></li>';
-                    $('.msg-body').append(msg);
-                })
+                    this.messages.push(response.data.chatdata);
+                }.bind(this))
                 .catch(error => {
                     console.log(error.response)
                 });
@@ -187,10 +213,11 @@
                     document.getElementById('cartoonVideo').src=path;
                     $('#myModal').modal('show');
                 }
-                else if(fileExt == 'pdf'){
-                    document.getElementById('openWith').style.display="block";
-                    document.getElementById('openWith').src="http://docs.google.com/viewer?url=<?=urlencode('+imag+')?>&embedded=true";
-                    
+                else if(fileExt == 'pdf' || fileExt == 'txt' || fileExt == 'sql' || fileExt == 'zip'){
+                    document.getElementById('openWith').src=path;
+                    let newurl = document.getElementById('openWith').src;
+                    let tabOrWindow = window.open(newurl, '_blank');
+                    tabOrWindow.focus();
                 }
             }
         }
