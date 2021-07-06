@@ -50,7 +50,10 @@ class FortifyServiceProvider extends ServiceProvider
             //echo $request->user()->twoFactorQrCodeSvg();
             //exit();
             //49.34.203.238
+            //157.32.110.124
+            //157.32.97.113
             $ip = file_get_contents('https://api.ipify.org');
+            //exit();
             $user = User::where('email', $request->email)->first();
             $user_id = $user->id;
             $user_role = $user->role;

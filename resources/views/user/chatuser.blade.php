@@ -19,8 +19,7 @@
           </div>
         </div>
       </header>
-      <div id="app">
-      </div>
+      
       <div class="mb-3 mt-3">
         <input type="text" id="searchBar" placeholder="Enter name to search..." style="width:1130px;border-radius: 10px;">
       </div>
@@ -28,27 +27,21 @@
       @foreach($chatUser as $c)
         <a href="chats/{{ $c->user_id }}">
             <div class="content">
-            <img src="{{ $c->user->profile_photo_url}}" alt="">
-            <div class="details">
-                <span>{{ $c->user->name }}</span>
-                <p id="msg{{ $c->user_id }}">
-                <!-- @foreach($chat as $m)
-                  @if($chat->last()) 
-                    @if($m->receiver_id == $c->user_id)
-                      {{ $m->message }}
-                    @endif
-                  @endif
-                @endforeach -->
-                </p>
+              <img src="{{ $c->user->profile_photo_url}}" alt="">
+              <div class="details">
+                  <span>{{ $c->user->name }}</span>
+                  <div id="app">
+                  <chatuser :user="{{auth()->user()->id}}" receiver="{{$c->user_id}}"></chatuser>
+                  </div>
+                  <p id="msg{{$c->user_id}}{{auth()->user()->id}}"></p>
+              </div>
             </div>
-            </div>
-            <!-- {{$c->time_8601}} -->
-            @if(Carbon\Carbon::parse($c->time_8601)->format('H:i a') == Carbon\Carbon::parse(Carbon\Carbon::now())->format('H:i a'))
+            <!-- @if(Carbon\Carbon::parse($c->time_8601)->format('H:i a') == Carbon\Carbon::parse(Carbon\Carbon::now())->format('H:i a'))
               <div class="status-dot . 'online'" ><i class="fa fa-circle"></i></div>
             @else
               <div class="status-dot . 'offline'" ></div>
-            @endif
-            
+            @endif -->
+            <small id="msgcount{{$c->user_id}}{{auth()->user()->id}}" ></small>
           </a>
       @endforeach
       </div>
@@ -99,12 +92,3 @@
         </div>
     </div>
 @include('template.footer') 
-<script>
-  new Vue({
-            el: '#app',
-            
-            data: {
-                chats: [],
-            }
-        });
-</script>

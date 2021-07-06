@@ -106,6 +106,8 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
 
     Route::get('/messages/{id}',[ChatsController::class,'fetchMessage']);
 
+    Route::get('/lastmessage/{id}',[ChatsController::class,'lastMessage']);
+
     Route::post('/messages/{id}',[ChatsController::class,'store']);
 
     Route::post('/messages',[ChatsController::class,'sendMessage']);

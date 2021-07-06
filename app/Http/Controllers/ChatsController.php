@@ -13,6 +13,8 @@ use App\Models\ChatWords;
 use App\Events\MessageSent;
 use App\Events\ChatMessage;
 
+use Illuminate\Support\Facades\Crypt;
+
 class ChatsController extends Controller
 {
     /**
@@ -82,19 +84,28 @@ class ChatsController extends Controller
             $chatWord->count = 1;
             $chatWord->save();
         }
-        if($request->file == ''){
-            $content = $request->message;
-            $file = '';
-        }
-        elseif($request->message == ''){
+        if($request->file()){
+            
+            $request->validate([
+                'file' => 'required|mimes:jpg,jpeg,png,csv,txt,xlx,xls,pdf,pptx,video,zip,mp3,mp4|max:2048',
+            ]);
+
             $content = '';
-            $file = $request->file;
+            $file = $request->file('file');
+            $file_name = $file->getClientOriginalName();
+            $generated_new_name = time() . '.' . $file->getClientOriginalExtension();
+            $request->file->move('assets/uploads', $file_name);
+         
+        }
+        elseif($request->file == '' && $request->message != ''){
+            $content = Crypt::encryptString($request->message);
+            $file_name = '';    
         }
         $message = Chat::create([
             'sender_id' => auth()->user()->id,
             'receiver_id' => $id,
             'message' => $content,
-            'file' => $file,
+            'file' => $file_name,
             'time' => Carbon::today(),
             'status' => 0 ,
         ]);
@@ -102,5 +113,13 @@ class ChatsController extends Controller
         broadcast(new ChatMessage($message))->toOthers();
         
         return ['status'=>'success','chatdata'=>$message];
+    }
+    /**
+    * Diplay messages of sender_id.
+    *
+    * @return Messages.
+    */
+    public function lastMessage($id){
+        return Chat::where('sender_id',$id)->orwhere('receiver_id',$id)->get();
     }
 }

@@ -22,9 +22,9 @@
                     placeholder="Enter your message..."
                     class="form-control">
            </div>
-            <span class="text-muted" v-if="activeUser" >{{ activeUser.name }} is typing...</span>
+            
        </div>
-
+        
         <div class="col-4">
             <div class="card card-default">
                 <div class="card-header">Active Users</div>
@@ -69,6 +69,9 @@
                 })
                 .listen('MessageSent',(event) => {
                     this.messages.push(event.message);
+                    axios.get('messages').then(response => {
+                    this.messages = response.data;
+                    })
                 })
                 .listenForWhisper('typing', user => {
                    this.activeUser = user;

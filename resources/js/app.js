@@ -6,9 +6,9 @@ import Vue from 'vue'
 import 'livewire-vue'
 import moment from 'moment'
 import VueChatScroll from 'vue-chat-scroll'
+
 Vue.use(VueChatScroll)
 
-window.Vue = Vue
 
 Vue.filter('formatDate', function(value) {
     if (value) {
@@ -16,6 +16,7 @@ Vue.filter('formatDate', function(value) {
     }
   });
 
+Vue.component('chatuser', require('./components/ChatUserComponent.vue').default);
 Vue.component('chat', require('./components/ChatComponent.vue').default);
 Vue.component('chats', require('./components/ChatsComponent.vue').default);
 
