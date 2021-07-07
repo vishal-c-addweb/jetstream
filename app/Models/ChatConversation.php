@@ -5,20 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ChatUser extends Model
+class ChatConversation extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'message',
+        'file',
         'user_id',
         'group_id',
-        'time',
     ];
-    
-    protected $dates = ['time'];
-
     /**
-     * Get the user that the chat belongs to.
+     * Get the user that conversation belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo.
      */
@@ -26,10 +24,4 @@ class ChatUser extends Model
     {
         return $this->belongsTo(User::class,'user_id','id');
     }
-    
-    public function getTime8601Attribute()
-    {
-        return $this->time->format('c');
-    }
-    
 }

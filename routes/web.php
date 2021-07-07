@@ -112,6 +112,20 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
 
     Route::post('/messages',[ChatsController::class,'sendMessage']);
 
+    Route::get('/chatgroup',[ChatsController::class,'chatGroup'])->name('chatgroup');
+
+    Route::post('/chatgroup',[ChatsController::class,'storeChatGroup'])->name('chatgroup.store');
+
+    Route::get('/chatgroups/{id}',[ChatsController::class,'chatGroups'])->name('chatgroups');
+
+    Route::post('/chatgroups',[ChatsController::class,'storeGroupMember'])->name('groupmember.store');
+    
+    Route::get('/groupmessages/{id}',[ChatsController::class,'groupMessages']);
+
+    Route::post('/groupmessages/{id}',[ChatsController::class,'storeGroupMessages']);
+
+    Route::get('/lastgroupmessage',[ChatsController::class,'lastGroupMessage']);
+    
 });
     /* Employee */
 

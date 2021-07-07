@@ -37,3 +37,8 @@ Broadcast::channel('conversation', function ($user) {
         return $user;
 });
 
+Broadcast::channel('groupchat', function ($user) {
+    // verify that user is recipient of message
+        return $user;
+});
+

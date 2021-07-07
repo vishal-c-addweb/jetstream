@@ -1,10 +1,10 @@
 <template>
     <div class="row">
            <div>
-               <div class="card-body p-0" style="width:1160px;">
-                   <ul class="list-unstyled msg-body" style="height:420px; overflow-y:scroll" v-chat-scroll>
+               <div class="card-body p-0" style="width: 1160px;height:380px;">
+                   <ul class="list-unstyled msg-body" style="height:390px; overflow-y:scroll" v-chat-scroll>
                        <li class="p-2" v-for="(message, index) in messages" :key="index" >
-                            <div v-if="message.sender_id == user.id" class="details mt-2" style="text-align:right;">
+                            <div v-if="message.user_id == user.id" class="details mt-2" style="text-align:right;">
                                 <b v-if="message.message!=''">{{ decrypt(message.message) }}</b>
                                     <div v-if="message.message==''">        
                                         <button style="background-color:gray;border:1px solid black;padding:10px;border-radius:4%;">
@@ -24,11 +24,10 @@
                                         </button>
                                     </div>
                                 </br>
-                                <small v-if="message.status == 0">Delivered</small>
-                                <small v-else>Read</small>
                                 <small>{{ message.created_at | formatDate}}</small>
                             </div>
                             <div class="details mt-2" v-else>
+                                <p>{{message.user.name}}</p>
                                 <b v-if="message.message!=''">{{ decrypt(message.message) }}</b>    
                                     <div v-if="message.message==''">        
                                         <button style="background-color:gray;border:1px solid black;padding:10px;border-radius:4%;">
@@ -53,10 +52,10 @@
                        </li>
                    </ul>
                </div>
-               <span class="text-muted ml-2" v-if="activeUser && otherUser" >{{ activeUser.name }} is typing...</span>
+               <span class="text-muted ml-2" > is typing...</span>
                 <div style="display: flex; border:1px solid gray;width:1150px;" >
                 <input
-                    @keydown="sendTypingEvent"
+                    @keydown=""
                     v-model="newMessage"
                     type="text"
                     name="message"
@@ -86,12 +85,82 @@
         
         data() {
             return {
+                messages: [],
+                newMessage : "",
+                activeUser: false,
+                otherUser: false,
+                typingTimer: false,
+                filename: '',
+                file: '',
             }
         },
         created() {
+            this.fetchMessage();
             
+            Echo.join('groupchat')
+                .listen('GroupMessage',(event) => {
+                    console.log(event.chat);
+                    if(event.chat.group_id == this.group.id ){
+                        this.messages.push(event.chat);
+                    }
+                })
         },
         methods: {
+            fetchMessage() {
+                axios.get('/groupmessages/'+this.group.id).then(response => {
+                    console.log(response);
+                    this.messages = response.data;
+                })
+                .catch(error => {
+                    console.log(error.response)
+                });
+            },
+            sendMessage() {  
+                axios.post('/groupmessages/'+this.group.id, {message: this.newMessage}).then(function (response) {
+                    console.log(response.data);
+                    this.messages.push(response.data.message);
+                }.bind(this))
+                .catch(error => {
+                    console.log(error.response)
+                });
+                this.newMessage = '';
+            },
+            previewFiles(event) {
+                console.log(event.target.files);
+            },
+            onPickFile () {
+                this.$refs.fileInput.click()
+            },
+            onFilePicked (event) {
+                const files = event.target.files 
+                this.file = event.target.files[0];
+                console.log(this.file);
+                let formData = new FormData();
+
+                formData.append('file',this.file);
+                axios.post('/groupmessages/'+this.group.id, 
+                formData,
+                {
+                    headers: {
+                        'content-type': 'multipart/form-data'
+                    }
+                }
+                ).then(function (response) {
+                    console.log(response.data);
+                    this.messages.push(response.data.message);
+                }.bind(this))
+                .catch(error => {
+                    console.log(error.response)
+                });
+                this.newMessage = '';
+            },    
+            decrypt(encrypted) {
+                let key = process.env.MIX_APP_KEY.substr(7);
+                var encrypted_json = JSON.parse(atob(encrypted));
+                return CryptoJS.AES.decrypt(encrypted_json.value, CryptoJS.enc.Base64.parse(key), {
+                    iv : CryptoJS.enc.Base64.parse(encrypted_json.iv)
+                }).toString(CryptoJS.enc.Utf8);
+            },
         }
     }
 </script>

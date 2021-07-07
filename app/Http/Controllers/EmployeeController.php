@@ -23,6 +23,7 @@ use App\Models\ChatUser;
 use App\Models\Chat;
 use App\Models\EventMessage;
 use App\Models\ChatWords;
+use App\Models\ChatGroup;
 
 use DataTables;
 use DB;
@@ -501,12 +502,14 @@ class EmployeeController extends Controller
             $chatUser = ChatUser::where('user_id',$id)->update(['time'=>$time]);
         }
         $user = User::where('role',0)->get();
+        $userall = User::where('id','!=',auth()->user()->id)->get();
         $chatUser = ChatUser::with('user')->where('user_id','!=',$id)->get();
         $chat = Chat::where('sender_id',$id)->orwhere('receiver_id',$id)->orderBy('id','DESC')->get();
+        $chatgroup = ChatGroup::with('user')->get();
         return view('user.chatuser', [
             'apps' => $apps->all(),
             'port' => config('websockets.dashboard.port', 6001),
-        ],compact('chatUser','user','chat'));
+        ],compact('chatUser','userall','chatgroup','user','chat'));
     }
     /**
      * Display users for chat using id.

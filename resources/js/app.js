@@ -16,9 +16,11 @@ Vue.filter('formatDate', function(value) {
     }
   });
 
-Vue.component('chatuser', require('./components/ChatUserComponent.vue').default);
 Vue.component('chat', require('./components/ChatComponent.vue').default);
 Vue.component('chats', require('./components/ChatsComponent.vue').default);
+Vue.component('chatuser', require('./components/ChatUserComponent.vue').default);
+Vue.component('chatgroup', require('./components/ChatGroupComponent.vue').default);
+Vue.component('groupmessage', require('./components/GroupMessageComponent.vue').default);
 
 const app = new Vue({
     el: '#app'

@@ -4020,6 +4020,79 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatGroupComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatGroupComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['user', 'group'],
+  data: function data() {
+    return {
+      messages: [],
+      message: []
+    };
+  },
+  created: function created() {
+    var _this = this;
+
+    this.lastMessage();
+    Echo.join('groupchat').listen('GroupMessage', function (event) {
+      console.log(event.chat);
+      var result = _this.messages;
+
+      for (var i = 0; i < result.length; i++) {
+        if (result[i].file == '') {
+          $('#groupmessage' + result[i].group_id).html(decrypt(result[i].message));
+        } else if (result[i].message == '') {
+          $('#groupmessage' + result[i].group_id).html(result[i].file);
+        }
+      }
+
+      if (event.chat.file == '') {
+        $('#groupmessage' + event.chat.group_id).html(decrypt(event.chat.message));
+      } else if (event.chat.message == '') {
+        $('#groupmessage' + event.chat.group_id).html(event.chat.file);
+      }
+    });
+  },
+  methods: {
+    lastMessage: function lastMessage() {
+      var _this2 = this;
+
+      axios.get('/lastgroupmessage').then(function (response) {
+        console.log(response.data);
+        console.log(_this2.group);
+        _this2.messages = response.data;
+        var result = response.data;
+
+        for (var i = 0; i < result.length; i++) {
+          if (result[i].file == '') {
+            $('#groupmessage' + result[i].group_id).html(decrypt(result[i].message));
+          } else if (result[i].message == '') {
+            $('#groupmessage' + result[i].group_id).html(result[i].file);
+          }
+        }
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatUserComponent.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatUserComponent.vue?vue&type=script&lang=js& ***!
@@ -4182,68 +4255,223 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['user', 'id'],
+  props: ['user', 'group'],
+  data: function data() {
+    return {};
+  },
+  created: function created() {},
+  methods: {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/GroupMessageComponent.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/GroupMessageComponent.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['user', 'group'],
   data: function data() {
     return {
-      content: [],
       messages: [],
-      newMessage: '',
-      users: [],
+      newMessage: "",
       activeUser: false,
-      typingTimer: false
+      otherUser: false,
+      typingTimer: false,
+      filename: '',
+      file: ''
     };
   },
   created: function created() {
     var _this = this;
 
-    this.fetchMessages();
-    Echo.join('chats').here(function (user) {
-      _this.users = user;
-    }).joining(function (user) {
-      _this.users.push(user);
-    }).leaving(function (user) {
-      _this.users = _this.users.filter(function (u) {
-        return u.id != user.id;
-      });
-    }).listen('MessageSent', function (event) {
-      _this.messages.push(event.message);
+    this.fetchMessage();
+    Echo.join('groupchat').listen('GroupMessage', function (event) {
+      console.log(event.chat);
 
-      axios.get('messages').then(function (response) {
-        _this.messages = response.data;
-      });
-    }).listenForWhisper('typing', function (user) {
-      _this.activeUser = user;
-
-      if (_this.typingTimer) {
-        clearTimeout(_this.typingTimer);
+      if (event.chat.group_id == _this.group.id) {
+        _this.messages.push(event.chat);
       }
-
-      _this.typingTimer = setTimeout(function () {
-        _this.activeUser = false;
-      }, 500);
     });
   },
   methods: {
-    fetchMessages: function fetchMessages() {
+    fetchMessage: function fetchMessage() {
       var _this2 = this;
 
-      axios.get('messages').then(function (response) {
+      axios.get('/groupmessages/' + this.group.id).then(function (response) {
+        console.log(response);
         _this2.messages = response.data;
+      })["catch"](function (error) {
+        console.log(error.response);
       });
     },
     sendMessage: function sendMessage() {
-      this.messages.push({
-        user: this.user,
+      axios.post('/groupmessages/' + this.group.id, {
         message: this.newMessage
-      });
-      axios.post('messages', {
-        message: this.newMessage
+      }).then(function (response) {
+        console.log(response.data);
+        this.messages.push(response.data.message);
+      }.bind(this))["catch"](function (error) {
+        console.log(error.response);
       });
       this.newMessage = '';
     },
-    sendTypingEvent: function sendTypingEvent() {
-      Echo.join('chats').whisper('typing', this.user);
+    previewFiles: function previewFiles(event) {
+      console.log(event.target.files);
+    },
+    onPickFile: function onPickFile() {
+      this.$refs.fileInput.click();
+    },
+    onFilePicked: function onFilePicked(event) {
+      var files = event.target.files;
+      this.file = event.target.files[0];
+      console.log(this.file);
+      var formData = new FormData();
+      formData.append('file', this.file);
+      axios.post('/groupmessages/' + this.group.id, formData, {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        console.log(response.data);
+        this.messages.push(response.data.message);
+      }.bind(this))["catch"](function (error) {
+        console.log(error.response);
+      });
+      this.newMessage = '';
+    },
+    decrypt: function decrypt(encrypted) {
+      var key = "base64:FTKuvye1kLoyHtZViAKKRP+2ZUrTHTShIBOTq8NtCgM=".substr(7);
+      var encrypted_json = JSON.parse(atob(encrypted));
+      return CryptoJS.AES.decrypt(encrypted_json.value, CryptoJS.enc.Base64.parse(key), {
+        iv: CryptoJS.enc.Base64.parse(encrypted_json.iv)
+      }).toString(CryptoJS.enc.Utf8);
     }
   }
 });
@@ -4279,9 +4507,11 @@ vue__WEBPACK_IMPORTED_MODULE_3__.default.filter('formatDate', function (value) {
     return moment__WEBPACK_IMPORTED_MODULE_1___default()(String(value)).format('hh:mm a');
   }
 });
-vue__WEBPACK_IMPORTED_MODULE_3__.default.component('chatuser', __webpack_require__(/*! ./components/ChatUserComponent.vue */ "./resources/js/components/ChatUserComponent.vue").default);
 vue__WEBPACK_IMPORTED_MODULE_3__.default.component('chat', __webpack_require__(/*! ./components/ChatComponent.vue */ "./resources/js/components/ChatComponent.vue").default);
 vue__WEBPACK_IMPORTED_MODULE_3__.default.component('chats', __webpack_require__(/*! ./components/ChatsComponent.vue */ "./resources/js/components/ChatsComponent.vue").default);
+vue__WEBPACK_IMPORTED_MODULE_3__.default.component('chatuser', __webpack_require__(/*! ./components/ChatUserComponent.vue */ "./resources/js/components/ChatUserComponent.vue").default);
+vue__WEBPACK_IMPORTED_MODULE_3__.default.component('chatgroup', __webpack_require__(/*! ./components/ChatGroupComponent.vue */ "./resources/js/components/ChatGroupComponent.vue").default);
+vue__WEBPACK_IMPORTED_MODULE_3__.default.component('groupmessage', __webpack_require__(/*! ./components/GroupMessageComponent.vue */ "./resources/js/components/GroupMessageComponent.vue").default);
 var app = new vue__WEBPACK_IMPORTED_MODULE_3__.default({
   el: '#app'
 });
@@ -56150,6 +56380,45 @@ component.options.__file = "resources/js/components/ChatComponent.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/ChatGroupComponent.vue":
+/*!********************************************************!*\
+  !*** ./resources/js/components/ChatGroupComponent.vue ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _ChatGroupComponent_vue_vue_type_template_id_5e7c6961___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChatGroupComponent.vue?vue&type=template&id=5e7c6961& */ "./resources/js/components/ChatGroupComponent.vue?vue&type=template&id=5e7c6961&");
+/* harmony import */ var _ChatGroupComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ChatGroupComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ChatGroupComponent.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _ChatGroupComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _ChatGroupComponent_vue_vue_type_template_id_5e7c6961___WEBPACK_IMPORTED_MODULE_0__.render,
+  _ChatGroupComponent_vue_vue_type_template_id_5e7c6961___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ChatGroupComponent.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/ChatUserComponent.vue":
 /*!*******************************************************!*\
   !*** ./resources/js/components/ChatUserComponent.vue ***!
@@ -56228,6 +56497,45 @@ component.options.__file = "resources/js/components/ChatsComponent.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/GroupMessageComponent.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/GroupMessageComponent.vue ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _GroupMessageComponent_vue_vue_type_template_id_4912850c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GroupMessageComponent.vue?vue&type=template&id=4912850c& */ "./resources/js/components/GroupMessageComponent.vue?vue&type=template&id=4912850c&");
+/* harmony import */ var _GroupMessageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GroupMessageComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/GroupMessageComponent.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _GroupMessageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _GroupMessageComponent_vue_vue_type_template_id_4912850c___WEBPACK_IMPORTED_MODULE_0__.render,
+  _GroupMessageComponent_vue_vue_type_template_id_4912850c___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/GroupMessageComponent.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/ChatComponent.vue?vue&type=script&lang=js&":
 /*!****************************************************************************!*\
   !*** ./resources/js/components/ChatComponent.vue?vue&type=script&lang=js& ***!
@@ -56241,6 +56549,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ChatComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatComponent.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ChatGroupComponent.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/ChatGroupComponent.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatGroupComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ChatGroupComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatGroupComponent.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatGroupComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
 
 /***/ }),
 
@@ -56276,6 +56600,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/GroupMessageComponent.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/GroupMessageComponent.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GroupMessageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./GroupMessageComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/GroupMessageComponent.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GroupMessageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
 /***/ "./resources/js/components/ChatComponent.vue?vue&type=template&id=80d584ac&":
 /*!**********************************************************************************!*\
   !*** ./resources/js/components/ChatComponent.vue?vue&type=template&id=80d584ac& ***!
@@ -56289,6 +56629,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatComponent_vue_vue_type_template_id_80d584ac___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatComponent_vue_vue_type_template_id_80d584ac___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ChatComponent.vue?vue&type=template&id=80d584ac& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatComponent.vue?vue&type=template&id=80d584ac&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ChatGroupComponent.vue?vue&type=template&id=5e7c6961&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/ChatGroupComponent.vue?vue&type=template&id=5e7c6961& ***!
+  \***************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatGroupComponent_vue_vue_type_template_id_5e7c6961___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatGroupComponent_vue_vue_type_template_id_5e7c6961___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatGroupComponent_vue_vue_type_template_id_5e7c6961___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ChatGroupComponent.vue?vue&type=template&id=5e7c6961& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatGroupComponent.vue?vue&type=template&id=5e7c6961&");
 
 
 /***/ }),
@@ -56323,6 +56680,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatsComponent_vue_vue_type_template_id_2bb55d4d___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatsComponent_vue_vue_type_template_id_2bb55d4d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ChatsComponent.vue?vue&type=template&id=2bb55d4d& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatsComponent.vue?vue&type=template&id=2bb55d4d&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/GroupMessageComponent.vue?vue&type=template&id=4912850c&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/GroupMessageComponent.vue?vue&type=template&id=4912850c& ***!
+  \******************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GroupMessageComponent_vue_vue_type_template_id_4912850c___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GroupMessageComponent_vue_vue_type_template_id_4912850c___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GroupMessageComponent_vue_vue_type_template_id_4912850c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./GroupMessageComponent.vue?vue&type=template&id=4912850c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/GroupMessageComponent.vue?vue&type=template&id=4912850c&");
 
 
 /***/ }),
@@ -56760,6 +57134,31 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatGroupComponent.vue?vue&type=template&id=5e7c6961&":
+/*!******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatGroupComponent.vue?vue&type=template&id=5e7c6961& ***!
+  \******************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "row" })
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatUserComponent.vue?vue&type=template&id=d2a81dc2&":
 /*!*****************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatUserComponent.vue?vue&type=template&id=d2a81dc2& ***!
@@ -56802,89 +57201,842 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "row" }, [
-    _c("div", { staticClass: "col-8" }, [
-      _c("div", { staticClass: "card card-default" }, [
-        _c("div", { staticClass: "card-header" }, [_vm._v("Messages")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body p-0" }, [
+    _c("div", [
+      _c(
+        "div",
+        { staticClass: "card-body p-0", staticStyle: { width: "1160px" } },
+        [
           _c(
             "ul",
             {
-              staticClass: "list-unstyled",
-              staticStyle: { height: "300px", "overflow-y": "scroll" }
+              directives: [{ name: "chat-scroll", rawName: "v-chat-scroll" }],
+              staticClass: "list-unstyled msg-body",
+              staticStyle: { height: "420px", "overflow-y": "scroll" }
             },
             _vm._l(_vm.messages, function(message, index) {
               return _c("li", { key: index, staticClass: "p-2" }, [
-                _c("strong", [_vm._v(_vm._s(message.user.name))]),
-                _vm._v(
-                  "\n                        " +
-                    _vm._s(message.message) +
-                    "\n                    "
-                )
+                message.sender_id == _vm.user.id
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "details mt-2",
+                        staticStyle: { "text-align": "right" }
+                      },
+                      [
+                        message.message != ""
+                          ? _c("b", [
+                              _vm._v(_vm._s(_vm.decrypt(message.message)))
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        message.message == ""
+                          ? _c("div", [
+                              _c(
+                                "button",
+                                {
+                                  staticStyle: {
+                                    "background-color": "gray",
+                                    border: "1px solid black",
+                                    padding: "10px",
+                                    "border-radius": "4%"
+                                  }
+                                },
+                                [
+                                  _c("table", [
+                                    _c("tr", [
+                                      _c("td", [
+                                        message.file.includes(".png") ||
+                                        message.file.includes(".jpg") ||
+                                        message.file.includes(".jpeg")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/imageicon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".mp4") ||
+                                        message.file.includes(".mp3")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/videoicon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".pdf")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/pdficon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".sql") ||
+                                        message.file.includes(".txt")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/texticon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".zip")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/zipicon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e()
+                                      ]),
+                                      _vm._v(
+                                        "\n                                              \n                                            "
+                                      ),
+                                      _c(
+                                        "b",
+                                        {
+                                          staticStyle: { color: "white" },
+                                          attrs: { else: "" }
+                                        },
+                                        [_vm._v(_vm._s(message.file))]
+                                      )
+                                    ])
+                                  ])
+                                ]
+                              )
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        message.status == 0
+                          ? _c("small", [_vm._v("Delivered")])
+                          : _c("small", [_vm._v("Read")]),
+                        _vm._v(" "),
+                        _c("small", [
+                          _vm._v(
+                            _vm._s(_vm._f("formatDate")(message.created_at))
+                          )
+                        ])
+                      ]
+                    )
+                  : _c("div", { staticClass: "details mt-2" }, [
+                      message.message != ""
+                        ? _c("b", [
+                            _vm._v(_vm._s(_vm.decrypt(message.message)))
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      message.message == ""
+                        ? _c("div", [
+                            _c(
+                              "button",
+                              {
+                                staticStyle: {
+                                  "background-color": "gray",
+                                  border: "1px solid black",
+                                  padding: "10px",
+                                  "border-radius": "4%"
+                                }
+                              },
+                              [
+                                _c("table", [
+                                  _c("tr", [
+                                    _c("td", [
+                                      message.file.includes(".png") ||
+                                      message.file.includes(".jpg") ||
+                                      message.file.includes(".jpeg")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/imageicon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".mp4") ||
+                                      message.file.includes(".mp3")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/videoicon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".pdf")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/pdficon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".sql") ||
+                                      message.file.includes(".txt")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/texticon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".zip")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/zipicon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e()
+                                    ]),
+                                    _vm._v(
+                                      "\n                                              \n                                            "
+                                    ),
+                                    _c(
+                                      "b",
+                                      {
+                                        staticStyle: { color: "white" },
+                                        attrs: { else: "" }
+                                      },
+                                      [_vm._v(_vm._s(message.file))]
+                                    )
+                                  ])
+                                ])
+                              ]
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("small", [
+                        _vm._v(_vm._s(_vm._f("formatDate")(message.created_at)))
+                      ])
+                    ])
               ])
             }),
             0
           )
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.newMessage,
-              expression: "newMessage"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: {
-            type: "text",
-            name: "message",
-            placeholder: "Enter your message..."
-          },
-          domProps: { value: _vm.newMessage },
-          on: {
-            keydown: _vm.sendTypingEvent,
-            keyup: function($event) {
-              if (
-                !$event.type.indexOf("key") &&
-                _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-              ) {
-                return null
-              }
-              return _vm.sendMessage.apply(null, arguments)
-            },
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.newMessage = $event.target.value
-            }
+        ]
+      ),
+      _vm._v(" "),
+      _vm.activeUser && _vm.otherUser
+        ? _c("span", { staticClass: "text-muted ml-2" }, [
+            _vm._v(_vm._s(_vm.activeUser.name) + " is typing...")
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticStyle: {
+            display: "flex",
+            border: "1px solid gray",
+            width: "1150px"
           }
-        })
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "col-4" }, [
-      _c("div", { staticClass: "card card-default" }, [
-        _c("div", { staticClass: "card-header" }, [_vm._v("Active Users")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
+        },
+        [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newMessage,
+                expression: "newMessage"
+              }
+            ],
+            staticClass: "form-control",
+            staticStyle: { width: "1110px", height: "38px", border: "none" },
+            attrs: {
+              type: "text",
+              name: "message",
+              placeholder: "Enter your message..."
+            },
+            domProps: { value: _vm.newMessage },
+            on: {
+              keydown: _vm.sendTypingEvent,
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.newMessage = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("button", { on: { click: _vm.onPickFile } }, [
+            _c("i", { staticClass: "fa fa-file ml-1 " })
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            ref: "fileInput",
+            staticStyle: { display: "none" },
+            attrs: { type: "file", name: "file", id: "file" },
+            on: { change: _vm.onFilePicked }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticStyle: {
+                width: "35px",
+                height: "40px",
+                "text-align": "center"
+              },
+              on: { click: _vm.sendMessage }
+            },
+            [_c("i", { staticClass: "fa fa-telegram" })]
+          )
+        ]
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/GroupMessageComponent.vue?vue&type=template&id=4912850c&":
+/*!*********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/GroupMessageComponent.vue?vue&type=template&id=4912850c& ***!
+  \*********************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "row" }, [
+    _c("div", [
+      _c(
+        "div",
+        {
+          staticClass: "card-body p-0",
+          staticStyle: { width: "1160px", height: "380px" }
+        },
+        [
           _c(
             "ul",
-            _vm._l(_vm.users, function(user, index) {
-              return _c("li", { key: index, staticClass: "py-2" }, [
-                _vm._v(
-                  "\n                         " +
-                    _vm._s(user.name) +
-                    "\n                     "
-                )
+            {
+              directives: [{ name: "chat-scroll", rawName: "v-chat-scroll" }],
+              staticClass: "list-unstyled msg-body",
+              staticStyle: { height: "390px", "overflow-y": "scroll" }
+            },
+            _vm._l(_vm.messages, function(message, index) {
+              return _c("li", { key: index, staticClass: "p-2" }, [
+                message.user_id == _vm.user.id
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "details mt-2",
+                        staticStyle: { "text-align": "right" }
+                      },
+                      [
+                        message.message != ""
+                          ? _c("b", [
+                              _vm._v(_vm._s(_vm.decrypt(message.message)))
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        message.message == ""
+                          ? _c("div", [
+                              _c(
+                                "button",
+                                {
+                                  staticStyle: {
+                                    "background-color": "gray",
+                                    border: "1px solid black",
+                                    padding: "10px",
+                                    "border-radius": "4%"
+                                  }
+                                },
+                                [
+                                  _c("table", [
+                                    _c("tr", [
+                                      _c("td", [
+                                        message.file.includes(".png") ||
+                                        message.file.includes(".jpg") ||
+                                        message.file.includes(".jpeg")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/imageicon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".mp4") ||
+                                        message.file.includes(".mp3")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/videoicon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".pdf")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/pdficon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".sql") ||
+                                        message.file.includes(".txt")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/texticon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        message.file.includes(".zip")
+                                          ? _c("img", {
+                                              staticStyle: {
+                                                border: "1px solid black",
+                                                width: "34px",
+                                                height: "38px"
+                                              },
+                                              attrs: {
+                                                id: message.file,
+                                                src:
+                                                  "http://127.0.0.1:8000/assets/uploads/zipicon.png"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.preview($event)
+                                                }
+                                              }
+                                            })
+                                          : _vm._e()
+                                      ]),
+                                      _vm._v(
+                                        "\n                                              \n                                            "
+                                      ),
+                                      _c(
+                                        "b",
+                                        {
+                                          staticStyle: { color: "white" },
+                                          attrs: { else: "" }
+                                        },
+                                        [_vm._v(_vm._s(message.file))]
+                                      )
+                                    ])
+                                  ])
+                                ]
+                              )
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("small", [
+                          _vm._v(
+                            _vm._s(_vm._f("formatDate")(message.created_at))
+                          )
+                        ])
+                      ]
+                    )
+                  : _c("div", { staticClass: "details mt-2" }, [
+                      _c("p", [_vm._v(_vm._s(message.user.name))]),
+                      _vm._v(" "),
+                      message.message != ""
+                        ? _c("b", [
+                            _vm._v(_vm._s(_vm.decrypt(message.message)))
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      message.message == ""
+                        ? _c("div", [
+                            _c(
+                              "button",
+                              {
+                                staticStyle: {
+                                  "background-color": "gray",
+                                  border: "1px solid black",
+                                  padding: "10px",
+                                  "border-radius": "4%"
+                                }
+                              },
+                              [
+                                _c("table", [
+                                  _c("tr", [
+                                    _c("td", [
+                                      message.file.includes(".png") ||
+                                      message.file.includes(".jpg") ||
+                                      message.file.includes(".jpeg")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/imageicon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".mp4") ||
+                                      message.file.includes(".mp3")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/videoicon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".pdf")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/pdficon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".sql") ||
+                                      message.file.includes(".txt")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/texticon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      message.file.includes(".zip")
+                                        ? _c("img", {
+                                            staticStyle: {
+                                              border: "1px solid black",
+                                              width: "34px",
+                                              height: "38px"
+                                            },
+                                            attrs: {
+                                              id: message.file,
+                                              src:
+                                                "http://127.0.0.1:8000/assets/uploads/zipicon.png"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.preview($event)
+                                              }
+                                            }
+                                          })
+                                        : _vm._e()
+                                    ]),
+                                    _vm._v(
+                                      "\n                                              \n                                            "
+                                    ),
+                                    _c(
+                                      "b",
+                                      {
+                                        staticStyle: { color: "white" },
+                                        attrs: { else: "" }
+                                      },
+                                      [_vm._v(_vm._s(message.file))]
+                                    )
+                                  ])
+                                ])
+                              ]
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("small", [
+                        _vm._v(_vm._s(_vm._f("formatDate")(message.created_at)))
+                      ])
+                    ])
               ])
             }),
             0
           )
-        ])
-      ])
+        ]
+      ),
+      _vm._v(" "),
+      _c("span", { staticClass: "text-muted ml-2" }, [_vm._v(" is typing...")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticStyle: {
+            display: "flex",
+            border: "1px solid gray",
+            width: "1150px"
+          }
+        },
+        [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newMessage,
+                expression: "newMessage"
+              }
+            ],
+            staticClass: "form-control",
+            staticStyle: { width: "1110px", height: "38px", border: "none" },
+            attrs: {
+              type: "text",
+              name: "message",
+              placeholder: "Enter your message..."
+            },
+            domProps: { value: _vm.newMessage },
+            on: {
+              keydown: function($event) {},
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.newMessage = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("button", { on: { click: _vm.onPickFile } }, [
+            _c("i", { staticClass: "fa fa-file ml-1 " })
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            ref: "fileInput",
+            staticStyle: { display: "none" },
+            attrs: { type: "file", name: "file", id: "file" },
+            on: { change: _vm.onFilePicked }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticStyle: {
+                width: "35px",
+                height: "40px",
+                "text-align": "center"
+              },
+              on: { click: _vm.sendMessage }
+            },
+            [_c("i", { staticClass: "fa fa-telegram" })]
+          )
+        ]
+      )
     ])
   ])
 }

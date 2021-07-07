@@ -9,9 +9,14 @@ use App\Models\User;
 use App\Models\Message;
 use App\Models\Chat;
 use App\Models\ChatWords;
+use App\Models\ChatUser;
+use App\Models\ChatGroup;
+use App\Models\ChatGroupUser;
+use App\Models\ChatConversation;
 
 use App\Events\MessageSent;
 use App\Events\ChatMessage;
+use App\Events\GroupMessage;
 
 use Illuminate\Support\Facades\Crypt;
 
@@ -63,7 +68,7 @@ class ChatsController extends Controller
     }
     /**
     * Insert messages in database.
-    *hy
+    *
     * @return redirect to chat page.
     */
     public function store(Request $request,$id){
@@ -115,11 +120,135 @@ class ChatsController extends Controller
         return ['status'=>'success','chatdata'=>$message];
     }
     /**
-    * Diplay messages of sender_id.
+    * Diplay last messages.
     *
     * @return Messages.
     */
     public function lastMessage($id){
         return Chat::where('sender_id',$id)->orwhere('receiver_id',$id)->get();
+    }
+    /**
+    * Diplay Group.
+    *
+    * @return Groups.
+    */
+    public function chatGroups($id){
+        $chatGroup = ChatGroup::with('user')->where('id',$id)->first();
+        $chatGroupUser = ChatGroupUser::with('user')->where('group_id',$id)->get();
+        $user = User::all();
+        return view('user.chatgroup',compact('chatGroup','chatGroupUser','user'));
+    }
+    /**
+    * Store Group name and user id.
+    *
+    * @$request for requesting data from form.
+    * 
+    * @return redirect chatuser.
+    */
+    public function storeChatGroup(Request $request){
+
+        $groupName = $request->groupname;
+        $chatGroup = new ChatGroup();
+        $chatGroup->name = $groupName;
+        $chatGroup->created_by = auth()->user()->id;
+        if(ChatGroup::where('name',$groupName)->first())
+        {
+            session()->flash('message', 'Group Already exists!.');
+            return redirect(route('chats'));
+        }
+        else{
+            $chatGroup->save();
+        }
+        
+        $groupId = $chatGroup->id;
+
+        for($i = 0; $i < count($request->userid); $i++)  {
+            $chatGroupUser = new ChatGroupUser;
+            $chatGroupUser->group_id = $groupId;
+            $chatGroupUser->user_id = $request->userid[$i];
+            $chatGroupUser->save();
+        }
+        $chatGroupUser = new ChatGroupUser;
+        $chatGroupUser->group_id = $groupId;
+        $chatGroupUser->user_id = auth()->user()->id;
+        $chatGroupUser->save();
+        
+        return redirect(route('chats'));
+    }
+    /**
+    * Store new group member.
+    *
+    * @$request for requesting data from form.
+    * 
+    * @return redirect chatuser.
+    */
+    public function storeGroupMember(Request $request){
+
+        $groupId = $request->groupid;
+
+        for($i = 0; $i < count($request->userid); $i++)  {
+            $chatGroupUser = new ChatGroupUser;
+            $chatGroupUser->group_id = $groupId;
+            $chatGroupUser->user_id = $request->userid[$i];
+            if(ChatGroupUser::where('group_id',$groupId)->where('user_id',$request->userid[$i])->first()){
+                session()->flash('message', 'User Already Added!.');
+                return back(); 
+            }
+            else{
+                $chatGroupUser->save();
+            }   
+        }
+        return back();
+    }
+    /**
+    * Diplay group messages.
+    *
+    * @return Messages.
+    */
+    public function groupMessages($id){
+        return ChatConversation::where('group_id',$id)->with('user')->get();
+    } 
+    /**
+    * Insert group messages in database.
+    *
+    * @return redirect to chat page.
+    */
+    public function storeGroupMessages(Request $request,$id){
+
+        if($request->file()){
+            $request->validate([
+                'file' => 'required|mimes:jpg,jpeg,png,csv,txt,xlx,xls,pdf,pptx,video,zip,mp3,mp4|max:2048',
+            ]);
+
+            $content = '';
+            $file = $request->file('file');
+            $file_name = $file->getClientOriginalName();
+            $generated_new_name = time() . '.' . $file->getClientOriginalExtension();
+            $request->file->move('assets/uploads', $file_name);
+         
+        }
+        elseif($request->file == '' && $request->message != ''){
+            $content = Crypt::encryptString($request->message);
+            $file_name = '';    
+        }
+
+        $message =  ChatConversation::create([
+            'message' => $content,
+            'file' => $file_name,
+            'user_id' => auth()->user()->id,
+            'group_id' => $id,
+        ]);
+        
+        broadcast(new GroupMessage($message->load('user')))->toOthers();
+        
+        return ['message'=>$message];
+    }
+    /**
+    * Diplay last group messages.
+    *
+    * @return Messages.
+    */
+    public function lastGroupMessage(){
+        return ChatConversation::with('user')->get();
     }
 }
