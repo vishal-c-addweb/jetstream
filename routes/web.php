@@ -119,6 +119,15 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
 
 Route::middleware(['auth:sanctum','verified'])->group(function () {
 
+    Route::get('/agora-chat', 'App\Http\Controllers\AgoraVideoController@index');
+    Route::post('/agora/token', 'App\Http\Controllers\AgoraVideoController@token');
+    Route::post('/agora/call-user', 'App\Http\Controllers\AgoraVideoController@callUser');
+    
+});
+
+
+Route::middleware(['auth:sanctum','verified'])->group(function () {
+
     Route::get('/chat',[ChatsController::class,'index']);
 
     Route::get('/messages',[ChatsController::class,'fetchMessages']);

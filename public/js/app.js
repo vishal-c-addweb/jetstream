@@ -3803,6 +3803,403 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "AgoraChat",
+  props: ["authuser", "authuserid", "allusers", "agora_id"],
+  data: function data() {
+    return {
+      callPlaced: false,
+      client: null,
+      localStream: null,
+      mutedAudio: false,
+      mutedVideo: false,
+      userOnlineChannel: null,
+      onlineUsers: [],
+      incomingCall: false,
+      incomingCaller: "",
+      agoraChannel: null
+    };
+  },
+  mounted: function mounted() {
+    this.initUserOnlineChannel();
+    this.initUserOnlineListeners();
+  },
+  methods: {
+    /**
+     * Presence Broadcast Channel Listeners and Methods
+     * Provided by Laravel.
+     * Websockets with Pusher
+     */
+    initUserOnlineChannel: function initUserOnlineChannel() {
+      this.userOnlineChannel = window.Echo.join("agora-online-channel");
+    },
+    initUserOnlineListeners: function initUserOnlineListeners() {
+      var _this = this;
+
+      this.userOnlineChannel.here(function (users) {
+        _this.onlineUsers = users;
+      });
+      this.userOnlineChannel.joining(function (user) {
+        // check user availability
+        var joiningUserIndex = _this.onlineUsers.findIndex(function (data) {
+          return data.id === user.id;
+        });
+
+        if (joiningUserIndex < 0) {
+          _this.onlineUsers.push(user);
+        }
+      });
+      this.userOnlineChannel.leaving(function (user) {
+        var leavingUserIndex = _this.onlineUsers.findIndex(function (data) {
+          return data.id === user.id;
+        });
+
+        _this.onlineUsers.splice(leavingUserIndex, 1);
+      }); // listen to incomming call
+
+      this.userOnlineChannel.listen("MakeAgoraCall", function (_ref) {
+        var data = _ref.data;
+
+        if (parseInt(data.userToCall) === parseInt(_this.authuserid)) {
+          var callerIndex = _this.onlineUsers.findIndex(function (user) {
+            return user.id === data.from;
+          });
+
+          _this.incomingCaller = _this.onlineUsers[callerIndex]["name"];
+          _this.incomingCall = true; // the channel that was sent over to the user being called is what
+          // the receiver will use to join the call when accepting the call.
+
+          _this.agoraChannel = data.channelName;
+        }
+      });
+    },
+    getUserOnlineStatus: function getUserOnlineStatus(id) {
+      var onlineUserIndex = this.onlineUsers.findIndex(function (data) {
+        return data.id === id;
+      });
+
+      if (onlineUserIndex < 0) {
+        return "Offline";
+      }
+
+      return "Online";
+    },
+    placeCall: function placeCall(id, calleeName) {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var channelName, tokenRes;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.prev = 0;
+                // channelName = the caller's and the callee's id. you can use anything. tho.
+                channelName = "".concat(_this2.authuser, "_").concat(calleeName);
+                _context.next = 4;
+                return _this2.generateToken(channelName);
+
+              case 4:
+                tokenRes = _context.sent;
+                _context.next = 7;
+                return axios.post("/agora/call-user", {
+                  user_to_call: id,
+                  username: _this2.authuser,
+                  channel_name: channelName
+                });
+
+              case 7:
+                _this2.initializeAgora();
+
+                _this2.joinRoom(tokenRes.data, channelName);
+
+                _context.next = 14;
+                break;
+
+              case 11:
+                _context.prev = 11;
+                _context.t0 = _context["catch"](0);
+                console.log(_context.t0);
+
+              case 14:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[0, 11]]);
+      }))();
+    },
+    acceptCall: function acceptCall() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var tokenRes;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _this3.initializeAgora();
+
+                _context2.next = 3;
+                return _this3.generateToken(_this3.agoraChannel);
+
+              case 3:
+                tokenRes = _context2.sent;
+
+                _this3.joinRoom(tokenRes.data, _this3.agoraChannel);
+
+                _this3.incomingCall = false;
+                _this3.callPlaced = true;
+
+              case 7:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    declineCall: function declineCall() {
+      // You can send a request to the caller to
+      // alert them of rejected call
+      this.incomingCall = false;
+    },
+    generateToken: function generateToken(channelName) {
+      return axios.post("/agora/token", {
+        channelName: channelName
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    },
+
+    /**
+     * Agora Events and Listeners
+     */
+    initializeAgora: function initializeAgora() {
+      this.client = AgoraRTC.createClient({
+        mode: "rtc",
+        codec: "h264"
+      });
+      this.client.init(this.agora_id, function () {
+        console.log("AgoraRTC client initialized");
+      }, function (err) {
+        console.log("AgoraRTC client init failed", err);
+      });
+    },
+    joinRoom: function joinRoom(token, channel) {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _this4.client.join(token, channel, _this4.authuser, function (uid) {
+                  console.log("User " + uid + " join channel successfully");
+                  _this4.callPlaced = true;
+
+                  _this4.createLocalStream();
+
+                  _this4.initializedAgoraListeners();
+                }, function (err) {
+                  console.log("Join channel failed", err);
+                });
+
+              case 1:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    initializedAgoraListeners: function initializedAgoraListeners() {
+      var _this5 = this;
+
+      //   Register event listeners
+      this.client.on("stream-published", function (evt) {
+        console.log("Publish local stream successfully");
+        console.log(evt);
+      }); //subscribe remote stream
+
+      this.client.on("stream-added", function (_ref2) {
+        var stream = _ref2.stream;
+        console.log("New stream added: " + stream.getId());
+
+        _this5.client.subscribe(stream, function (err) {
+          console.log("Subscribe stream failed", err);
+        });
+      });
+      this.client.on("stream-subscribed", function (evt) {
+        // Attach remote stream to the remote-video div
+        evt.stream.play("remote-video");
+
+        _this5.client.publish(evt.stream);
+      });
+      this.client.on("stream-removed", function (_ref3) {
+        var stream = _ref3.stream;
+        console.log(String(stream.getId()));
+        stream.close();
+      });
+      this.client.on("peer-online", function (evt) {
+        console.log("peer-online", evt.uid);
+      });
+      this.client.on("peer-leave", function (evt) {
+        var uid = evt.uid;
+        var reason = evt.reason;
+        console.log("remote user left ", uid, "reason: ", reason);
+      });
+      this.client.on("stream-unpublished", function (evt) {
+        console.log(evt);
+      });
+    },
+    createLocalStream: function createLocalStream() {
+      var _this6 = this;
+
+      this.localStream = AgoraRTC.createStream({
+        audio: true,
+        video: true
+      }); // Initialize the local stream
+
+      this.localStream.init(function () {
+        // Play the local stream
+        _this6.localStream.play("local-video"); // Publish the local stream
+
+
+        _this6.client.publish(_this6.localStream, function (err) {
+          console.log("publish local stream", err);
+        });
+      }, function (err) {
+        console.log(err);
+      });
+    },
+    endCall: function endCall() {
+      var _this7 = this;
+
+      this.localStream.close();
+      this.client.leave(function () {
+        console.log("Leave channel successfully");
+        _this7.callPlaced = false;
+      }, function (err) {
+        console.log("Leave channel failed");
+      });
+    },
+    handleAudioToggle: function handleAudioToggle() {
+      if (this.mutedAudio) {
+        this.localStream.unmuteAudio();
+        this.mutedAudio = false;
+      } else {
+        this.localStream.muteAudio();
+        this.mutedAudio = true;
+      }
+    },
+    handleVideoToggle: function handleVideoToggle() {
+      if (this.mutedVideo) {
+        this.localStream.unmuteVideo();
+        this.mutedVideo = false;
+      } else {
+        this.localStream.muteVideo();
+        this.mutedVideo = true;
+      }
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatComponent.vue?vue&type=script&lang=js&":
 /*!********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ChatComponent.vue?vue&type=script&lang=js& ***!
@@ -5032,6 +5429,7 @@ vue__WEBPACK_IMPORTED_MODULE_3__.default.component('chatuser', __webpack_require
 vue__WEBPACK_IMPORTED_MODULE_3__.default.component('chatgroup', __webpack_require__(/*! ./components/ChatGroupComponent.vue */ "./resources/js/components/ChatGroupComponent.vue").default);
 vue__WEBPACK_IMPORTED_MODULE_3__.default.component('groupmessage', __webpack_require__(/*! ./components/GroupMessageComponent.vue */ "./resources/js/components/GroupMessageComponent.vue").default);
 vue__WEBPACK_IMPORTED_MODULE_3__.default.component("video-chat", __webpack_require__(/*! ./components/VideoChat.vue */ "./resources/js/components/VideoChat.vue").default);
+vue__WEBPACK_IMPORTED_MODULE_3__.default.component("agora-chat", __webpack_require__(/*! ./components/AgoraChat.vue */ "./resources/js/components/AgoraChat.vue").default);
 var app = new vue__WEBPACK_IMPORTED_MODULE_3__.default({
   el: '#app'
 });
@@ -13755,6 +14153,33 @@ function isnan (val) {
 	return CryptoJS;
 
 }));
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/cssWithMappingToString.js */ "./node_modules/css-loader/dist/runtime/cssWithMappingToString.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\nmain[data-v-f5a5b2d6] {\n  margin-top: 50px;\n}\n#video-container[data-v-f5a5b2d6] {\n  width: 700px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0 auto;\n  border: 1px solid #099dfd;\n  position: relative;\n  box-shadow: 1px 1px 11px #9e9e9e;\n  background-color: #fff;\n}\n#local-video[data-v-f5a5b2d6] {\n  width: 30%;\n  height: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n  cursor: pointer;\n}\n#remote-video[data-v-f5a5b2d6] {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n  cursor: pointer;\n}\n.action-btns[data-v-f5a5b2d6] {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n#login-form[data-v-f5a5b2d6] {\n  margin-top: 100px;\n}\n", "",{"version":3,"sources":["webpack://./AgoraChat.vue"],"names":[],"mappings":";AA+SA;EACA,gBAAA;AACA;AACA;EACA,YAAA;EACA,aAAA;EACA,eAAA;EACA,gBAAA;EACA,cAAA;EACA,yBAAA;EACA,kBAAA;EACA,gCAAA;EACA,sBAAA;AACA;AACA;EACA,UAAA;EACA,WAAA;EACA,kBAAA;EACA,UAAA;EACA,YAAA;EACA,sBAAA;EACA,kBAAA;EACA,UAAA;EACA,eAAA;AACA;AACA;EACA,WAAA;EACA,YAAA;EACA,kBAAA;EACA,OAAA;EACA,QAAA;EACA,SAAA;EACA,MAAA;EACA,UAAA;EACA,SAAA;EACA,UAAA;EACA,eAAA;AACA;AACA;EACA,kBAAA;EACA,YAAA;EACA,SAAA;EACA,kBAAA;EACA,UAAA;EACA,aAAA;EACA,mBAAA;EACA,eAAA;AACA;AACA;EACA,iBAAA;AACA","sourcesContent":["<template>\n  <main>\n    \n    <div class=\"container my-5\">\n      <div class=\"row\">\n        <div class=\"col\">\n          <div class=\"btn-group\" role=\"group\">\n            <button\n              type=\"button\"\n              class=\"btn btn-primary mr-2\"\n              v-for=\"user in allusers\"\n              :key=\"user.id\"\n              @click=\"placeCall(user.id, user.name)\"\n            >\n              Call {{ user.name }}\n              <span class=\"badge badge-light\">{{\n                getUserOnlineStatus(user.id)\n              }}</span>\n            </button>\n          </div>\n        </div>\n      </div>\n\n      <!-- Incoming Call  -->\n      <div class=\"row my-5\" v-if=\"incomingCall\">\n        <div class=\"col-12\">\n          <p>\n            Incoming Call From <strong>{{ incomingCaller }}</strong>\n          </p>\n          <div class=\"btn-group\" role=\"group\">\n            <button\n              type=\"button\"\n              class=\"btn btn-danger\"\n              data-dismiss=\"modal\"\n              @click=\"declineCall\"\n            >\n              Decline\n            </button>\n            <button\n              type=\"button\"\n              class=\"btn btn-success ml-5\"\n              @click=\"acceptCall\"\n            >\n              Accept\n            </button>\n          </div>\n        </div>\n      </div>\n      <!-- End of Incoming Call  -->\n    </div>\n\n    <section id=\"video-container\" v-if=\"callPlaced\">\n      <div id=\"local-video\"></div>\n      <div id=\"remote-video\"></div>\n\n      <div class=\"action-btns\">\n        <button type=\"button\" class=\"btn btn-info\" @click=\"handleAudioToggle\">\n          {{ mutedAudio ? \"Unmute\" : \"Mute\" }}\n        </button>\n        <button\n          type=\"button\"\n          class=\"btn btn-primary mx-4\"\n          @click=\"handleVideoToggle\"\n        >\n          {{ mutedVideo ? \"ShowVideo\" : \"HideVideo\" }}\n        </button>\n        <button type=\"button\" class=\"btn btn-danger\" @click=\"endCall\">\n          EndCall\n        </button>\n      </div>\n    </section>\n  </main>\n</template>\n\n<script>\nexport default {\n  name: \"AgoraChat\",\n  props: [\"authuser\", \"authuserid\", \"allusers\", \"agora_id\"],\n  data() {\n    return {\n      callPlaced: false,\n      client: null,\n      localStream: null,\n      mutedAudio: false,\n      mutedVideo: false,\n      userOnlineChannel: null,\n      onlineUsers: [],\n      incomingCall: false,\n      incomingCaller: \"\",\n      agoraChannel: null,\n    };\n  },\n  mounted() {\n    this.initUserOnlineChannel();\n    this.initUserOnlineListeners();\n  },\n  methods: {\n    /**\n     * Presence Broadcast Channel Listeners and Methods\n     * Provided by Laravel.\n     * Websockets with Pusher\n     */\n    initUserOnlineChannel() {\n      this.userOnlineChannel = window.Echo.join(\"agora-online-channel\");\n    },\n    initUserOnlineListeners() {\n      this.userOnlineChannel.here((users) => {\n        this.onlineUsers = users;\n      });\n      this.userOnlineChannel.joining((user) => {\n        // check user availability\n        const joiningUserIndex = this.onlineUsers.findIndex(\n          (data) => data.id === user.id\n        );\n        if (joiningUserIndex < 0) {\n          this.onlineUsers.push(user);\n        }\n      });\n      this.userOnlineChannel.leaving((user) => {\n        const leavingUserIndex = this.onlineUsers.findIndex(\n          (data) => data.id === user.id\n        );\n        this.onlineUsers.splice(leavingUserIndex, 1);\n      });\n      // listen to incomming call\n      this.userOnlineChannel.listen(\"MakeAgoraCall\", ({ data }) => {\n        if (parseInt(data.userToCall) === parseInt(this.authuserid)) {\n          const callerIndex = this.onlineUsers.findIndex(\n            (user) => user.id === data.from\n          );\n          this.incomingCaller = this.onlineUsers[callerIndex][\"name\"];\n          this.incomingCall = true;\n          // the channel that was sent over to the user being called is what\n          // the receiver will use to join the call when accepting the call.\n          this.agoraChannel = data.channelName;\n        }\n      });\n    },\n    getUserOnlineStatus(id) {\n      const onlineUserIndex = this.onlineUsers.findIndex(\n        (data) => data.id === id\n      );\n      if (onlineUserIndex < 0) {\n        return \"Offline\";\n      }\n      return \"Online\";\n    },\n    async placeCall(id, calleeName) {\n      try {\n        // channelName = the caller's and the callee's id. you can use anything. tho.\n        const channelName = `${this.authuser}_${calleeName}`;\n        const tokenRes = await this.generateToken(channelName);\n        // Broadcasts a call event to the callee and also gets back the token\n        await axios.post(\"/agora/call-user\", {\n          user_to_call: id,\n          username: this.authuser,\n          channel_name: channelName,\n        });\n        this.initializeAgora();\n        this.joinRoom(tokenRes.data, channelName);\n      } catch (error) {\n        console.log(error);\n      }\n    },\n    async acceptCall() {\n      this.initializeAgora();\n      const tokenRes = await this.generateToken(this.agoraChannel);\n      this.joinRoom(tokenRes.data, this.agoraChannel);\n      this.incomingCall = false;\n      this.callPlaced = true;\n    },\n    declineCall() {\n      // You can send a request to the caller to\n      // alert them of rejected call\n      this.incomingCall = false;\n    },\n    generateToken(channelName) {\n      return axios.post(\"/agora/token\", {\n        channelName,\n      }).catch(error => {\n                    console.log(error.response)\n                });\n    },\n    /**\n     * Agora Events and Listeners\n     */\n    initializeAgora() {\n      this.client = AgoraRTC.createClient({ mode: \"rtc\", codec: \"h264\" });\n      this.client.init(\n        this.agora_id,\n        () => {\n          console.log(\"AgoraRTC client initialized\");\n        },\n        (err) => {\n          console.log(\"AgoraRTC client init failed\", err);\n        }\n      );\n    },\n    async joinRoom(token, channel) {\n      this.client.join(\n        token,\n        channel,\n        this.authuser,\n        (uid) => {\n          console.log(\"User \" + uid + \" join channel successfully\");\n          this.callPlaced = true;\n          this.createLocalStream();\n          this.initializedAgoraListeners();\n        },\n        (err) => {\n          console.log(\"Join channel failed\", err);\n        }\n      );\n    },\n    initializedAgoraListeners() {\n      //   Register event listeners\n      this.client.on(\"stream-published\", function (evt) {\n        console.log(\"Publish local stream successfully\");\n        console.log(evt);\n      });\n      //subscribe remote stream\n      this.client.on(\"stream-added\", ({ stream }) => {\n        console.log(\"New stream added: \" + stream.getId());\n        this.client.subscribe(stream, function (err) {\n          console.log(\"Subscribe stream failed\", err);\n        });\n      });\n      this.client.on(\"stream-subscribed\", (evt) => {\n        // Attach remote stream to the remote-video div\n        evt.stream.play(\"remote-video\");\n        this.client.publish(evt.stream);\n      });\n      this.client.on(\"stream-removed\", ({ stream }) => {\n        console.log(String(stream.getId()));\n        stream.close();\n      });\n      this.client.on(\"peer-online\", (evt) => {\n        console.log(\"peer-online\", evt.uid);\n      });\n      this.client.on(\"peer-leave\", (evt) => {\n        var uid = evt.uid;\n        var reason = evt.reason;\n        console.log(\"remote user left \", uid, \"reason: \", reason);\n      });\n      this.client.on(\"stream-unpublished\", (evt) => {\n        console.log(evt);\n      });\n    },\n    createLocalStream() {\n      this.localStream = AgoraRTC.createStream({\n        audio: true,\n        video: true,\n      });\n      // Initialize the local stream\n      this.localStream.init(\n        () => {\n          // Play the local stream\n          this.localStream.play(\"local-video\");\n          // Publish the local stream\n          this.client.publish(this.localStream, (err) => {\n            console.log(\"publish local stream\", err);\n          });\n        },\n        (err) => {\n          console.log(err);\n        }\n      );\n    },\n    endCall() {\n      this.localStream.close();\n      this.client.leave(\n        () => {\n          console.log(\"Leave channel successfully\");\n          this.callPlaced = false;\n        },\n        (err) => {\n          console.log(\"Leave channel failed\");\n        }\n      );\n    },\n    handleAudioToggle() {\n      if (this.mutedAudio) {\n        this.localStream.unmuteAudio();\n        this.mutedAudio = false;\n      } else {\n        this.localStream.muteAudio();\n        this.mutedAudio = true;\n      }\n    },\n    handleVideoToggle() {\n      if (this.mutedVideo) {\n        this.localStream.unmuteVideo();\n        this.mutedVideo = false;\n      } else {\n        this.localStream.muteVideo();\n        this.mutedVideo = true;\n      }\n    },\n  },\n};\n</script>\n\n<style scoped>\nmain {\n  margin-top: 50px;\n}\n#video-container {\n  width: 700px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0 auto;\n  border: 1px solid #099dfd;\n  position: relative;\n  box-shadow: 1px 1px 11px #9e9e9e;\n  background-color: #fff;\n}\n#local-video {\n  width: 30%;\n  height: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n  cursor: pointer;\n}\n#remote-video {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n  cursor: pointer;\n}\n.action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n#login-form {\n  margin-top: 100px;\n}\n</style>"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
 
 /***/ }),
 
@@ -68296,6 +68721,47 @@ function config (name) {
 
 /***/ }),
 
+/***/ "./resources/js/components/AgoraChat.vue":
+/*!***********************************************!*\
+  !*** ./resources/js/components/AgoraChat.vue ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _AgoraChat_vue_vue_type_template_id_f5a5b2d6_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AgoraChat.vue?vue&type=template&id=f5a5b2d6&scoped=true& */ "./resources/js/components/AgoraChat.vue?vue&type=template&id=f5a5b2d6&scoped=true&");
+/* harmony import */ var _AgoraChat_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AgoraChat.vue?vue&type=script&lang=js& */ "./resources/js/components/AgoraChat.vue?vue&type=script&lang=js&");
+/* harmony import */ var _AgoraChat_vue_vue_type_style_index_0_id_f5a5b2d6_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css& */ "./resources/js/components/AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__.default)(
+  _AgoraChat_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _AgoraChat_vue_vue_type_template_id_f5a5b2d6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _AgoraChat_vue_vue_type_template_id_f5a5b2d6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "f5a5b2d6",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/AgoraChat.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/ChatComponent.vue":
 /*!***************************************************!*\
   !*** ./resources/js/components/ChatComponent.vue ***!
@@ -68532,6 +68998,22 @@ component.options.__file = "resources/js/components/VideoChat.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/AgoraChat.vue?vue&type=script&lang=js&":
+/*!************************************************************************!*\
+  !*** ./resources/js/components/AgoraChat.vue?vue&type=script&lang=js& ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AgoraChat_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./AgoraChat.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AgoraChat_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
 /***/ "./resources/js/components/ChatComponent.vue?vue&type=script&lang=js&":
 /*!****************************************************************************!*\
   !*** ./resources/js/components/ChatComponent.vue?vue&type=script&lang=js& ***!
@@ -68625,6 +69107,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_VideoChat_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./VideoChat.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/VideoChat.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_VideoChat_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/components/AgoraChat.vue?vue&type=template&id=f5a5b2d6&scoped=true&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/AgoraChat.vue?vue&type=template&id=f5a5b2d6&scoped=true& ***!
+  \******************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AgoraChat_vue_vue_type_template_id_f5a5b2d6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AgoraChat_vue_vue_type_template_id_f5a5b2d6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AgoraChat_vue_vue_type_template_id_f5a5b2d6_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./AgoraChat.vue?vue&type=template&id=f5a5b2d6&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=template&id=f5a5b2d6&scoped=true&");
+
 
 /***/ }),
 
@@ -68730,6 +69229,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css&":
+/*!********************************************************************************************************!*\
+  !*** ./resources/js/components/AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css& ***!
+  \********************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AgoraChat_vue_vue_type_style_index_0_id_f5a5b2d6_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-style-loader/index.js!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css& */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AgoraChat_vue_vue_type_style_index_0_id_f5a5b2d6_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AgoraChat_vue_vue_type_style_index_0_id_f5a5b2d6_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AgoraChat_vue_vue_type_style_index_0_id_f5a5b2d6_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AgoraChat_vue_vue_type_style_index_0_id_f5a5b2d6_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
+
+
+/***/ }),
+
 /***/ "./resources/js/components/VideoChat.vue?vue&type=style&index=0&id=737f9f18&scoped=true&lang=css&":
 /*!********************************************************************************************************!*\
   !*** ./resources/js/components/VideoChat.vue?vue&type=style&index=0&id=737f9f18&scoped=true&lang=css& ***!
@@ -68743,6 +69259,155 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
 /* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_VideoChat_vue_vue_type_style_index_0_id_737f9f18_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_VideoChat_vue_vue_type_style_index_0_id_737f9f18_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=template&id=f5a5b2d6&scoped=true&":
+/*!*********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=template&id=f5a5b2d6&scoped=true& ***!
+  \*********************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("main", [
+    _c("div", { staticClass: "container my-5" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col" }, [
+          _c(
+            "div",
+            { staticClass: "btn-group", attrs: { role: "group" } },
+            _vm._l(_vm.allusers, function(user) {
+              return _c(
+                "button",
+                {
+                  key: user.id,
+                  staticClass: "btn btn-primary mr-2",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.placeCall(user.id, user.name)
+                    }
+                  }
+                },
+                [
+                  _vm._v(
+                    "\n            Call " + _vm._s(user.name) + "\n            "
+                  ),
+                  _c("span", { staticClass: "badge badge-light" }, [
+                    _vm._v(_vm._s(_vm.getUserOnlineStatus(user.id)))
+                  ])
+                ]
+              )
+            }),
+            0
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _vm.incomingCall
+        ? _c("div", { staticClass: "row my-5" }, [
+            _c("div", { staticClass: "col-12" }, [
+              _c("p", [
+                _vm._v("\n          Incoming Call From "),
+                _c("strong", [_vm._v(_vm._s(_vm.incomingCaller))])
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "btn-group", attrs: { role: "group" } },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-danger",
+                      attrs: { type: "button", "data-dismiss": "modal" },
+                      on: { click: _vm.declineCall }
+                    },
+                    [_vm._v("\n            Decline\n          ")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success ml-5",
+                      attrs: { type: "button" },
+                      on: { click: _vm.acceptCall }
+                    },
+                    [_vm._v("\n            Accept\n          ")]
+                  )
+                ]
+              )
+            ])
+          ])
+        : _vm._e()
+    ]),
+    _vm._v(" "),
+    _vm.callPlaced
+      ? _c("section", { attrs: { id: "video-container" } }, [
+          _c("div", { attrs: { id: "local-video" } }),
+          _vm._v(" "),
+          _c("div", { attrs: { id: "remote-video" } }),
+          _vm._v(" "),
+          _c("div", { staticClass: "action-btns" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-info",
+                attrs: { type: "button" },
+                on: { click: _vm.handleAudioToggle }
+              },
+              [
+                _vm._v(
+                  "\n        " +
+                    _vm._s(_vm.mutedAudio ? "Unmute" : "Mute") +
+                    "\n      "
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary mx-4",
+                attrs: { type: "button" },
+                on: { click: _vm.handleVideoToggle }
+              },
+              [
+                _vm._v(
+                  "\n        " +
+                    _vm._s(_vm.mutedVideo ? "ShowVideo" : "HideVideo") +
+                    "\n      "
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger",
+                attrs: { type: "button" },
+                on: { click: _vm.endCall }
+              },
+              [_vm._v("\n        EndCall\n      ")]
+            )
+          ])
+        ])
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
 
 
 /***/ }),
@@ -68767,14 +69432,17 @@ var render = function() {
     _c("div", [
       _c(
         "div",
-        { staticClass: "card-body p-0", staticStyle: { width: "1160px" } },
+        {
+          staticClass: "card-body p-0",
+          staticStyle: { width: "1740px", height: "700px" }
+        },
         [
           _c(
             "ul",
             {
               directives: [{ name: "chat-scroll", rawName: "v-chat-scroll" }],
               staticClass: "list-unstyled msg-body",
-              staticStyle: { height: "420px", "overflow-y": "scroll" }
+              staticStyle: { height: "650px", "overflow-y": "scroll" }
             },
             _vm._l(_vm.messages, function(message, index) {
               return _c("li", { key: index, staticClass: "p-2" }, [
@@ -69113,7 +69781,7 @@ var render = function() {
           staticStyle: {
             display: "flex",
             border: "1px solid gray",
-            width: "1150px"
+            width: "1740px"
           }
         },
         [
@@ -69127,7 +69795,7 @@ var render = function() {
               }
             ],
             staticClass: "form-control",
-            staticStyle: { width: "1110px", height: "38px", border: "none" },
+            staticStyle: { width: "1710px", height: "38px", border: "none" },
             attrs: {
               type: "text",
               name: "message",
@@ -69685,7 +70353,7 @@ var render = function() {
         "div",
         {
           staticClass: "card-body p-0",
-          staticStyle: { width: "1160px", height: "380px" }
+          staticStyle: { width: "1740px", height: "700px" }
         },
         [
           _c(
@@ -69693,7 +70361,7 @@ var render = function() {
             {
               directives: [{ name: "chat-scroll", rawName: "v-chat-scroll" }],
               staticClass: "list-unstyled msg-body",
-              staticStyle: { height: "390px", "overflow-y": "scroll" }
+              staticStyle: { height: "650px", "overflow-y": "scroll" }
             },
             _vm._l(_vm.messages, function(message, index) {
               return _c("li", { key: index, staticClass: "p-2" }, [
@@ -70030,7 +70698,7 @@ var render = function() {
           staticStyle: {
             display: "flex",
             border: "1px solid gray",
-            width: "1150px"
+            width: "1740px"
           }
         },
         [
@@ -70044,7 +70712,7 @@ var render = function() {
               }
             ],
             staticClass: "form-control",
-            staticStyle: { width: "1110px", height: "38px", border: "none" },
+            staticStyle: { width: "1710px", height: "38px", border: "none" },
             attrs: {
               type: "text",
               name: "message",
@@ -70403,6 +71071,27 @@ function normalizeComponent (
   }
 }
 
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AgoraChat.vue?vue&type=style&index=0&id=f5a5b2d6&scoped=true&lang=css&");
+if(content.__esModule) content = content.default;
+if(typeof content === 'string') content = [[module.id, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__(/*! !../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
+var update = add("18c38be2", content, false, {});
+// Hot Module Replacement
+if(false) {}
 
 /***/ }),
 

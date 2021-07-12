@@ -69,9 +69,9 @@ class EmployeeController extends Controller
    
                 $btn = '<a href="javascript:void(0)" onClick="editFunction('.$employeeAction->id.')"  style="width: 78px;" class="edit btn btn-success edit">Edit</a>';
 
-                $btn = $btn.'<a href="/employee/delete/'.$employeeAction->id.'" style="margin-top:10px; width:78px;" data-toggle="tooltip" class="delete btn btn-danger">Delete</a>';
+                $btn = $btn.'<a href="/employee/delete/'.$employeeAction->id.'" style="margin-left:5px; width:78px;" data-toggle="tooltip" class="delete btn btn-danger">Delete</a>';
                 
-                $btn = $btn.'<a href="/report/'.$employeeAction->id.'" style="margin-top:10px; width:78px;" data-toggle="tooltip" class="view btn btn-primary">View</a>';
+                $btn = $btn.'<a href="/report/'.$employeeAction->id.'" style="margin-left:5px; width:78px;" data-toggle="tooltip" class="view btn btn-primary">View</a>';
             
                 return $btn;
             })

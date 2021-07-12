@@ -1,8 +1,8 @@
 <template>
     <div class="row">
            <div>
-               <div class="card-body p-0" style="width:1160px;">
-                   <ul class="list-unstyled msg-body" style="height:420px; overflow-y:scroll" v-chat-scroll>
+               <div class="card-body p-0" style="width:1740px;height:700px;">
+                   <ul class="list-unstyled msg-body" style="height:650px; overflow-y:scroll" v-chat-scroll>
                        <li class="p-2" v-for="(message, index) in messages" :key="index" >
                             <div v-if="message.sender_id == user.id" class="details mt-2" style="text-align:right;">
                                 <b v-if="message.message!=''">{{ decrypt(message.message) }}</b>
@@ -54,14 +54,14 @@
                    </ul>
                </div>
                <span class="text-muted ml-2" v-if="activeUser && otherUser" >{{ activeUser.name }} is typing...</span>
-                <div style="display: flex; border:1px solid gray;width:1150px;" >
+                <div style="display: flex; border:1px solid gray;width:1740px;" >
                 <input
                     @keydown="sendTypingEvent"
                     v-model="newMessage"
                     type="text"
                     name="message"
                     placeholder="Enter your message..."
-                    style="width:1110px;height:38px;border: none;"
+                    style="width:1710px;height:38px;border: none;"
                     class="form-control">
                     
                     <button  @click="onPickFile"><i class="fa fa-file ml-1 "></i></button>

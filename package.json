@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.14"
     },
     "dependencies": {
+        "agora-rtc-sdk": "^3.6.1",
         "crypto-js": "^3.1.9-1",
         "font-awesome": "^4.7.0",
         "laravel-echo": "^1.11.0",

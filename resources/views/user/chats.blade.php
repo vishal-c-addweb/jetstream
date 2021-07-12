@@ -2,7 +2,7 @@
 
 @section('body')
 
-<div class="wrapper">
+<div class="wrapper" style="width:1770px;height:850px">
     <section class="chat-area mt-20">
       <header style="border: 2px solid black;padding: 10px;border-radius: 5px;">
         <a href="{{route('chats') }}" class="back-icon"><i class="fa fa-arrow-left" style="color:white;"></i></a>
@@ -22,7 +22,7 @@
         </div>
       </header>
       <p id="appUrl" hidden>{{env('APP_URL')}}</p>
-      <div class="container mr-10 mt-2" id="app">
+      <div class="container mt-2" id="app" style="margin-right:600px;">
       
         <chat :user="{{auth()->user()}}" :receiver="{{$user}}" :id="{{$id}}"></chat> 
       </div>

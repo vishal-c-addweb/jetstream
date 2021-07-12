@@ -22,6 +22,7 @@ Vue.component('chatuser', require('./components/ChatUserComponent.vue').default)
 Vue.component('chatgroup', require('./components/ChatGroupComponent.vue').default);
 Vue.component('groupmessage', require('./components/GroupMessageComponent.vue').default);
 Vue.component("video-chat", require("./components/VideoChat.vue").default);
+Vue.component("agora-chat", require("./components/AgoraChat.vue").default);
 
 const app = new Vue({
     el: '#app'

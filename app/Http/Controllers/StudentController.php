@@ -37,7 +37,7 @@ class StudentController extends Controller
    
                 $btn = '<a href="javascript:void(0)" onClick="editFunctionStudent('.$studentAction->id.')"  style="width: 74px;" class="edit btn btn-success edit">Edit</a>';
 
-                $btn = $btn.'<a href="/student/delete/'.$studentAction->id.'" style="margin-top:10px;" data-toggle="tooltip" class="delete btn btn-danger">Delete</a>';
+                $btn = $btn.'<a href="/student/delete/'.$studentAction->id.'" style="margin-left:5px;" data-toggle="tooltip" class="delete btn btn-danger">Delete</a>';
 
                 return $btn;
             })

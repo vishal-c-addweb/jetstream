@@ -46,3 +46,6 @@ Broadcast::channel('presence-video-channel', function($user) {
     return ['id' => $user->id, 'name' => $user->name];
 });
 
+Broadcast::channel('agora-online-channel', function ($user) {
+    return ['id' => $user->id, 'name' => $user->name];
+});

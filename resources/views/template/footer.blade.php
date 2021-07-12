@@ -82,6 +82,8 @@
 <!---moment js-->
 <script src="{{ asset('js/moment.min.js') }}"></script>
 
+<script src="https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.6.1.js"></script>
+
 <!-- Bootstrap Core JavaScript -->
 <script src="{{ asset ('js/bootstrap.min.js') }}"></script>
 <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
