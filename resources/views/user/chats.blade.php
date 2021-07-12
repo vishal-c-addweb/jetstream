@@ -23,6 +23,7 @@
       </header>
       <p id="appUrl" hidden>{{env('APP_URL')}}</p>
       <div class="container mr-10 mt-2" id="app">
+      
         <chat :user="{{auth()->user()}}" :receiver="{{$user}}" :id="{{$id}}"></chat> 
       </div>
       <!-- <div class="chat-box deactive" style="height:350px;">

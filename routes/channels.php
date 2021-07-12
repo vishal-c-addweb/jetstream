@@ -42,3 +42,7 @@ Broadcast::channel('groupchat', function ($user) {
         return $user;
 });
 
+Broadcast::channel('presence-video-channel', function($user) {
+    return ['id' => $user->id, 'name' => $user->name];
+});
+

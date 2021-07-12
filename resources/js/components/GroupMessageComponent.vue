@@ -52,10 +52,10 @@
                        </li>
                    </ul>
                </div>
-               <span class="text-muted ml-2" > is typing...</span>
+               <span class="text-muted ml-2" v-if="activeUser && otherUser" >{{ activeUser.name }} is typing...</span>
                 <div style="display: flex; border:1px solid gray;width:1150px;" >
                 <input
-                    @keydown=""
+                    @keydown="sendTypingEvent"
                     v-model="newMessage"
                     type="text"
                     name="message"
@@ -87,6 +87,7 @@
             return {
                 messages: [],
                 newMessage : "",
+                users:[],
                 activeUser: false,
                 otherUser: false,
                 typingTimer: false,
@@ -98,10 +99,37 @@
             this.fetchMessage();
             
             Echo.join('groupchat')
+                .here(user => {
+                    this.users = user;
+                })
+                .joining(user => {
+                    this.users.push(user);
+                })
+                .leaving(user => {
+                    this.users = this.users.filter(u => u.id != user.id);                
+                })
                 .listen('GroupMessage',(event) => {
                     console.log(event.chat);
                     if(event.chat.group_id == this.group.id ){
                         this.messages.push(event.chat);
+                    }
+                })
+                .listenForWhisper('typing', response => {
+                    this.activeUser = response.user;
+                    this.otherUser = response.otherUser;
+                    if(this.group.id == response.otherUser)
+                    {
+                        if(this.typingTimer) {
+                            clearTimeout(this.typingTimer);
+                        }
+                        this.typingTimer = setTimeout(() => {
+                            this.activeUser = false;
+                            this.otherUser = false;
+                        }, 500);
+                    }
+                    else{
+                        this.activeUser = false;
+                        this.otherUser = false;
                     }
                 })
         },
@@ -124,6 +152,10 @@
                     console.log(error.response)
                 });
                 this.newMessage = '';
+            },
+            sendTypingEvent() {
+                Echo.join('groupchat')
+                    .whisper('typing',{'user':this.user,'otherUser':this.group.id});
             },
             previewFiles(event) {
                 console.log(event.target.files);
@@ -160,6 +192,26 @@
                 return CryptoJS.AES.decrypt(encrypted_json.value, CryptoJS.enc.Base64.parse(key), {
                     iv : CryptoJS.enc.Base64.parse(encrypted_json.iv)
                 }).toString(CryptoJS.enc.Utf8);
+            },
+            preview(event){
+                let imag = event.currentTarget.id;
+                let fileExt = imag.split('.').pop();
+                let url = $('#appUrl').html();
+                let path = url+'/assets/uploads/'+imag;
+                if(fileExt == 'png' || fileExt == 'jpg' || fileExt == 'jpeg'){
+                    document.getElementById('imagepreview').src=path;
+                    $('#imagemodal').modal('show');
+                }
+                else if(fileExt == 'mp4' || fileExt == 'mp3'){
+                    document.getElementById('cartoonVideo').src=path;
+                    $('#myModal').modal('show');
+                }
+                else if(fileExt == 'pdf' || fileExt == 'txt' || fileExt == 'sql' || fileExt == 'zip'){
+                    document.getElementById('openWith').src=path;
+                    let newurl = document.getElementById('openWith').src;
+                    let tabOrWindow = window.open(newurl, '_blank');
+                    tabOrWindow.focus();
+                }
             },
         }
     }

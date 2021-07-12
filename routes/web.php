@@ -16,6 +16,9 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AssignProjectController;
 use App\Http\Controllers\ChatsController;
 
+
+use App\Models\User;
+
 use BeyondCode\LaravelWebSockets\Dashboard\Http\Controllers\SendMessage;
 
 use App\Events\NewMessage;
@@ -76,7 +79,7 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
     Route::post('/chat/sendmessage',[EmployeeController::class,'sendMessage'])->name('chat.sendmessage');
     
     Route::post('/chat/updatestatus',[EmployeeController::class,'updateStatus'])->name('chat.updatestatus');
-
+    
     Route::get('/chats',[EmployeeController::class,'chats'])->name('chats');
 
     Route::get('/chats/{id}',[EmployeeController::class,'userChat'])->name('chats.userchat');
@@ -98,6 +101,22 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
     Route::post('/chatwords/store',[EmployeeController::class,'storeChatWords'])->name('chatwords.store');
 
 });
+
+Route::middleware(['auth:sanctum','verified'])->group(function () {
+
+    Route::get('/video-chat', function () {
+        // fetch all users apart from the authenticated user
+        $users = User::where('id', '<>', Auth::id())->get();
+        return view('user.video-chat', ['users' => $users]);
+    });
+
+    // Endpoints to call or receive calls.
+    Route::post('/video/call-user', 'App\Http\Controllers\VideoChatController@callUser');
+
+    Route::post('/video/accept-call', 'App\Http\Controllers\VideoChatController@acceptCall');
+
+});
+
 Route::middleware(['auth:sanctum','verified'])->group(function () {
 
     Route::get('/chat',[ChatsController::class,'index']);
@@ -111,6 +130,8 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
     Route::post('/messages/{id}',[ChatsController::class,'store']);
 
     Route::post('/messages',[ChatsController::class,'sendMessage']);
+
+    //chatgroup 
 
     Route::get('/chatgroup',[ChatsController::class,'chatGroup'])->name('chatgroup');
 
@@ -127,6 +148,7 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
     Route::get('/lastgroupmessage',[ChatsController::class,'lastGroupMessage']);
     
 });
+
     /* Employee */
 
 Route::group(['middleware'=>'auth:sanctum','verified','prefix'=>'employee'],function () {

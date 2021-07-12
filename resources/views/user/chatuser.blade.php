@@ -27,17 +27,17 @@
         <input type="text" id="searchBar" placeholder="Enter name to search..." style="width:1130px;border-radius: 10px;">
       </div>
       <div class="users-list" style="height:300px;">
-      @foreach($chatgroup as $cg)
-          <a href="chatgroups/{{ $cg->id }}">
+      @foreach($chatgroupuser as $cg)
+          <a href="chatgroups/{{ $cg->group_id }}">
             <div class="content">
               <img src="{{asset ('assets/uploads/groupicon.png') }}" alt="">
               <div class="details">
-                  <span>{{ $cg->name }}</span>
-                  <p id="groupmessage{{$cg->id}}"></p>
+                  <span>{{ $cg->group->name }}</span>
+                  <p id="groupmessage{{$cg->group_id}}"></p>
               </div>
             </div>
-            <small id="msggroupcount{{$cg->id}}{{auth()->user()->id}}" ></small>
-        </a>
+            <small id="msggroupcount{{$cg->group_id}}{{auth()->user()->id}}" ></small>
+          </a>
       @endforeach
       @foreach($chatUser as $c)
       <div id="app">
@@ -139,8 +139,8 @@
                             <label for="exampleInputUser" class="form-label">User</label>
                             <br/>
                             <select class="form-control" name="userid[]" multiple>
-                                @foreach($userall as $u)
-                                    <option value="{{$u->id}}">{{$u->name}}</option> 
+                                @foreach($chatUser as $u)
+                                    <option value="{{$u->user->id}}">{{$u->user->name}}</option> 
                                 @endforeach
                             </select>
                         </div>

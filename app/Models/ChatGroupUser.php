@@ -15,12 +15,21 @@ class ChatGroupUser extends Model
     ];
 
     /**
-     * Get the user that the chatgroup belongs to.
+     * Get the user that the chatgroupuser belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo.
      */
     public function user()
     {
         return $this->belongsTo(User::class,'user_id','id');
+    }
+    /**
+     * Get the group that the chatgroupuser belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo.
+     */
+    public function group()
+    {
+        return $this->belongsTo(ChatGroup::class,'group_id','id');
     }
 }
