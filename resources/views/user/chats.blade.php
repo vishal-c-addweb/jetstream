@@ -22,9 +22,12 @@
         </div>
       </header>
       <p id="appUrl" hidden>{{env('APP_URL')}}</p>
-      <div class="container mt-2" id="app" style="margin-right:600px;">
-      
-        <chat :user="{{auth()->user()}}" :receiver="{{$user}}" :id="{{$id}}"></chat> 
+      <div class="container" id="app" style="margin-right:600px;">
+        <div style="text-align:right;width:1140px;margin-left:580px;">
+        <agora-chat :allusers="{{ $user }}" authuserid="{{ auth()->user()->id }}" authuser="{{ auth()->user()->name }}"
+          agora_id="{{env('AGORA_APP_ID')}}" style="margin-bottom:5px;"></agora-chat>
+        </div>
+        <chat :user="{{auth()->user()}}" :receiver="{{$user}}" :id="{{$id}}"></chat>   
       </div>
       <!-- <div class="chat-box deactive" style="height:350px;">
       </div>

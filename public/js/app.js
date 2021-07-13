@@ -3896,6 +3896,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "AgoraChat",
   props: ["authuser", "authuserid", "allusers", "agora_id"],
@@ -3987,39 +3988,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context.prev = _context.next) {
               case 0:
                 _context.prev = 0;
-                // channelName = the caller's and the callee's id. you can use anything. tho.
+                alert("hy"); // channelName = the caller's and the callee's id. you can use anything. tho.
+
                 channelName = "".concat(_this2.authuser, "_").concat(calleeName);
-                _context.next = 4;
+                _context.next = 5;
                 return _this2.generateToken(channelName);
 
-              case 4:
+              case 5:
                 tokenRes = _context.sent;
-                _context.next = 7;
+                _context.next = 8;
                 return axios.post("/agora/call-user", {
                   user_to_call: id,
                   username: _this2.authuser,
                   channel_name: channelName
                 });
 
-              case 7:
+              case 8:
                 _this2.initializeAgora();
 
                 _this2.joinRoom(tokenRes.data, channelName);
 
-                _context.next = 14;
+                _context.next = 15;
                 break;
 
-              case 11:
-                _context.prev = 11;
+              case 12:
+                _context.prev = 12;
                 _context.t0 = _context["catch"](0);
                 console.log(_context.t0);
 
-              case 14:
+              case 15:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 11]]);
+        }, _callee, null, [[0, 12]]);
       }))();
     },
     acceptCall: function acceptCall() {
@@ -14176,7 +14178,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nmain[data-v-f5a5b2d6] {\n  margin-top: 50px;\n}\n#video-container[data-v-f5a5b2d6] {\n  width: 700px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0 auto;\n  border: 1px solid #099dfd;\n  position: relative;\n  box-shadow: 1px 1px 11px #9e9e9e;\n  background-color: #fff;\n}\n#local-video[data-v-f5a5b2d6] {\n  width: 30%;\n  height: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n  cursor: pointer;\n}\n#remote-video[data-v-f5a5b2d6] {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n  cursor: pointer;\n}\n.action-btns[data-v-f5a5b2d6] {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n#login-form[data-v-f5a5b2d6] {\n  margin-top: 100px;\n}\n", "",{"version":3,"sources":["webpack://./AgoraChat.vue"],"names":[],"mappings":";AA+SA;EACA,gBAAA;AACA;AACA;EACA,YAAA;EACA,aAAA;EACA,eAAA;EACA,gBAAA;EACA,cAAA;EACA,yBAAA;EACA,kBAAA;EACA,gCAAA;EACA,sBAAA;AACA;AACA;EACA,UAAA;EACA,WAAA;EACA,kBAAA;EACA,UAAA;EACA,YAAA;EACA,sBAAA;EACA,kBAAA;EACA,UAAA;EACA,eAAA;AACA;AACA;EACA,WAAA;EACA,YAAA;EACA,kBAAA;EACA,OAAA;EACA,QAAA;EACA,SAAA;EACA,MAAA;EACA,UAAA;EACA,SAAA;EACA,UAAA;EACA,eAAA;AACA;AACA;EACA,kBAAA;EACA,YAAA;EACA,SAAA;EACA,kBAAA;EACA,UAAA;EACA,aAAA;EACA,mBAAA;EACA,eAAA;AACA;AACA;EACA,iBAAA;AACA","sourcesContent":["<template>\n  <main>\n    \n    <div class=\"container my-5\">\n      <div class=\"row\">\n        <div class=\"col\">\n          <div class=\"btn-group\" role=\"group\">\n            <button\n              type=\"button\"\n              class=\"btn btn-primary mr-2\"\n              v-for=\"user in allusers\"\n              :key=\"user.id\"\n              @click=\"placeCall(user.id, user.name)\"\n            >\n              Call {{ user.name }}\n              <span class=\"badge badge-light\">{{\n                getUserOnlineStatus(user.id)\n              }}</span>\n            </button>\n          </div>\n        </div>\n      </div>\n\n      <!-- Incoming Call  -->\n      <div class=\"row my-5\" v-if=\"incomingCall\">\n        <div class=\"col-12\">\n          <p>\n            Incoming Call From <strong>{{ incomingCaller }}</strong>\n          </p>\n          <div class=\"btn-group\" role=\"group\">\n            <button\n              type=\"button\"\n              class=\"btn btn-danger\"\n              data-dismiss=\"modal\"\n              @click=\"declineCall\"\n            >\n              Decline\n            </button>\n            <button\n              type=\"button\"\n              class=\"btn btn-success ml-5\"\n              @click=\"acceptCall\"\n            >\n              Accept\n            </button>\n          </div>\n        </div>\n      </div>\n      <!-- End of Incoming Call  -->\n    </div>\n\n    <section id=\"video-container\" v-if=\"callPlaced\">\n      <div id=\"local-video\"></div>\n      <div id=\"remote-video\"></div>\n\n      <div class=\"action-btns\">\n        <button type=\"button\" class=\"btn btn-info\" @click=\"handleAudioToggle\">\n          {{ mutedAudio ? \"Unmute\" : \"Mute\" }}\n        </button>\n        <button\n          type=\"button\"\n          class=\"btn btn-primary mx-4\"\n          @click=\"handleVideoToggle\"\n        >\n          {{ mutedVideo ? \"ShowVideo\" : \"HideVideo\" }}\n        </button>\n        <button type=\"button\" class=\"btn btn-danger\" @click=\"endCall\">\n          EndCall\n        </button>\n      </div>\n    </section>\n  </main>\n</template>\n\n<script>\nexport default {\n  name: \"AgoraChat\",\n  props: [\"authuser\", \"authuserid\", \"allusers\", \"agora_id\"],\n  data() {\n    return {\n      callPlaced: false,\n      client: null,\n      localStream: null,\n      mutedAudio: false,\n      mutedVideo: false,\n      userOnlineChannel: null,\n      onlineUsers: [],\n      incomingCall: false,\n      incomingCaller: \"\",\n      agoraChannel: null,\n    };\n  },\n  mounted() {\n    this.initUserOnlineChannel();\n    this.initUserOnlineListeners();\n  },\n  methods: {\n    /**\n     * Presence Broadcast Channel Listeners and Methods\n     * Provided by Laravel.\n     * Websockets with Pusher\n     */\n    initUserOnlineChannel() {\n      this.userOnlineChannel = window.Echo.join(\"agora-online-channel\");\n    },\n    initUserOnlineListeners() {\n      this.userOnlineChannel.here((users) => {\n        this.onlineUsers = users;\n      });\n      this.userOnlineChannel.joining((user) => {\n        // check user availability\n        const joiningUserIndex = this.onlineUsers.findIndex(\n          (data) => data.id === user.id\n        );\n        if (joiningUserIndex < 0) {\n          this.onlineUsers.push(user);\n        }\n      });\n      this.userOnlineChannel.leaving((user) => {\n        const leavingUserIndex = this.onlineUsers.findIndex(\n          (data) => data.id === user.id\n        );\n        this.onlineUsers.splice(leavingUserIndex, 1);\n      });\n      // listen to incomming call\n      this.userOnlineChannel.listen(\"MakeAgoraCall\", ({ data }) => {\n        if (parseInt(data.userToCall) === parseInt(this.authuserid)) {\n          const callerIndex = this.onlineUsers.findIndex(\n            (user) => user.id === data.from\n          );\n          this.incomingCaller = this.onlineUsers[callerIndex][\"name\"];\n          this.incomingCall = true;\n          // the channel that was sent over to the user being called is what\n          // the receiver will use to join the call when accepting the call.\n          this.agoraChannel = data.channelName;\n        }\n      });\n    },\n    getUserOnlineStatus(id) {\n      const onlineUserIndex = this.onlineUsers.findIndex(\n        (data) => data.id === id\n      );\n      if (onlineUserIndex < 0) {\n        return \"Offline\";\n      }\n      return \"Online\";\n    },\n    async placeCall(id, calleeName) {\n      try {\n        // channelName = the caller's and the callee's id. you can use anything. tho.\n        const channelName = `${this.authuser}_${calleeName}`;\n        const tokenRes = await this.generateToken(channelName);\n        // Broadcasts a call event to the callee and also gets back the token\n        await axios.post(\"/agora/call-user\", {\n          user_to_call: id,\n          username: this.authuser,\n          channel_name: channelName,\n        });\n        this.initializeAgora();\n        this.joinRoom(tokenRes.data, channelName);\n      } catch (error) {\n        console.log(error);\n      }\n    },\n    async acceptCall() {\n      this.initializeAgora();\n      const tokenRes = await this.generateToken(this.agoraChannel);\n      this.joinRoom(tokenRes.data, this.agoraChannel);\n      this.incomingCall = false;\n      this.callPlaced = true;\n    },\n    declineCall() {\n      // You can send a request to the caller to\n      // alert them of rejected call\n      this.incomingCall = false;\n    },\n    generateToken(channelName) {\n      return axios.post(\"/agora/token\", {\n        channelName,\n      }).catch(error => {\n                    console.log(error.response)\n                });\n    },\n    /**\n     * Agora Events and Listeners\n     */\n    initializeAgora() {\n      this.client = AgoraRTC.createClient({ mode: \"rtc\", codec: \"h264\" });\n      this.client.init(\n        this.agora_id,\n        () => {\n          console.log(\"AgoraRTC client initialized\");\n        },\n        (err) => {\n          console.log(\"AgoraRTC client init failed\", err);\n        }\n      );\n    },\n    async joinRoom(token, channel) {\n      this.client.join(\n        token,\n        channel,\n        this.authuser,\n        (uid) => {\n          console.log(\"User \" + uid + \" join channel successfully\");\n          this.callPlaced = true;\n          this.createLocalStream();\n          this.initializedAgoraListeners();\n        },\n        (err) => {\n          console.log(\"Join channel failed\", err);\n        }\n      );\n    },\n    initializedAgoraListeners() {\n      //   Register event listeners\n      this.client.on(\"stream-published\", function (evt) {\n        console.log(\"Publish local stream successfully\");\n        console.log(evt);\n      });\n      //subscribe remote stream\n      this.client.on(\"stream-added\", ({ stream }) => {\n        console.log(\"New stream added: \" + stream.getId());\n        this.client.subscribe(stream, function (err) {\n          console.log(\"Subscribe stream failed\", err);\n        });\n      });\n      this.client.on(\"stream-subscribed\", (evt) => {\n        // Attach remote stream to the remote-video div\n        evt.stream.play(\"remote-video\");\n        this.client.publish(evt.stream);\n      });\n      this.client.on(\"stream-removed\", ({ stream }) => {\n        console.log(String(stream.getId()));\n        stream.close();\n      });\n      this.client.on(\"peer-online\", (evt) => {\n        console.log(\"peer-online\", evt.uid);\n      });\n      this.client.on(\"peer-leave\", (evt) => {\n        var uid = evt.uid;\n        var reason = evt.reason;\n        console.log(\"remote user left \", uid, \"reason: \", reason);\n      });\n      this.client.on(\"stream-unpublished\", (evt) => {\n        console.log(evt);\n      });\n    },\n    createLocalStream() {\n      this.localStream = AgoraRTC.createStream({\n        audio: true,\n        video: true,\n      });\n      // Initialize the local stream\n      this.localStream.init(\n        () => {\n          // Play the local stream\n          this.localStream.play(\"local-video\");\n          // Publish the local stream\n          this.client.publish(this.localStream, (err) => {\n            console.log(\"publish local stream\", err);\n          });\n        },\n        (err) => {\n          console.log(err);\n        }\n      );\n    },\n    endCall() {\n      this.localStream.close();\n      this.client.leave(\n        () => {\n          console.log(\"Leave channel successfully\");\n          this.callPlaced = false;\n        },\n        (err) => {\n          console.log(\"Leave channel failed\");\n        }\n      );\n    },\n    handleAudioToggle() {\n      if (this.mutedAudio) {\n        this.localStream.unmuteAudio();\n        this.mutedAudio = false;\n      } else {\n        this.localStream.muteAudio();\n        this.mutedAudio = true;\n      }\n    },\n    handleVideoToggle() {\n      if (this.mutedVideo) {\n        this.localStream.unmuteVideo();\n        this.mutedVideo = false;\n      } else {\n        this.localStream.muteVideo();\n        this.mutedVideo = true;\n      }\n    },\n  },\n};\n</script>\n\n<style scoped>\nmain {\n  margin-top: 50px;\n}\n#video-container {\n  width: 700px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0 auto;\n  border: 1px solid #099dfd;\n  position: relative;\n  box-shadow: 1px 1px 11px #9e9e9e;\n  background-color: #fff;\n}\n#local-video {\n  width: 30%;\n  height: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n  cursor: pointer;\n}\n#remote-video {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n  cursor: pointer;\n}\n.action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n#login-form {\n  margin-top: 100px;\n}\n</style>"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nmain[data-v-f5a5b2d6] {\n  margin-top: 50px;\n}\n#video-container[data-v-f5a5b2d6] {\n  width: 700px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0 auto;\n  border: 1px solid #099dfd;\n  position: relative;\n  box-shadow: 1px 1px 11px #9e9e9e;\n  background-color: #fff;\n}\n#local-video[data-v-f5a5b2d6] {\n  width: 30%;\n  height: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n  cursor: pointer;\n}\n#remote-video[data-v-f5a5b2d6] {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n  cursor: pointer;\n}\n.action-btns[data-v-f5a5b2d6] {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n#login-form[data-v-f5a5b2d6] {\n  margin-top: 100px;\n}\n", "",{"version":3,"sources":["webpack://./../../../../AgoraChat.vue"],"names":[],"mappings":";AAiTA;EACA,gBAAA;AACA;AACA;EACA,YAAA;EACA,aAAA;EACA,eAAA;EACA,gBAAA;EACA,cAAA;EACA,yBAAA;EACA,kBAAA;EACA,gCAAA;EACA,sBAAA;AACA;AACA;EACA,UAAA;EACA,WAAA;EACA,kBAAA;EACA,UAAA;EACA,YAAA;EACA,sBAAA;EACA,kBAAA;EACA,UAAA;EACA,eAAA;AACA;AACA;EACA,WAAA;EACA,YAAA;EACA,kBAAA;EACA,OAAA;EACA,QAAA;EACA,SAAA;EACA,MAAA;EACA,UAAA;EACA,SAAA;EACA,UAAA;EACA,eAAA;AACA;AACA;EACA,kBAAA;EACA,YAAA;EACA,SAAA;EACA,kBAAA;EACA,UAAA;EACA,aAAA;EACA,mBAAA;EACA,eAAA;AACA;AACA;EACA,iBAAA;AACA","sourcesContent":["<template>\n  <main>\n    \n    <div class=\"container my-5\" id=\"agora-video\">\n      <div class=\"row\">\n        <div class=\"col\">\n          <div class=\"btn-group\" role=\"group\">\n            <button\n              type=\"button\"\n              id=\"callvideo\"\n              class=\"btn btn-primary mr-2\"\n              v-for=\"user in allusers\"\n              :key=\"user.id\"\n              @click=\"placeCall(user.id, user.name)\"\n              v-if=\"user.id\">\n              Call {{ user.name }}\n              <span class=\"badge badge-light\">{{\n                getUserOnlineStatus(user.id)\n              }}</span>\n            </button>\n          </div>\n        </div>\n      </div>\n\n      <!-- Incoming Call  -->\n      <div class=\"row my-5\" v-if=\"incomingCall\">\n        <div class=\"col-12\">\n          <p>\n            Incoming Call From <strong>{{ incomingCaller }}</strong>\n          </p>\n          <div class=\"btn-group\" role=\"group\">\n            <button\n              type=\"button\"\n              class=\"btn btn-danger\"\n              data-dismiss=\"modal\"\n              @click=\"declineCall\"\n            >\n              Decline\n            </button>\n            <button\n              type=\"button\"\n              class=\"btn btn-success ml-5\"\n              @click=\"acceptCall\"\n            >\n              Accept\n            </button>\n          </div>\n        </div>\n      </div>\n      <!-- End of Incoming Call  -->\n    </div>\n\n    <section id=\"video-container\" v-if=\"callPlaced\">\n      <div id=\"local-video\"></div>\n      <div id=\"remote-video\"></div>\n\n      <div class=\"action-btns\">\n        <button type=\"button\" class=\"btn btn-info\" @click=\"handleAudioToggle\">\n          {{ mutedAudio ? \"Unmute\" : \"Mute\" }}\n        </button>\n        <button\n          type=\"button\"\n          class=\"btn btn-primary mx-4\"\n          @click=\"handleVideoToggle\"\n        >\n          {{ mutedVideo ? \"ShowVideo\" : \"HideVideo\" }}\n        </button>\n        <button type=\"button\" class=\"btn btn-danger\" @click=\"endCall\">\n          EndCall\n        </button>\n      </div>\n    </section>\n  </main>\n</template>\n\n<script>\nexport default {\n  name: \"AgoraChat\",\n  props: [\"authuser\", \"authuserid\", \"allusers\", \"agora_id\"],\n  data() {\n    return {\n      callPlaced: false,\n      client: null,\n      localStream: null,\n      mutedAudio: false,\n      mutedVideo: false,\n      userOnlineChannel: null,\n      onlineUsers: [],\n      incomingCall: false,\n      incomingCaller: \"\",\n      agoraChannel: null,\n    };\n  },\n  mounted() {\n    this.initUserOnlineChannel();\n    this.initUserOnlineListeners();\n  },\n  methods: {\n    /**\n     * Presence Broadcast Channel Listeners and Methods\n     * Provided by Laravel.\n     * Websockets with Pusher\n     */\n    initUserOnlineChannel() {\n      this.userOnlineChannel = window.Echo.join(\"agora-online-channel\");\n    },\n    initUserOnlineListeners() {\n      this.userOnlineChannel.here((users) => {\n        this.onlineUsers = users;\n      });\n      this.userOnlineChannel.joining((user) => {\n        // check user availability\n        const joiningUserIndex = this.onlineUsers.findIndex(\n          (data) => data.id === user.id\n        );\n        if (joiningUserIndex < 0) {\n          this.onlineUsers.push(user);\n        }\n      });\n      this.userOnlineChannel.leaving((user) => {\n        const leavingUserIndex = this.onlineUsers.findIndex(\n          (data) => data.id === user.id\n        );\n        this.onlineUsers.splice(leavingUserIndex, 1);\n      });\n      // listen to incomming call\n      this.userOnlineChannel.listen(\"MakeAgoraCall\", ({ data }) => {\n        if (parseInt(data.userToCall) === parseInt(this.authuserid)) {\n          const callerIndex = this.onlineUsers.findIndex(\n            (user) => user.id === data.from\n          );\n          this.incomingCaller = this.onlineUsers[callerIndex][\"name\"];\n          this.incomingCall = true;\n          // the channel that was sent over to the user being called is what\n          // the receiver will use to join the call when accepting the call.\n          this.agoraChannel = data.channelName;\n        }\n      });\n    },\n    getUserOnlineStatus(id) {\n      const onlineUserIndex = this.onlineUsers.findIndex(\n        (data) => data.id === id\n      );\n      if (onlineUserIndex < 0) {\n        return \"Offline\";\n      }\n      return \"Online\";\n    },\n    async placeCall(id, calleeName) {\n      try {\n          alert(\"hy\");\n        // channelName = the caller's and the callee's id. you can use anything. tho.\n        const channelName = `${this.authuser}_${calleeName}`;\n        const tokenRes = await this.generateToken(channelName);\n        // Broadcasts a call event to the callee and also gets back the token\n        await axios.post(\"/agora/call-user\", {\n          user_to_call: id,\n          username: this.authuser,\n          channel_name: channelName,\n        });\n        this.initializeAgora();\n        this.joinRoom(tokenRes.data, channelName);\n      } catch (error) {\n        console.log(error);\n      }\n    },\n    async acceptCall() {\n      this.initializeAgora();\n      const tokenRes = await this.generateToken(this.agoraChannel);\n      this.joinRoom(tokenRes.data, this.agoraChannel);\n      this.incomingCall = false;\n      this.callPlaced = true;\n    },\n    declineCall() {\n      // You can send a request to the caller to\n      // alert them of rejected call\n      this.incomingCall = false;\n    },\n    generateToken(channelName) {\n      return axios.post(\"/agora/token\", {\n        channelName,\n      }).catch(error => {\n                    console.log(error.response)\n                });\n    },\n    /**\n     * Agora Events and Listeners\n     */\n    initializeAgora() {\n      this.client = AgoraRTC.createClient({ mode: \"rtc\", codec: \"h264\" });\n      this.client.init(\n        this.agora_id,\n        () => {\n          console.log(\"AgoraRTC client initialized\");\n        },\n        (err) => {\n          console.log(\"AgoraRTC client init failed\", err);\n        }\n      );\n    },\n    async joinRoom(token, channel) {\n      this.client.join(\n        token,\n        channel,\n        this.authuser,\n        (uid) => {\n          console.log(\"User \" + uid + \" join channel successfully\");\n          this.callPlaced = true;\n          this.createLocalStream();\n          this.initializedAgoraListeners();\n        },\n        (err) => {\n          console.log(\"Join channel failed\", err);\n        }\n      );\n    },\n    initializedAgoraListeners() {\n      //   Register event listeners\n      this.client.on(\"stream-published\", function (evt) {\n        console.log(\"Publish local stream successfully\");\n        console.log(evt);\n      });\n      //subscribe remote stream\n      this.client.on(\"stream-added\", ({ stream }) => {\n        console.log(\"New stream added: \" + stream.getId());\n        this.client.subscribe(stream, function (err) {\n          console.log(\"Subscribe stream failed\", err);\n        });\n      });\n      this.client.on(\"stream-subscribed\", (evt) => {\n        // Attach remote stream to the remote-video div\n        evt.stream.play(\"remote-video\");\n        this.client.publish(evt.stream);\n      });\n      this.client.on(\"stream-removed\", ({ stream }) => {\n        console.log(String(stream.getId()));\n        stream.close();\n      });\n      this.client.on(\"peer-online\", (evt) => {\n        console.log(\"peer-online\", evt.uid);\n      });\n      this.client.on(\"peer-leave\", (evt) => {\n        var uid = evt.uid;\n        var reason = evt.reason;\n        console.log(\"remote user left \", uid, \"reason: \", reason);\n      });\n      this.client.on(\"stream-unpublished\", (evt) => {\n        console.log(evt);\n      });\n    },\n    createLocalStream() {\n      this.localStream = AgoraRTC.createStream({\n        audio: true,\n        video: true,\n      });\n      // Initialize the local stream\n      this.localStream.init(\n        () => {\n          // Play the local stream\n          this.localStream.play(\"local-video\");\n          // Publish the local stream\n          this.client.publish(this.localStream, (err) => {\n            console.log(\"publish local stream\", err);\n          });\n        },\n        (err) => {\n          console.log(err);\n        }\n      );\n    },\n    endCall() {\n      this.localStream.close();\n      this.client.leave(\n        () => {\n          console.log(\"Leave channel successfully\");\n          this.callPlaced = false;\n        },\n        (err) => {\n          console.log(\"Leave channel failed\");\n        }\n      );\n    },\n    handleAudioToggle() {\n      if (this.mutedAudio) {\n        this.localStream.unmuteAudio();\n        this.mutedAudio = false;\n      } else {\n        this.localStream.muteAudio();\n        this.mutedAudio = true;\n      }\n    },\n    handleVideoToggle() {\n      if (this.mutedVideo) {\n        this.localStream.unmuteVideo();\n        this.mutedVideo = false;\n      } else {\n        this.localStream.muteVideo();\n        this.mutedVideo = true;\n      }\n    },\n  },\n};\n</script>\n\n<style scoped>\nmain {\n  margin-top: 50px;\n}\n#video-container {\n  width: 700px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0 auto;\n  border: 1px solid #099dfd;\n  position: relative;\n  box-shadow: 1px 1px 11px #9e9e9e;\n  background-color: #fff;\n}\n#local-video {\n  width: 30%;\n  height: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n  cursor: pointer;\n}\n#remote-video {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n  cursor: pointer;\n}\n.action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n#login-form {\n  margin-top: 100px;\n}\n</style>\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -69280,34 +69282,38 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("main", [
-    _c("div", { staticClass: "container my-5" }, [
+    _c("div", { staticClass: "container my-5", attrs: { id: "agora-video" } }, [
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col" }, [
           _c(
             "div",
             { staticClass: "btn-group", attrs: { role: "group" } },
             _vm._l(_vm.allusers, function(user) {
-              return _c(
-                "button",
-                {
-                  key: user.id,
-                  staticClass: "btn btn-primary mr-2",
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      return _vm.placeCall(user.id, user.name)
-                    }
-                  }
-                },
-                [
-                  _vm._v(
-                    "\n            Call " + _vm._s(user.name) + "\n            "
-                  ),
-                  _c("span", { staticClass: "badge badge-light" }, [
-                    _vm._v(_vm._s(_vm.getUserOnlineStatus(user.id)))
-                  ])
-                ]
-              )
+              return user.id
+                ? _c(
+                    "button",
+                    {
+                      key: user.id,
+                      staticClass: "btn btn-primary mr-2",
+                      attrs: { type: "button", id: "callvideo" },
+                      on: {
+                        click: function($event) {
+                          return _vm.placeCall(user.id, user.name)
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n            Call " +
+                          _vm._s(user.name) +
+                          "\n            "
+                      ),
+                      _c("span", { staticClass: "badge badge-light" }, [
+                        _vm._v(_vm._s(_vm.getUserOnlineStatus(user.id)))
+                      ])
+                    ]
+                  )
+                : _vm._e()
             }),
             0
           )
@@ -69434,7 +69440,7 @@ var render = function() {
         "div",
         {
           staticClass: "card-body p-0",
-          staticStyle: { width: "1740px", height: "700px" }
+          staticStyle: { width: "1740px", height: "570px" }
         },
         [
           _c(
@@ -69442,7 +69448,7 @@ var render = function() {
             {
               directives: [{ name: "chat-scroll", rawName: "v-chat-scroll" }],
               staticClass: "list-unstyled msg-body",
-              staticStyle: { height: "650px", "overflow-y": "scroll" }
+              staticStyle: { height: "530px", "overflow-y": "scroll" }
             },
             _vm._l(_vm.messages, function(message, index) {
               return _c("li", { key: index, staticClass: "p-2" }, [

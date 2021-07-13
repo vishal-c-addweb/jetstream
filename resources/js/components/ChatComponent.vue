@@ -1,8 +1,8 @@
 <template>
     <div class="row">
-           <div>
-               <div class="card-body p-0" style="width:1740px;height:700px;">
-                   <ul class="list-unstyled msg-body" style="height:650px; overflow-y:scroll" v-chat-scroll>
+           <div >
+               <div class="card-body p-0" style="width:1740px;height:570px;">
+                   <ul class="list-unstyled msg-body" style="height:530px; overflow-y:scroll" v-chat-scroll>
                        <li class="p-2" v-for="(message, index) in messages" :key="index" >
                             <div v-if="message.sender_id == user.id" class="details mt-2" style="text-align:right;">
                                 <b v-if="message.message!=''">{{ decrypt(message.message) }}</b>

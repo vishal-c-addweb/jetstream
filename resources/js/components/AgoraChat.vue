@@ -1,17 +1,18 @@
 <template>
   <main>
     
-    <div class="container my-5">
+    <div class="container my-5" id="agora-video">
       <div class="row">
         <div class="col">
           <div class="btn-group" role="group">
             <button
               type="button"
+              id="callvideo"
               class="btn btn-primary mr-2"
               v-for="user in allusers"
               :key="user.id"
               @click="placeCall(user.id, user.name)"
-            >
+              v-if="user.id">
               Call {{ user.name }}
               <span class="badge badge-light">{{
                 getUserOnlineStatus(user.id)
@@ -147,6 +148,7 @@ export default {
     },
     async placeCall(id, calleeName) {
       try {
+          alert("hy");
         // channelName = the caller's and the callee's id. you can use anything. tho.
         const channelName = `${this.authuser}_${calleeName}`;
         const tokenRes = await this.generateToken(channelName);
