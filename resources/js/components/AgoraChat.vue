@@ -50,6 +50,7 @@
       <!-- End of Incoming Call  -->
     </div>
 
+    
     <section id="video-container" v-if="callPlaced">
       <div id="local-video"></div>
       <div id="remote-video"></div>
@@ -70,6 +71,7 @@
         </button>
       </div>
     </section>
+
   </main>
 </template>
 
@@ -148,7 +150,6 @@ export default {
     },
     async placeCall(id, calleeName) {
       try {
-          alert("hy");
         // channelName = the caller's and the callee's id. you can use anything. tho.
         const channelName = `${this.authuser}_${calleeName}`;
         const tokenRes = await this.generateToken(channelName);

@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-           <div >
+           <div id="chat-component" v-bind:id="user.id" >
                <div class="card-body p-0" style="width:1740px;height:570px;">
                    <ul class="list-unstyled msg-body" style="height:530px; overflow-y:scroll" v-chat-scroll>
                        <li class="p-2" v-for="(message, index) in messages" :key="index" >
@@ -54,9 +54,15 @@
                    </ul>
                </div>
                <span class="text-muted ml-2" v-if="activeUser && otherUser" >{{ activeUser.name }} is typing...</span>
+               <div class="form-popup" id="myForm" style="width: 1730px; margin-bottom: 90px; border: 1px solid black;">
+                   <h1>jay ho</h1>
+                   <h2>hello</h2>
+                   <h3>jay mataji</h3>
+                </div>
                 <div style="display: flex; border:1px solid gray;width:1740px;" >
                 <input
                     @keydown="sendTypingEvent"
+                    v-on:keydown="keymonitor"
                     v-model="newMessage"
                     type="text"
                     name="message"
@@ -163,6 +169,21 @@
                 Echo.join('chat')
                     .whisper('typing',{'user':this.user,'otherUser':this.id});
             },
+            keymonitor: function(event) {
+                if(event.key == "@")
+                {
+                    if(event.target.value.length === 0)
+                    {
+                        document.getElementById("myForm").style.display = "block";
+                    }
+                    else if(event.target.value.length > 0 || event.target.value.length === ''){
+                        document.getElementById("myForm").style.display = "none";
+                    }
+                }
+                else{
+                    document.getElementById("myForm").style.display = "none";
+                }
+            },
             previewFiles(event) {
                 console.log(event.target.files);
             },
@@ -223,3 +244,75 @@
         }
     }
 </script>
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+/* Button used to open the contact form - fixed at the bottom of the page */
+.open-button {
+  background-color: #555;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+}
+
+/* The popup form - hidden by default */
+.form-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=password] {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/login button */
+.form-container .btn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+</style>
