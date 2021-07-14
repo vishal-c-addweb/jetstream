@@ -38,7 +38,7 @@
       </header>
       <p id="appUrl" hidden>{{env('APP_URL')}}</p>
       <div class="container mt-2" id="app" style="margin-right:600px;">
-        <groupmessage :user="{{auth()->user()}}" :group="{{$chatGroup}}"></groupmessage>
+        <groupmessage :user="{{auth()->user()}}" :group="{{$chatGroup}}" :usergroup="{{$chatGroupUser}}"></groupmessage>
       </div>
       
     </section>

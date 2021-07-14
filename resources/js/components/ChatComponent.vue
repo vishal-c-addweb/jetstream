@@ -54,15 +54,10 @@
                    </ul>
                </div>
                <span class="text-muted ml-2" v-if="activeUser && otherUser" >{{ activeUser.name }} is typing...</span>
-               <div class="form-popup" id="myForm" style="width: 1730px; margin-bottom: 90px; border: 1px solid black;">
-                   <h1>jay ho</h1>
-                   <h2>hello</h2>
-                   <h3>jay mataji</h3>
-                </div>
+               
                 <div style="display: flex; border:1px solid gray;width:1740px;" >
                 <input
                     @keydown="sendTypingEvent"
-                    v-on:keydown="keymonitor"
                     v-model="newMessage"
                     type="text"
                     name="message"
@@ -168,21 +163,6 @@
             sendTypingEvent() {
                 Echo.join('chat')
                     .whisper('typing',{'user':this.user,'otherUser':this.id});
-            },
-            keymonitor: function(event) {
-                if(event.key == "@")
-                {
-                    if(event.target.value.length === 0)
-                    {
-                        document.getElementById("myForm").style.display = "block";
-                    }
-                    else if(event.target.value.length > 0 || event.target.value.length === ''){
-                        document.getElementById("myForm").style.display = "none";
-                    }
-                }
-                else{
-                    document.getElementById("myForm").style.display = "none";
-                }
             },
             previewFiles(event) {
                 console.log(event.target.files);

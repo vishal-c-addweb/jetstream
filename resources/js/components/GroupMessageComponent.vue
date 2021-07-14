@@ -53,15 +53,38 @@
                    </ul>
                </div>
                <span class="text-muted ml-2" v-if="activeUser && otherUser" >{{ activeUser.name }} is typing...</span>
+               <div class="form-popup" id="wordForm" style="width: 1730px; margin-bottom: 90px;">
+                
+                        <tr>
+                            <td v-for="(pred_msg,index) in predefined_messages" :key="index" >
+                               <a v-bind:id="pred_msg" v-on:click="msg_click($event)" style="background-color:#E7EDF6;">&nbsp;&nbsp;~{{pred_msg}}</a>
+                            </td>
+                        </tr>
+                </div>
+               <div class="form-popup" id="myForm" style="width: 1730px; margin-bottom: 90px; border: 1px solid black;">
+                    <div style="overflow:scroll;height:150px;background-color:#E7EDF6;">
+                        <ul>
+                            <li>&nbsp;&nbsp;People</li>
+                        </ul>
+                        <div style="margin-left:80px;">
+                            <ul v-for="(user, index) in usergroup" :key="index" style="display:flex;">
+                                <li style="display:flex;"><img v-bind:src="user.user.profile_photo_url" style="height:30px;width:30px;margin-top:2px;" alt="" />&nbsp;:&nbsp;<button v-on:click="uname($event)" id="" v-bind:id="user.user.name">{{user.user.name}}</button></li>
+                                <small style="margin-top: 6px;margin-left:1400px;">All Group Members</small>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 <div style="display: flex; border:1px solid gray;width:1740px;" >
                 <input
                     @keydown="sendTypingEvent"
+                    v-on:keydown="keymonitor"
                     v-model="newMessage"
+                    id="input-id"
                     type="text"
                     name="message"
                     placeholder="Enter your message..."
                     style="width:1710px;height:38px;border: none;"
-                    class="form-control">
+                    class="form-control input-form">
                     
                     <button  @click="onPickFile"><i class="fa fa-file ml-1 "></i></button>
                     <input
@@ -81,7 +104,7 @@
 <script>
     export default {
 
-        props:['user','group'],
+        props:['user','group','usergroup'],
         
         data() {
             return {
@@ -93,6 +116,7 @@
                 typingTimer: false,
                 filename: '',
                 file: '',
+                predefined_messages : [],
             }
         },
         created() {
@@ -112,6 +136,37 @@
                     console.log(event.chat);
                     if(event.chat.group_id == this.group.id ){
                         this.messages.push(event.chat);
+                        if(event.chat.user_id != this.user.id){
+                            let message = decrypt(event.chat.message);
+                            if(message.toLowerCase().includes("good morning"))
+                            {
+                                this.predefined_messages = [];
+                                let msg = ['good morning', 'good afternoon','good evening','good night'];
+                                this.predefined_messages = msg;
+                                document.getElementById("wordForm").style.display = "block";
+                            }
+                            else if(message.toLowerCase().includes("hy"))
+                            {
+                                this.predefined_messages = [];
+                                let msg = ['Hello', 'Kese ho ap log','How are you?'];
+                                this.predefined_messages = msg;
+                                document.getElementById("wordForm").style.display = "block";
+                            }
+                            else if(message.toLowerCase().includes("hello"))
+                            {
+                                this.predefined_messages = [];
+                                let msg = ['Hy', 'Kese ho ap log','How are you?','jay mataji'];
+                                this.predefined_messages = msg;
+                                document.getElementById("wordForm").style.display = "block";
+                            }
+                            else if(message.toLowerCase().includes("how are you?"))
+                            {
+                                this.predefined_messages = [];
+                                let msg = ['fine'];
+                                this.predefined_messages = msg;
+                                document.getElementById("wordForm").style.display = "block";
+                            }
+                        }
                     }
                 })
                 .listenForWhisper('typing', response => {
@@ -138,12 +193,48 @@
                 axios.get('/groupmessages/'+this.group.id).then(response => {
                     console.log(response);
                     this.messages = response.data;
+                    let last_record = response.data[response.data.length - 1];
+                   //console.log(last_record.user_id);
+                    if(last_record.user_id != this.user.id)
+                    {
+                        let message = decrypt(last_record.message);
+                        if(message.toLowerCase().includes("good morning"))
+                        {
+                            this.predefined_messages = [];
+                            let msg = ['good morning', 'good afternoon','good evening','good night'];
+                            this.predefined_messages = msg;
+                            document.getElementById("wordForm").style.display = "block";
+                        }
+                        else if(message.toLowerCase().includes("hy"))
+                        {
+                            this.predefined_messages = [];
+                            let msg = ['Hello', 'Kese ho ap log','How are you?'];
+                            this.predefined_messages = msg;
+                            document.getElementById("wordForm").style.display = "block";
+                        }
+                        else if(message.toLowerCase().includes("hello"))
+                        {
+                            this.predefined_messages = [];
+                            let msg = ['Hy', 'Kese ho ap log','How are you?'];
+                            this.predefined_messages = msg;
+                            document.getElementById("wordForm").style.display = "block";
+                        }
+                        else if(message.toLowerCase().includes("how are you?"))
+                        {
+                            this.predefined_messages = [];
+                            let msg = ['fine'];
+                            this.predefined_messages = msg;
+                            document.getElementById("wordForm").style.display = "block";
+                        }
+                    }
                 })
                 .catch(error => {
                     console.log(error.response)
                 });
             },
             sendMessage() {  
+                document.getElementById("wordForm").style.display = "none";
+                this.predefined_messages = [];
                 axios.post('/groupmessages/'+this.group.id, {message: this.newMessage}).then(function (response) {
                     console.log(response.data);
                     this.messages.push(response.data.message);
@@ -212,6 +303,30 @@
                     let tabOrWindow = window.open(newurl, '_blank');
                     tabOrWindow.focus();
                 }
+            },
+            keymonitor: function(event) {
+                if(event.key == "@")
+                {
+                    //alert(event.key);
+                    //alert(event.target.value);
+                    document.getElementById("myForm").style.display = "block";
+                }
+                else{
+                    document.getElementById("myForm").style.display = "none";
+                }
+            },
+            uname(event){
+                alert(event.currentTarget.id);
+                alert(document.getElementById('input-id').value);
+                document.getElementById("myForm").style.display = "none";
+                let input_value = document.getElementById('input-id').value
+                document.getElementById('input-id').value=input_value+event.currentTarget.id+":";
+            },
+            msg_click(event){
+                document.getElementById("wordForm").style.display = "none";
+                let input_value = document.getElementById('input-id').value
+                document.getElementById('input-id').value=input_value+":"+event.currentTarget.id;
+                this.newMessage = input_value+" "+event.currentTarget.id;
             },
         }
     }

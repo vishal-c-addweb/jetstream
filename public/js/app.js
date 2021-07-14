@@ -4296,11 +4296,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['user', 'id'],
   data: function data() {
@@ -4381,17 +4376,6 @@ __webpack_require__.r(__webpack_exports__);
         'user': this.user,
         'otherUser': this.id
       });
-    },
-    keymonitor: function keymonitor(event) {
-      if (event.key == "@") {
-        if (event.target.value.length === 0) {
-          document.getElementById("myForm").style.display = "block";
-        } else if (event.target.value.length > 0 || event.target.value.length === '') {
-          document.getElementById("myForm").style.display = "none";
-        }
-      } else {
-        document.getElementById("myForm").style.display = "none";
-      }
     },
     previewFiles: function previewFiles(event) {
       console.log(event.target.files);
@@ -4823,8 +4807,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['user', 'group'],
+  props: ['user', 'group', 'usergroup'],
   data: function data() {
     return {
       messages: [],
@@ -4834,7 +4841,8 @@ __webpack_require__.r(__webpack_exports__);
       otherUser: false,
       typingTimer: false,
       filename: '',
-      file: ''
+      file: '',
+      predefined_messages: []
     };
   },
   created: function created() {
@@ -4854,6 +4862,32 @@ __webpack_require__.r(__webpack_exports__);
 
       if (event.chat.group_id == _this.group.id) {
         _this.messages.push(event.chat);
+
+        if (event.chat.user_id != _this.user.id) {
+          var message = decrypt(event.chat.message);
+
+          if (message.toLowerCase().includes("good morning")) {
+            _this.predefined_messages = [];
+            var msg = ['good morning', 'good afternoon', 'good evening', 'good night'];
+            _this.predefined_messages = msg;
+            document.getElementById("wordForm").style.display = "block";
+          } else if (message.toLowerCase().includes("hy")) {
+            _this.predefined_messages = [];
+            var _msg = ['Hello', 'Kese ho ap log', 'How are you?'];
+            _this.predefined_messages = _msg;
+            document.getElementById("wordForm").style.display = "block";
+          } else if (message.toLowerCase().includes("hello")) {
+            _this.predefined_messages = [];
+            var _msg2 = ['Hy', 'Kese ho ap log', 'How are you?', 'jay mataji'];
+            _this.predefined_messages = _msg2;
+            document.getElementById("wordForm").style.display = "block";
+          } else if (message.toLowerCase().includes("how are you?")) {
+            _this.predefined_messages = [];
+            var _msg3 = ['fine'];
+            _this.predefined_messages = _msg3;
+            document.getElementById("wordForm").style.display = "block";
+          }
+        }
       }
     }).listenForWhisper('typing', function (response) {
       _this.activeUser = response.user;
@@ -4881,11 +4915,40 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/groupmessages/' + this.group.id).then(function (response) {
         console.log(response);
         _this2.messages = response.data;
+        var last_record = response.data[response.data.length - 1]; //console.log(last_record.user_id);
+
+        if (last_record.user_id != _this2.user.id) {
+          var message = decrypt(last_record.message);
+
+          if (message.toLowerCase().includes("good morning")) {
+            _this2.predefined_messages = [];
+            var msg = ['good morning', 'good afternoon', 'good evening', 'good night'];
+            _this2.predefined_messages = msg;
+            document.getElementById("wordForm").style.display = "block";
+          } else if (message.toLowerCase().includes("hy")) {
+            _this2.predefined_messages = [];
+            var _msg4 = ['Hello', 'Kese ho ap log', 'How are you?'];
+            _this2.predefined_messages = _msg4;
+            document.getElementById("wordForm").style.display = "block";
+          } else if (message.toLowerCase().includes("hello")) {
+            _this2.predefined_messages = [];
+            var _msg5 = ['Hy', 'Kese ho ap log', 'How are you?'];
+            _this2.predefined_messages = _msg5;
+            document.getElementById("wordForm").style.display = "block";
+          } else if (message.toLowerCase().includes("how are you?")) {
+            _this2.predefined_messages = [];
+            var _msg6 = ['fine'];
+            _this2.predefined_messages = _msg6;
+            document.getElementById("wordForm").style.display = "block";
+          }
+        }
       })["catch"](function (error) {
         console.log(error.response);
       });
     },
     sendMessage: function sendMessage() {
+      document.getElementById("wordForm").style.display = "none";
+      this.predefined_messages = [];
       axios.post('/groupmessages/' + this.group.id, {
         message: this.newMessage
       }).then(function (response) {
@@ -4951,6 +5014,28 @@ __webpack_require__.r(__webpack_exports__);
         var tabOrWindow = window.open(newurl, '_blank');
         tabOrWindow.focus();
       }
+    },
+    keymonitor: function keymonitor(event) {
+      if (event.key == "@") {
+        //alert(event.key);
+        //alert(event.target.value);
+        document.getElementById("myForm").style.display = "block";
+      } else {
+        document.getElementById("myForm").style.display = "none";
+      }
+    },
+    uname: function uname(event) {
+      alert(event.currentTarget.id);
+      alert(document.getElementById('input-id').value);
+      document.getElementById("myForm").style.display = "none";
+      var input_value = document.getElementById('input-id').value;
+      document.getElementById('input-id').value = input_value + event.currentTarget.id + ":";
+    },
+    msg_click: function msg_click(event) {
+      document.getElementById("wordForm").style.display = "none";
+      var input_value = document.getElementById('input-id').value;
+      document.getElementById('input-id').value = input_value + ":" + event.currentTarget.id;
+      this.newMessage = input_value + " " + event.currentTarget.id;
     }
   }
 });
@@ -14223,7 +14308,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody {font-family: Arial, Helvetica, sans-serif;}\n* {box-sizing: border-box;}\n\n/* Button used to open the contact form - fixed at the bottom of the page */\n.open-button {\n  background-color: #555;\n  color: white;\n  padding: 16px 20px;\n  border: none;\n  cursor: pointer;\n  opacity: 0.8;\n  position: fixed;\n  bottom: 23px;\n  right: 28px;\n  width: 280px;\n}\n\n/* The popup form - hidden by default */\n.form-popup {\n  display: none;\n  position: fixed;\n  bottom: 0;\n  right: 15px;\n  border: 3px solid #f1f1f1;\n  z-index: 9;\n}\n\n/* Add styles to the form container */\n.form-container {\n  max-width: 300px;\n  padding: 10px;\n  background-color: white;\n}\n\n/* Full-width input fields */\n.form-container input[type=text], .form-container input[type=password] {\n  width: 100%;\n  padding: 15px;\n  margin: 5px 0 22px 0;\n  border: none;\n  background: #f1f1f1;\n}\n\n/* When the inputs get focus, do something */\n.form-container input[type=text]:focus, .form-container input[type=password]:focus {\n  background-color: #ddd;\n  outline: none;\n}\n\n/* Set a style for the submit/login button */\n.form-container .btn {\n  background-color: #04AA6D;\n  color: white;\n  padding: 16px 20px;\n  border: none;\n  cursor: pointer;\n  width: 100%;\n  margin-bottom:10px;\n  opacity: 0.8;\n}\n\n/* Add a red background color to the cancel button */\n.form-container .cancel {\n  background-color: red;\n}\n\n/* Add some hover effects to buttons */\n.form-container .btn:hover, .open-button:hover {\n  opacity: 1;\n}\n", "",{"version":3,"sources":["webpack://./ChatComponent.vue"],"names":[],"mappings":";AAuPA,MAAA,yCAAA,CAAA;AACA,GAAA,sBAAA,CAAA;;AAEA,2EAAA;AACA;EACA,sBAAA;EACA,YAAA;EACA,kBAAA;EACA,YAAA;EACA,eAAA;EACA,YAAA;EACA,eAAA;EACA,YAAA;EACA,WAAA;EACA,YAAA;AACA;;AAEA,uCAAA;AACA;EACA,aAAA;EACA,eAAA;EACA,SAAA;EACA,WAAA;EACA,yBAAA;EACA,UAAA;AACA;;AAEA,qCAAA;AACA;EACA,gBAAA;EACA,aAAA;EACA,uBAAA;AACA;;AAEA,4BAAA;AACA;EACA,WAAA;EACA,aAAA;EACA,oBAAA;EACA,YAAA;EACA,mBAAA;AACA;;AAEA,4CAAA;AACA;EACA,sBAAA;EACA,aAAA;AACA;;AAEA,4CAAA;AACA;EACA,yBAAA;EACA,YAAA;EACA,kBAAA;EACA,YAAA;EACA,eAAA;EACA,WAAA;EACA,kBAAA;EACA,YAAA;AACA;;AAEA,oDAAA;AACA;EACA,qBAAA;AACA;;AAEA,sCAAA;AACA;EACA,UAAA;AACA","sourcesContent":["<template>\n    <div class=\"row\">\n           <div id=\"chat-component\" v-bind:id=\"user.id\" >\n               <div class=\"card-body p-0\" style=\"width:1740px;height:570px;\">\n                   <ul class=\"list-unstyled msg-body\" style=\"height:530px; overflow-y:scroll\" v-chat-scroll>\n                       <li class=\"p-2\" v-for=\"(message, index) in messages\" :key=\"index\" >\n                            <div v-if=\"message.sender_id == user.id\" class=\"details mt-2\" style=\"text-align:right;\">\n                                <b v-if=\"message.message!=''\">{{ decrypt(message.message) }}</b>\n                                    <div v-if=\"message.message==''\">        \n                                        <button style=\"background-color:gray;border:1px solid black;padding:10px;border-radius:4%;\">\n                                            <table>\n                                                <tr>\n                                                    <td>\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.png') || message.file.includes('.jpg') || message.file.includes('.jpeg')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/imageicon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.mp4') || message.file.includes('.mp3')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/videoicon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.pdf')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/pdficon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.sql') || message.file.includes('.txt')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/texticon.png\">    \n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.zip')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/zipicon.png\">    \n                                                    </td>\n                                                &nbsp;&nbsp;\n                                                <b style=\"color:white;\" else>{{ message.file }}</b>\n                                                </tr>\n                                            </table>\n                                        </button>\n                                    </div>\n                                </br>\n                                <small v-if=\"message.status == 0\">Delivered</small>\n                                <small v-else>Read</small>\n                                <small>{{ message.created_at | formatDate}}</small>\n                            </div>\n                            <div class=\"details mt-2\" v-else>\n                                <b v-if=\"message.message!=''\">{{ decrypt(message.message) }}</b>    \n                                    <div v-if=\"message.message==''\">        \n                                        <button style=\"background-color:gray;border:1px solid black;padding:10px;border-radius:4%;\">\n                                            <table>\n                                                <tr>\n                                                    <td>\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.png') || message.file.includes('.jpg') || message.file.includes('.jpeg')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/imageicon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.mp4') || message.file.includes('.mp3')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/videoicon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.pdf')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/pdficon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.sql') || message.file.includes('.txt')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/texticon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.zip')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/zipicon.png\">    \n                                                    </td>\n                                                &nbsp;&nbsp;\n                                                <b style=\"color:white;\" else>{{ message.file }}</b>\n                                                </tr>\n                                            </table>\n                                        </button>\n                                    </div>\n                                </br>\n                                <small>{{ message.created_at | formatDate}}</small>\n                            </div>\n                       </li>\n                   </ul>\n               </div>\n               <span class=\"text-muted ml-2\" v-if=\"activeUser && otherUser\" >{{ activeUser.name }} is typing...</span>\n               <div class=\"form-popup\" id=\"myForm\" style=\"width: 1730px; margin-bottom: 90px; border: 1px solid black;\">\n                   <h1>jay ho</h1>\n                   <h2>hello</h2>\n                   <h3>jay mataji</h3>\n                </div>\n                <div style=\"display: flex; border:1px solid gray;width:1740px;\" >\n                <input\n                    @keydown=\"sendTypingEvent\"\n                    v-on:keydown=\"keymonitor\"\n                    v-model=\"newMessage\"\n                    type=\"text\"\n                    name=\"message\"\n                    placeholder=\"Enter your message...\"\n                    style=\"width:1710px;height:38px;border: none;\"\n                    class=\"form-control\">\n                    \n                    <button  @click=\"onPickFile\"><i class=\"fa fa-file ml-1 \"></i></button>\n                    <input\n                        type=\"file\"\n                        name=\"file\"\n                        id=\"file\"\n                        style=\"display: none\"\n                        ref=\"fileInput\"\n                        @change=\"onFilePicked\"/>\n                    \n                    <button v-on:click=\"sendMessage\" style=\"width:35px;height:40px;text-align:center;\"><i class=\"fa fa-telegram\"></i></button>\n                </div>\n           </div>\n        </div>\n</template>\n\n<script>\n    export default {\n\n        props:['user','id'],\n        \n        data() {\n            return {\n                messages: [],\n                data  : [],\n                newMessage: '',\n                users:[],\n                activeUser: false,\n                otherUser: false,\n                typingTimer: false,\n                filename: '',\n                file: '',\n            }\n        },\n        created() {\n            \n            let r_id = this.user.id;\n\n            this.fetchMessage();\n            \n            Echo.join('chat')\n                .here(user => {\n                    this.users = user;\n                })\n                .joining(user => {\n                    this.users.push(user);\n                })\n                .leaving(user => {\n                    this.users = this.users.filter(u => u.id != user.id);                \n                })\n                .listen('ChatMessage',(event) => {\n                    console.log(event.chat);\n                    if(event.chat.receiver_id == r_id && event.chat.sender_id == this.id){\n                        this.messages.push(event.chat);\n                    }\n                })\n                .listenForWhisper('typing', response => {\n                    this.activeUser = response.user;\n                    this.otherUser = response.otherUser;\n                    if(this.user.id == response.otherUser && this.id == response.user.id)\n                    {\n                        if(this.typingTimer) {\n                            clearTimeout(this.typingTimer);\n                        }\n                        this.typingTimer = setTimeout(() => {\n                            this.activeUser = false;\n                            this.otherUser = false;\n                        }, 500);\n                    }\n                    else{\n                        this.activeUser = false;\n                        this.otherUser = false;\n                    }\n                })\n        },\n        methods: {\n            fetchMessage() {\n                axios.get('/messages/'+this.id).then(response => {\n                    console.log(response);\n                    this.messages = response.data;\n                })\n                .catch(error => {\n                    console.log(error.response)\n                });\n            },\n            sendMessage() {  \n                \n                axios.post('/messages/'+this.id, {message: this.newMessage}).then(function (response) {\n                    console.log(response.data.chatdata);\n                    this.messages.push(response.data.chatdata);\n                }.bind(this))\n                .catch(error => {\n                    console.log(error.response)\n                });\n                this.newMessage = '';\n            },\n            sendTypingEvent() {\n                Echo.join('chat')\n                    .whisper('typing',{'user':this.user,'otherUser':this.id});\n            },\n            keymonitor: function(event) {\n                if(event.key == \"@\")\n                {\n                    if(event.target.value.length === 0)\n                    {\n                        document.getElementById(\"myForm\").style.display = \"block\";\n                    }\n                    else if(event.target.value.length > 0 || event.target.value.length === ''){\n                        document.getElementById(\"myForm\").style.display = \"none\";\n                    }\n                }\n                else{\n                    document.getElementById(\"myForm\").style.display = \"none\";\n                }\n            },\n            previewFiles(event) {\n                console.log(event.target.files);\n            },\n            onPickFile () {\n                this.$refs.fileInput.click()\n            },\n            onFilePicked (event) {\n                const files = event.target.files \n                this.file = event.target.files[0];\n                console.log(this.file);\n               \n                let formData = new FormData();\n\n                formData.append('file',this.file);\n                axios.post('/messages/'+this.id, \n                formData,\n                {\n                    headers: {\n                        'content-type': 'multipart/form-data'\n                    }\n                }\n                ).then(function (response) {\n                    console.log(response.data.chatdata);\n                    this.messages.push(response.data.chatdata);\n                }.bind(this))\n                .catch(error => {\n                    console.log(error.response)\n                });\n                this.newMessage = '';\n            },    \n            decrypt(encrypted) {\n                let key = process.env.MIX_APP_KEY.substr(7);\n                var encrypted_json = JSON.parse(atob(encrypted));\n                return CryptoJS.AES.decrypt(encrypted_json.value, CryptoJS.enc.Base64.parse(key), {\n                    iv : CryptoJS.enc.Base64.parse(encrypted_json.iv)\n                }).toString(CryptoJS.enc.Utf8);\n            },\n            preview(event){\n                let imag = event.currentTarget.id;\n                let fileExt = imag.split('.').pop();\n                let url = $('#appUrl').html();\n                let path = url+'/assets/uploads/'+imag;\n                if(fileExt == 'png' || fileExt == 'jpg' || fileExt == 'jpeg'){\n                    document.getElementById('imagepreview').src=path;\n                    $('#imagemodal').modal('show');\n                }\n                else if(fileExt == 'mp4' || fileExt == 'mp3'){\n                    document.getElementById('cartoonVideo').src=path;\n                    $('#myModal').modal('show');\n                }\n                else if(fileExt == 'pdf' || fileExt == 'txt' || fileExt == 'sql' || fileExt == 'zip'){\n                    document.getElementById('openWith').src=path;\n                    let newurl = document.getElementById('openWith').src;\n                    let tabOrWindow = window.open(newurl, '_blank');\n                    tabOrWindow.focus();\n                }\n            }\n        }\n    }\n</script>\n<style>\nbody {font-family: Arial, Helvetica, sans-serif;}\n* {box-sizing: border-box;}\n\n/* Button used to open the contact form - fixed at the bottom of the page */\n.open-button {\n  background-color: #555;\n  color: white;\n  padding: 16px 20px;\n  border: none;\n  cursor: pointer;\n  opacity: 0.8;\n  position: fixed;\n  bottom: 23px;\n  right: 28px;\n  width: 280px;\n}\n\n/* The popup form - hidden by default */\n.form-popup {\n  display: none;\n  position: fixed;\n  bottom: 0;\n  right: 15px;\n  border: 3px solid #f1f1f1;\n  z-index: 9;\n}\n\n/* Add styles to the form container */\n.form-container {\n  max-width: 300px;\n  padding: 10px;\n  background-color: white;\n}\n\n/* Full-width input fields */\n.form-container input[type=text], .form-container input[type=password] {\n  width: 100%;\n  padding: 15px;\n  margin: 5px 0 22px 0;\n  border: none;\n  background: #f1f1f1;\n}\n\n/* When the inputs get focus, do something */\n.form-container input[type=text]:focus, .form-container input[type=password]:focus {\n  background-color: #ddd;\n  outline: none;\n}\n\n/* Set a style for the submit/login button */\n.form-container .btn {\n  background-color: #04AA6D;\n  color: white;\n  padding: 16px 20px;\n  border: none;\n  cursor: pointer;\n  width: 100%;\n  margin-bottom:10px;\n  opacity: 0.8;\n}\n\n/* Add a red background color to the cancel button */\n.form-container .cancel {\n  background-color: red;\n}\n\n/* Add some hover effects to buttons */\n.form-container .btn:hover, .open-button:hover {\n  opacity: 1;\n}\n</style>"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody {font-family: Arial, Helvetica, sans-serif;}\n* {box-sizing: border-box;}\n\n/* Button used to open the contact form - fixed at the bottom of the page */\n.open-button {\n  background-color: #555;\n  color: white;\n  padding: 16px 20px;\n  border: none;\n  cursor: pointer;\n  opacity: 0.8;\n  position: fixed;\n  bottom: 23px;\n  right: 28px;\n  width: 280px;\n}\n\n/* The popup form - hidden by default */\n.form-popup {\n  display: none;\n  position: fixed;\n  bottom: 0;\n  right: 15px;\n  border: 3px solid #f1f1f1;\n  z-index: 9;\n}\n\n/* Add styles to the form container */\n.form-container {\n  max-width: 300px;\n  padding: 10px;\n  background-color: white;\n}\n\n/* Full-width input fields */\n.form-container input[type=text], .form-container input[type=password] {\n  width: 100%;\n  padding: 15px;\n  margin: 5px 0 22px 0;\n  border: none;\n  background: #f1f1f1;\n}\n\n/* When the inputs get focus, do something */\n.form-container input[type=text]:focus, .form-container input[type=password]:focus {\n  background-color: #ddd;\n  outline: none;\n}\n\n/* Set a style for the submit/login button */\n.form-container .btn {\n  background-color: #04AA6D;\n  color: white;\n  padding: 16px 20px;\n  border: none;\n  cursor: pointer;\n  width: 100%;\n  margin-bottom:10px;\n  opacity: 0.8;\n}\n\n/* Add a red background color to the cancel button */\n.form-container .cancel {\n  background-color: red;\n}\n\n/* Add some hover effects to buttons */\n.form-container .btn:hover, .open-button:hover {\n  opacity: 1;\n}\n", "",{"version":3,"sources":["webpack://./resources/js/components/ChatComponent.vue"],"names":[],"mappings":";AAmOA,MAAA,yCAAA,CAAA;AACA,GAAA,sBAAA,CAAA;;AAEA,2EAAA;AACA;EACA,sBAAA;EACA,YAAA;EACA,kBAAA;EACA,YAAA;EACA,eAAA;EACA,YAAA;EACA,eAAA;EACA,YAAA;EACA,WAAA;EACA,YAAA;AACA;;AAEA,uCAAA;AACA;EACA,aAAA;EACA,eAAA;EACA,SAAA;EACA,WAAA;EACA,yBAAA;EACA,UAAA;AACA;;AAEA,qCAAA;AACA;EACA,gBAAA;EACA,aAAA;EACA,uBAAA;AACA;;AAEA,4BAAA;AACA;EACA,WAAA;EACA,aAAA;EACA,oBAAA;EACA,YAAA;EACA,mBAAA;AACA;;AAEA,4CAAA;AACA;EACA,sBAAA;EACA,aAAA;AACA;;AAEA,4CAAA;AACA;EACA,yBAAA;EACA,YAAA;EACA,kBAAA;EACA,YAAA;EACA,eAAA;EACA,WAAA;EACA,kBAAA;EACA,YAAA;AACA;;AAEA,oDAAA;AACA;EACA,qBAAA;AACA;;AAEA,sCAAA;AACA;EACA,UAAA;AACA","sourcesContent":["<template>\n    <div class=\"row\">\n           <div id=\"chat-component\" v-bind:id=\"user.id\" >\n               <div class=\"card-body p-0\" style=\"width:1740px;height:570px;\">\n                   <ul class=\"list-unstyled msg-body\" style=\"height:530px; overflow-y:scroll\" v-chat-scroll>\n                       <li class=\"p-2\" v-for=\"(message, index) in messages\" :key=\"index\" >\n                            <div v-if=\"message.sender_id == user.id\" class=\"details mt-2\" style=\"text-align:right;\">\n                                <b v-if=\"message.message!=''\">{{ decrypt(message.message) }}</b>\n                                    <div v-if=\"message.message==''\">        \n                                        <button style=\"background-color:gray;border:1px solid black;padding:10px;border-radius:4%;\">\n                                            <table>\n                                                <tr>\n                                                    <td>\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.png') || message.file.includes('.jpg') || message.file.includes('.jpeg')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/imageicon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.mp4') || message.file.includes('.mp3')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/videoicon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.pdf')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/pdficon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.sql') || message.file.includes('.txt')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/texticon.png\">    \n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.zip')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/zipicon.png\">    \n                                                    </td>\n                                                &nbsp;&nbsp;\n                                                <b style=\"color:white;\" else>{{ message.file }}</b>\n                                                </tr>\n                                            </table>\n                                        </button>\n                                    </div>\n                                </br>\n                                <small v-if=\"message.status == 0\">Delivered</small>\n                                <small v-else>Read</small>\n                                <small>{{ message.created_at | formatDate}}</small>\n                            </div>\n                            <div class=\"details mt-2\" v-else>\n                                <b v-if=\"message.message!=''\">{{ decrypt(message.message) }}</b>    \n                                    <div v-if=\"message.message==''\">        \n                                        <button style=\"background-color:gray;border:1px solid black;padding:10px;border-radius:4%;\">\n                                            <table>\n                                                <tr>\n                                                    <td>\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.png') || message.file.includes('.jpg') || message.file.includes('.jpeg')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/imageicon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.mp4') || message.file.includes('.mp3')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/videoicon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.pdf')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/pdficon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.sql') || message.file.includes('.txt')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/texticon.png\">\n                                                        <img v-on:click=\"preview($event)\" v-if=\"message.file.includes('.zip')\" v-bind:id=\"message.file\" style=\"border:1px solid black;width:34px;height:38px;\" src=\"http://127.0.0.1:8000/assets/uploads/zipicon.png\">    \n                                                    </td>\n                                                &nbsp;&nbsp;\n                                                <b style=\"color:white;\" else>{{ message.file }}</b>\n                                                </tr>\n                                            </table>\n                                        </button>\n                                    </div>\n                                </br>\n                                <small>{{ message.created_at | formatDate}}</small>\n                            </div>\n                       </li>\n                   </ul>\n               </div>\n               <span class=\"text-muted ml-2\" v-if=\"activeUser && otherUser\" >{{ activeUser.name }} is typing...</span>\n               \n                <div style=\"display: flex; border:1px solid gray;width:1740px;\" >\n                <input\n                    @keydown=\"sendTypingEvent\"\n                    v-model=\"newMessage\"\n                    type=\"text\"\n                    name=\"message\"\n                    placeholder=\"Enter your message...\"\n                    style=\"width:1710px;height:38px;border: none;\"\n                    class=\"form-control\">\n                    \n                    <button  @click=\"onPickFile\"><i class=\"fa fa-file ml-1 \"></i></button>\n                    <input\n                        type=\"file\"\n                        name=\"file\"\n                        id=\"file\"\n                        style=\"display: none\"\n                        ref=\"fileInput\"\n                        @change=\"onFilePicked\"/>\n                    \n                    <button v-on:click=\"sendMessage\" style=\"width:35px;height:40px;text-align:center;\"><i class=\"fa fa-telegram\"></i></button>\n                </div>\n           </div>\n        </div>\n</template>\n\n<script>\n    export default {\n\n        props:['user','id'],\n        \n        data() {\n            return {\n                messages: [],\n                data  : [],\n                newMessage: '',\n                users:[],\n                activeUser: false,\n                otherUser: false,\n                typingTimer: false,\n                filename: '',\n                file: '',\n            }\n        },\n        created() {\n            \n            let r_id = this.user.id;\n\n            this.fetchMessage();\n            \n            Echo.join('chat')\n                .here(user => {\n                    this.users = user;\n                })\n                .joining(user => {\n                    this.users.push(user);\n                })\n                .leaving(user => {\n                    this.users = this.users.filter(u => u.id != user.id);                \n                })\n                .listen('ChatMessage',(event) => {\n                    console.log(event.chat);\n                    if(event.chat.receiver_id == r_id && event.chat.sender_id == this.id){\n                        this.messages.push(event.chat);\n                    }\n                })\n                .listenForWhisper('typing', response => {\n                    this.activeUser = response.user;\n                    this.otherUser = response.otherUser;\n                    if(this.user.id == response.otherUser && this.id == response.user.id)\n                    {\n                        if(this.typingTimer) {\n                            clearTimeout(this.typingTimer);\n                        }\n                        this.typingTimer = setTimeout(() => {\n                            this.activeUser = false;\n                            this.otherUser = false;\n                        }, 500);\n                    }\n                    else{\n                        this.activeUser = false;\n                        this.otherUser = false;\n                    }\n                })\n        },\n        methods: {\n            fetchMessage() {\n                axios.get('/messages/'+this.id).then(response => {\n                    console.log(response);\n                    this.messages = response.data;\n                })\n                .catch(error => {\n                    console.log(error.response)\n                });\n            },\n            sendMessage() {  \n                \n                axios.post('/messages/'+this.id, {message: this.newMessage}).then(function (response) {\n                    console.log(response.data.chatdata);\n                    this.messages.push(response.data.chatdata);\n                }.bind(this))\n                .catch(error => {\n                    console.log(error.response)\n                });\n                this.newMessage = '';\n            },\n            sendTypingEvent() {\n                Echo.join('chat')\n                    .whisper('typing',{'user':this.user,'otherUser':this.id});\n            },\n            previewFiles(event) {\n                console.log(event.target.files);\n            },\n            onPickFile () {\n                this.$refs.fileInput.click()\n            },\n            onFilePicked (event) {\n                const files = event.target.files \n                this.file = event.target.files[0];\n                console.log(this.file);\n               \n                let formData = new FormData();\n\n                formData.append('file',this.file);\n                axios.post('/messages/'+this.id, \n                formData,\n                {\n                    headers: {\n                        'content-type': 'multipart/form-data'\n                    }\n                }\n                ).then(function (response) {\n                    console.log(response.data.chatdata);\n                    this.messages.push(response.data.chatdata);\n                }.bind(this))\n                .catch(error => {\n                    console.log(error.response)\n                });\n                this.newMessage = '';\n            },    \n            decrypt(encrypted) {\n                let key = process.env.MIX_APP_KEY.substr(7);\n                var encrypted_json = JSON.parse(atob(encrypted));\n                return CryptoJS.AES.decrypt(encrypted_json.value, CryptoJS.enc.Base64.parse(key), {\n                    iv : CryptoJS.enc.Base64.parse(encrypted_json.iv)\n                }).toString(CryptoJS.enc.Utf8);\n            },\n            preview(event){\n                let imag = event.currentTarget.id;\n                let fileExt = imag.split('.').pop();\n                let url = $('#appUrl').html();\n                let path = url+'/assets/uploads/'+imag;\n                if(fileExt == 'png' || fileExt == 'jpg' || fileExt == 'jpeg'){\n                    document.getElementById('imagepreview').src=path;\n                    $('#imagemodal').modal('show');\n                }\n                else if(fileExt == 'mp4' || fileExt == 'mp3'){\n                    document.getElementById('cartoonVideo').src=path;\n                    $('#myModal').modal('show');\n                }\n                else if(fileExt == 'pdf' || fileExt == 'txt' || fileExt == 'sql' || fileExt == 'zip'){\n                    document.getElementById('openWith').src=path;\n                    let newurl = document.getElementById('openWith').src;\n                    let tabOrWindow = window.open(newurl, '_blank');\n                    tabOrWindow.focus();\n                }\n            }\n        }\n    }\n</script>\n<style>\nbody {font-family: Arial, Helvetica, sans-serif;}\n* {box-sizing: border-box;}\n\n/* Button used to open the contact form - fixed at the bottom of the page */\n.open-button {\n  background-color: #555;\n  color: white;\n  padding: 16px 20px;\n  border: none;\n  cursor: pointer;\n  opacity: 0.8;\n  position: fixed;\n  bottom: 23px;\n  right: 28px;\n  width: 280px;\n}\n\n/* The popup form - hidden by default */\n.form-popup {\n  display: none;\n  position: fixed;\n  bottom: 0;\n  right: 15px;\n  border: 3px solid #f1f1f1;\n  z-index: 9;\n}\n\n/* Add styles to the form container */\n.form-container {\n  max-width: 300px;\n  padding: 10px;\n  background-color: white;\n}\n\n/* Full-width input fields */\n.form-container input[type=text], .form-container input[type=password] {\n  width: 100%;\n  padding: 15px;\n  margin: 5px 0 22px 0;\n  border: none;\n  background: #f1f1f1;\n}\n\n/* When the inputs get focus, do something */\n.form-container input[type=text]:focus, .form-container input[type=password]:focus {\n  background-color: #ddd;\n  outline: none;\n}\n\n/* Set a style for the submit/login button */\n.form-container .btn {\n  background-color: #04AA6D;\n  color: white;\n  padding: 16px 20px;\n  border: none;\n  cursor: pointer;\n  width: 100%;\n  margin-bottom:10px;\n  opacity: 0.8;\n}\n\n/* Add a red background color to the cancel button */\n.form-container .cancel {\n  background-color: red;\n}\n\n/* Add some hover effects to buttons */\n.form-container .btn:hover, .open-button:hover {\n  opacity: 1;\n}\n</style>"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -69845,8 +69930,6 @@ var render = function() {
           ])
         : _vm._e(),
       _vm._v(" "),
-      _vm._m(0),
-      _vm._v(" "),
       _c(
         "div",
         {
@@ -69875,7 +69958,7 @@ var render = function() {
             },
             domProps: { value: _vm.newMessage },
             on: {
-              keydown: [_vm.sendTypingEvent, _vm.keymonitor],
+              keydown: _vm.sendTypingEvent,
               input: function($event) {
                 if ($event.target.composing) {
                   return
@@ -69913,32 +69996,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "form-popup",
-        staticStyle: {
-          width: "1730px",
-          "margin-bottom": "90px",
-          border: "1px solid black"
-        },
-        attrs: { id: "myForm" }
-      },
-      [
-        _c("h1", [_vm._v("jay ho")]),
-        _vm._v(" "),
-        _c("h2", [_vm._v("hello")]),
-        _vm._v(" "),
-        _c("h3", [_vm._v("jay mataji")])
-      ]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -70792,6 +70850,114 @@ var render = function() {
       _c(
         "div",
         {
+          staticClass: "form-popup",
+          staticStyle: { width: "1730px", "margin-bottom": "90px" },
+          attrs: { id: "wordForm" }
+        },
+        [
+          _c(
+            "tr",
+            _vm._l(_vm.predefined_messages, function(pred_msg, index) {
+              return _c("td", { key: index }, [
+                _c(
+                  "a",
+                  {
+                    staticStyle: { "background-color": "#E7EDF6" },
+                    attrs: { id: pred_msg },
+                    on: {
+                      click: function($event) {
+                        return _vm.msg_click($event)
+                      }
+                    }
+                  },
+                  [_vm._v("  ~" + _vm._s(pred_msg))]
+                )
+              ])
+            }),
+            0
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "form-popup",
+          staticStyle: {
+            width: "1730px",
+            "margin-bottom": "90px",
+            border: "1px solid black"
+          },
+          attrs: { id: "myForm" }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticStyle: {
+                overflow: "scroll",
+                height: "150px",
+                "background-color": "#E7EDF6"
+              }
+            },
+            [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticStyle: { "margin-left": "80px" } },
+                _vm._l(_vm.usergroup, function(user, index) {
+                  return _c(
+                    "ul",
+                    { key: index, staticStyle: { display: "flex" } },
+                    [
+                      _c("li", { staticStyle: { display: "flex" } }, [
+                        _c("img", {
+                          staticStyle: {
+                            height: "30px",
+                            width: "30px",
+                            "margin-top": "2px"
+                          },
+                          attrs: { src: user.user.profile_photo_url, alt: "" }
+                        }),
+                        _vm._v(" : "),
+                        _c(
+                          "button",
+                          {
+                            attrs: { id: "", id: user.user.name },
+                            on: {
+                              click: function($event) {
+                                return _vm.uname($event)
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(user.user.name))]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "small",
+                        {
+                          staticStyle: {
+                            "margin-top": "6px",
+                            "margin-left": "1400px"
+                          }
+                        },
+                        [_vm._v("All Group Members")]
+                      )
+                    ]
+                  )
+                }),
+                0
+              )
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
           staticStyle: {
             display: "flex",
             border: "1px solid gray",
@@ -70808,16 +70974,17 @@ var render = function() {
                 expression: "newMessage"
               }
             ],
-            staticClass: "form-control",
+            staticClass: "form-control input-form",
             staticStyle: { width: "1710px", height: "38px", border: "none" },
             attrs: {
+              id: "input-id",
               type: "text",
               name: "message",
               placeholder: "Enter your message..."
             },
             domProps: { value: _vm.newMessage },
             on: {
-              keydown: _vm.sendTypingEvent,
+              keydown: [_vm.sendTypingEvent, _vm.keymonitor],
               input: function($event) {
                 if ($event.target.composing) {
                   return
@@ -70855,7 +71022,14 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("ul", [_c("li", [_vm._v("  People")])])
+  }
+]
 render._withStripped = true
 
 
