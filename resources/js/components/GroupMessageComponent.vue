@@ -305,19 +305,22 @@
                 }
             },
             keymonitor: function(event) {
+                if(event.keycode > 64 && event.keycode < 91){
+                    alert("hello");
+                }
                 if(event.key == "@")
                 {
-                    //alert(event.key);
-                    //alert(event.target.value);
+                    alert(event.key);
+                    alert(event.target.value);
                     document.getElementById("myForm").style.display = "block";
                 }
-                else{
+                else{   
                     document.getElementById("myForm").style.display = "none";
                 }
             },
             uname(event){
-                alert(event.currentTarget.id);
-                alert(document.getElementById('input-id').value);
+                //alert(event.currentTarget.id);
+                //alert(document.getElementById('input-id').value);
                 document.getElementById("myForm").style.display = "none";
                 let input_value = document.getElementById('input-id').value
                 document.getElementById('input-id').value=input_value+event.currentTarget.id+":";

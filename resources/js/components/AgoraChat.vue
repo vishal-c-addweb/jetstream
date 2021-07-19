@@ -12,7 +12,7 @@
               v-for="user in allusers"
               :key="user.id"
               @click="placeCall(user.id, user.name)"
-              v-if="user.id">
+              v-if="user.id" >
               Call {{ user.name }}
               <span class="badge badge-light">{{
                 getUserOnlineStatus(user.id)
@@ -22,55 +22,68 @@
         </div>
       </div>
 
-      <!-- Incoming Call  -->
-      <div class="row my-5" v-if="incomingCall">
-        <div class="col-12">
-          <p>
-            Incoming Call From <strong>{{ incomingCaller }}</strong>
-          </p>
-          <div class="btn-group" role="group">
-            <button
-              type="button"
-              class="btn btn-danger"
-              data-dismiss="modal"
-              @click="declineCall"
-            >
-              Decline
-            </button>
-            <button
-              type="button"
-              class="btn btn-success ml-5"
-              @click="acceptCall"
-            >
-              Accept
-            </button>
+      <div class="modal fade bd-example-modal-lg" id="video2" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content"  style="width:auto;height:auto;">
+            <!-- Incoming Call  -->
+            <div class="row my-5" v-if="incomingCall">
+              <div class="col-12">
+                <p>
+                  Incoming Call From <strong>{{ incomingCaller }}</strong>
+                </p>
+                <div class="btn-group" role="group">
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    data-dismiss="modal"
+                    @click="declineCall"
+                  >
+                    Decline
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-success ml-5"
+                    @click="acceptCall"
+                  >
+                    Accept
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- End of Incoming Call  -->
           </div>
         </div>
       </div>
-      <!-- End of Incoming Call  -->
+      
     </div>
 
-    
-    <section id="video-container" v-if="callPlaced">
-      <div id="local-video"></div>
-      <div id="remote-video"></div>
+    <div class="modal fade bd-example-modal-lg" id="video1" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="width:auto;height:auto;">
+          <section id="video-container" v-if="callPlaced">
+          <div id="local-video"></div>
+          <div id="remote-video"></div>
 
-      <div class="action-btns">
-        <button type="button" class="btn btn-info" @click="handleAudioToggle">
-          {{ mutedAudio ? "Unmute" : "Mute" }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary mx-4"
-          @click="handleVideoToggle"
-        >
-          {{ mutedVideo ? "ShowVideo" : "HideVideo" }}
-        </button>
-        <button type="button" class="btn btn-danger" @click="endCall">
-          EndCall
-        </button>
+          <div class="action-btns">
+            <button type="button" class="btn btn-info" @click="handleAudioToggle">
+              {{ mutedAudio ? "Unmute" : "Mute" }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary mx-4"
+              @click="handleVideoToggle"
+            >
+              {{ mutedVideo ? "ShowVideo" : "HideVideo" }}
+            </button>
+            <button type="button" class="btn btn-danger" @click="endCall">
+              EndCall
+            </button>
+          </div>
+          </section>
+        </div>
       </div>
-    </section>
+    </div>
+    
 
   </main>
 </template>
@@ -133,6 +146,12 @@ export default {
           );
           this.incomingCaller = this.onlineUsers[callerIndex]["name"];
           this.incomingCall = true;
+          if(this.incomingCall == true){
+              $('#video2').modal('show');
+          }
+          else if(this.incomingCall == false){
+            $('#video2').modal('hide');
+          }
           // the channel that was sent over to the user being called is what
           // the receiver will use to join the call when accepting the call.
           this.agoraChannel = data.channelName;
@@ -149,7 +168,9 @@ export default {
       return "Online";
     },
     async placeCall(id, calleeName) {
+              
       try {
+        $('#video1').modal('show');
         // channelName = the caller's and the callee's id. you can use anything. tho.
         const channelName = `${this.authuser}_${calleeName}`;
         const tokenRes = await this.generateToken(channelName);
@@ -166,6 +187,8 @@ export default {
       }
     },
     async acceptCall() {
+      $('#video2').modal('hide');
+      $('#video1').modal('show');
       this.initializeAgora();
       const tokenRes = await this.generateToken(this.agoraChannel);
       this.joinRoom(tokenRes.data, this.agoraChannel);
@@ -173,6 +196,8 @@ export default {
       this.callPlaced = true;
     },
     declineCall() {
+      $('#video1').modal('hide');
+      $('#video2').modal('hide');
       // You can send a request to the caller to
       // alert them of rejected call
       this.incomingCall = false;
@@ -181,8 +206,8 @@ export default {
       return axios.post("/agora/token", {
         channelName,
       }).catch(error => {
-                    console.log(error.response)
-                });
+          console.log(error.response)
+      });
     },
     /**
      * Agora Events and Listeners
@@ -270,6 +295,8 @@ export default {
       );
     },
     endCall() {
+      $('#video1').modal('hide');
+      $('#video2').modal('hide');
       this.localStream.close();
       this.client.leave(
         () => {
