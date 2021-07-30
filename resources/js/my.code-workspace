@@ -5,6 +5,15 @@
 		},
 		{
 			"path": "../../../myoctober"
+		},
+		{
+			"path": "../../../demo"
+		},
+		{
+			"path": "../../../OctoberCms"
+		},
+		{
+			"path": "../../../voyager"
 		}
 	],
 	"settings": {}
